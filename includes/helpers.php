@@ -2190,20 +2190,13 @@ add_action( 'wp_loaded', 'monsterinsights_restore_prettylinks_onboard_value', 15
 /**
  * Check WP version and include the compatible upgrader skin.
  *
+ * Heretek Analytics has no paid add-on installer, so this is a no-op kept for
+ * backward compatibility with any leftover ajax callers.
+ *
  * @param bool $custom_upgrader If true it will include our custom upgrader, otherwise it will use the default WP one.
  */
 function monsterinsights_require_upgrader( $custom_upgrader = true ) {
-
-	$base = MonsterInsights();
-
-	if ( ! $custom_upgrader ) {
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-	}
-
-	if ( $custom_upgrader ) {
-		require_once plugin_dir_path( $base->file ) . 'includes/admin/licensing/plugin-upgrader.php';
-	}
-	require_once plugin_dir_path( $base->file ) . '/includes/admin/licensing/skin.php';
+	// No-op. The Heretek Analytics admin UI ships with no add-ons.
 }
 
 /**
@@ -2673,21 +2666,6 @@ if ( ! function_exists( 'monsterinsights_is_authed' ) ) {
 		return isset($site_profile['key']);
 	}
 }
-// Prevents being redirected to Duplicator once plugin is installed through the onboarding wizard.
-add_filter( 'duplicator_disable_onboarding_redirect', '__return_true' );
-// Prevents being redirected to WP Consent once plugin is installed through the onboarding wizard.
-add_action( 'admin_init', 'monsterinsights_disable_wpconsent_onboarding_redirect', 10 );
-/**
- * Disable WP Consent onboarding redirect if the plugin is active.
- *
- * @return void
- */
-function monsterinsights_disable_wpconsent_onboarding_redirect() {
-	if ( is_plugin_active( 'wpconsent-cookies-banner-privacy-suite/wpconsent.php' ) ) {
-		delete_transient( 'wpconsent_onboarding_redirect' );
-	}
-}
-
 /**
  * Whether a plugin basename belongs to WPForms, in either edition.
  *
@@ -2817,26 +2795,8 @@ function monsterinsights_report_error() {
  * @return bool
  */
 function monsterinsights_wpconsent_is_cmp_plugin_active() {
-	// Complianz
-	if ( defined( 'cmplz_plugin' ) || defined( 'cmplz_premium' ) ) {
-		return true;
-	}
-
-	// CookieYes (cookie-law-info)
-	if ( defined( 'CLI_SETTINGS_FIELD' ) ) {
-		return true;
-	}
-
-	// GDPR Cookie Compliance
-	if ( defined( 'MOOVE_GDPR_VERSION' ) ) {
-		return true;
-	}
-
-	// Cookie Notice
-	if ( function_exists( 'Cookie_Notice' ) ) {
-		return true;
-	}
-
+	// Heretek Analytics does not surface the upstream WPConsent cross-promo; the
+	// CMP detection helper always returns false so any stale caller still works.
 	return false;
 }
 

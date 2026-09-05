@@ -355,9 +355,6 @@ final class MonsterInsights {
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/options.php';
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/helpers.php';
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/deprecated.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/database/loader.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/cache/functions.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/cache/cron-handler.php';
 		$monsterinsights_settings = monsterinsights_get_options();
 	}
 

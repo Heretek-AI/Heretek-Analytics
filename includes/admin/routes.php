@@ -1269,7 +1269,7 @@ class MonsterInsights_Rest_Routes {
 		}
 		$args['included_metrics'] = get_user_meta( get_current_user_id(), 'monsterinsights_included_metrics', true ) ?? 'sessions,pageviews';
 
-		if ( monsterinsights_is_pro_version() && ! MonsterInsights()->license->license_can( $report->level ) ) {
+		if ( false /* license_can gate removed in Heretek Analytics */ && ( $report->level ) ) {
 			$data = array(
 				'success' => false,
 				'error'   => 'license_level',
@@ -1281,7 +1281,7 @@ class MonsterInsights_Rest_Routes {
 			// no data at all. Still above get_data(), so cache hits keep counting.
 			// Recorded from the resolved report rather than the posted slug, so an
 			// arbitrary `report` value can't seed the log.
-			MonsterInsights_Report_Views::maybe_record( $report->name );
+			/* report view recording removed in Heretek Analytics */ /* was: MonsterInsights_Report_Views::maybe_record($report->name); */
 
 			$data = apply_filters( 'monsterinsights_vue_reports_data', $report->get_data( $args ), $report_name, $report );
 		}
@@ -1400,10 +1400,13 @@ class MonsterInsights_Rest_Routes {
 		// We do not need any extra credentials if we have gotten this far, so let's install the plugin.
 		monsterinsights_require_upgrader();
 
-		// Prevent language upgrade in ajax calls.
+		// Heretek Analytics no longer ships the custom MonsterInsights_Plugin_Upgrader
+		// and MonsterInsights_Skin helpers (the licensing/ directory is gone), so
+		// fall back to WordPress core's Plugin_Upgrader for any third-party caller
+		// that still wires to this endpoint.
+		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 		remove_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
-		// Create the plugin upgrader with our custom skin.
-		$installer = new MonsterInsights_Plugin_Upgrader( new MonsterInsights_Skin() );
+		$installer = new Plugin_Upgrader( new Plugin_Installer_Skin() );
 		$installer->install( $download_url );
 
 		// Flush the cache and return the newly installed plugin basename.
@@ -1692,7 +1695,7 @@ class MonsterInsights_Rest_Routes {
 			$args['network'] = true;
 		}
 
-		if ( monsterinsights_is_pro_version() && ! MonsterInsights()->license->license_can( $report->level ) ) {
+		if ( false /* license_can gate removed in Heretek Analytics */ && ( $report->level ) ) {
 			$data = array(
 				'success' => false,
 				'error'   => 'license_level',
@@ -1702,7 +1705,7 @@ class MonsterInsights_Rest_Routes {
 			// get_report() -- a tier-gated upsell response is not a view, and the log
 			// feeds CS decisions where "opened a report they cannot open" is worse than
 			// no data at all. Still above get_data(), so cache hits keep counting.
-			MonsterInsights_Report_Views::maybe_record( $report_name );
+			/* report view recording removed in Heretek Analytics */ /* was: MonsterInsights_Report_Views::maybe_record($report_name); */
 
 			$data = apply_filters( 'monsterinsights_vue_reports_data', $report->get_data( $args ), $report_name, $report );
 		}
@@ -2035,11 +2038,11 @@ class MonsterInsights_Rest_Routes {
 		// coupled to overview's from this path -- it carries no independent signal
 		// unless site_summary is also viewed standalone elsewhere.
 		$is_pro_version = monsterinsights_is_pro_version();
-		if ( ! $is_pro_version || MonsterInsights()->license->license_can( $overview_report->level ) ) {
-			MonsterInsights_Report_Views::maybe_record( 'overview' );
+		if ( true /* license_can gate removed in Heretek Analytics */ || ( $overview_report->level ) ) {
+			/* report view recording removed in Heretek Analytics */ /* was: MonsterInsights_Report_Views::maybe_record('overview'); */
 		}
-		if ( ! $is_pro_version || MonsterInsights()->license->license_can( $site_summary_report->level ) ) {
-			MonsterInsights_Report_Views::maybe_record( 'site_summary' );
+		if ( true /* license_can gate removed in Heretek Analytics */ || ( $site_summary_report->level ) ) {
+			/* report view recording removed in Heretek Analytics */ /* was: MonsterInsights_Report_Views::maybe_record('site_summary'); */
 		}
 
 		// Check cache for bundled data.
@@ -2066,7 +2069,7 @@ class MonsterInsights_Rest_Routes {
 		}
 		$args['included_metrics'] = $user_included_metrics;
 
-		if ( $is_pro_version && ! MonsterInsights()->license->license_can( $overview_report->level ) ) {
+		if ( false /* license_can gate removed in Heretek Analytics */ && ( $overview_report->level ) ) {
 			$overview_data = array(
 				'success' => false,
 				'error'   => 'license_level',
@@ -2106,7 +2109,7 @@ class MonsterInsights_Rest_Routes {
 			wp_send_json_error( array( 'message' => $message ) );
 		}
 
-		if ( $is_pro_version && ! MonsterInsights()->license->license_can( $site_summary_report->level ) ) {
+		if ( false /* license_can gate removed in Heretek Analytics */ && ( $site_summary_report->level ) ) {
 			$site_summary_data = array(
 				'success' => false,
 				'error'   => 'license_level',

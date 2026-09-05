@@ -172,19 +172,8 @@ class MonsterInsights_Install {
 
 		// Run database migrations (since 9.11.0)
 		// This runs after all legacy upgrade routines
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/database/loader.php';
-		$migration_results = monsterinsights_run_database_migrations();
-
-		// Log migration results (but skip "already running" messages - that's not an error)
-		if ( ! $migration_results['success'] && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			// Only log actual errors, not lock collisions
-			if ( empty( $migration_results['error'] ) || $migration_results['error'] !== 'Migration is already running' ) {
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-				error_log( 'MonsterInsights: Database migrations failed' );
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
-				error_log( print_r( $migration_results, true ) );
-			}
-		}
+		// Heretek Analytics no longer ships the custom-table migrations
+		// (the includes/database/ tree is gone); nothing to run here.
 
 		// This is the version of MI installed
 		update_option( 'monsterinsights_current_version', MONSTERINSIGHTS_VERSION );

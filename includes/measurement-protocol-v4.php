@@ -124,7 +124,10 @@ class MonsterInsights_Measurement_Protocol_V4 {
 					break;
 
 				case 'money':
-					$sanitized_params[ $key ] = MonsterInsights_eCommerce_Helper::round_price( $value );
+					// Heretek Analytics ships without the upstream
+					// MonsterInsights_eCommerce_Helper::round_price helper;
+					// cast directly to float with two-decimal precision.
+					$sanitized_params[ $key ] = round( (float) $value, 2 );
 					break;
 			}
 		}
