@@ -87,7 +87,14 @@ function monsterinsights_authors_load_data( $gateway, $range, $limit ) {
 
 	$author_ids = array();
 	foreach ( $rows as $row ) {
-		if ( ! empty( $row['d'][0] ) && ctype_digit( (string) $row['d'][0] ) ) {
+		// GA4 returns "(not set)" as a literal string for missing user
+		// properties and "" when the dimension wasn't captured at all.
+		// Normalize to null so the template can render a clean "(not set)"
+		// label and the join above stays empty for those rows.
+		if ( ! empty( $row['d'][0] )
+			&& '(not set)' !== $row['d'][0]
+			&& ctype_digit( (string) $row['d'][0] )
+		) {
 			$author_ids[] = (int) $row['d'][0];
 		}
 	}

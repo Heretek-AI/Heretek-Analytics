@@ -154,8 +154,16 @@ $fmt_int = static function ( $value ) {
 						$tot_views    = 0;
 						$tot_engaged  = 0;
 						foreach ( $rows as $row ) :
-							$aid      = ! empty( $row['d'][0] ) ? (int) $row['d'][0] : 0;
-							$user     = isset( $author_lookup[ $aid ] ) ? $author_lookup[ $aid ] : null;
+							// Three possible states for $row['d'][0]:
+							//   1. A numeric WordPress user ID -> look up display name.
+							//   2. "(not set)" or empty -> GA4 returned no author for these
+							//      sessions (typically historic traffic before the
+							//      front-end started emitting author_id).
+							//   3. Anything else (unrecognised dimension value) -> show
+							//      the raw value so the admin can spot the bug.
+							$raw_d   = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
+							$aid     = ( '' !== $raw_d && '(not set)' !== $raw_d && ctype_digit( $raw_d ) ) ? (int) $raw_d : 0;
+							$user    = ( $aid > 0 && isset( $author_lookup[ $aid ] ) ) ? $author_lookup[ $aid ] : null;
 							$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
 							$users    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
 							$views    = isset( $row['m'][2]['value'] ) ? (int) $row['m'][2]['value'] : 0;
@@ -170,8 +178,19 @@ $fmt_int = static function ( $value ) {
 								$display = $user->display_name;
 								$sub     = $user->user_email;
 								$edit    = esc_url( get_edit_user_link( $user->ID ) );
+							} elseif ( $aid > 0 ) {
+								// Numeric ID that didn't match a WordPress user — likely
+								// a deleted author. Surface the ID so the admin knows.
+								$display = sprintf( __( 'Author #%d (deleted)', 'google-analytics-for-wordpress' ), $aid );
+								$sub     = '';
+								$edit    = '';
+							} elseif ( '' === $raw_d || '(not set)' === $raw_d ) {
+								$display = __( '(not set)', 'google-analytics-for-wordpress' );
+								$sub     = __( 'Author ID was not captured on these sessions.', 'google-analytics-for-wordpress' );
+								$edit    = '';
 							} else {
-								$display = sprintf( __( 'Unknown author #%d', 'google-analytics-for-wordpress' ), $aid );
+								// Unrecognised dimension value (string, negative, etc.).
+								$display = sprintf( __( 'Unknown author (%s)', 'google-analytics-for-wordpress' ), $raw_d );
 								$sub     = '';
 								$edit    = '';
 							}
