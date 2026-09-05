@@ -174,7 +174,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @param int    $default_ts Fallback timestamp if parsing fails.
 	 * @return string
 	 */
-	private function resolve_date( $value, $default_ts ) {
+	public function resolve_date( $value, $default_ts ) {
 		if ( is_string( $value ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $value ) ) {
 			return $value;
 		}
