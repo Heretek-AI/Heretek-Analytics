@@ -739,24 +739,10 @@ class MonsterInsights_Admin_Assets {
 		$addons_active    = array();
 		$addons_info      = array();
 		foreach ( $addon_defs as $key => $slugs ) {
-			$is_active    = false;
-			$is_installed = false;
-			$basename     = '';
-			foreach ( $slugs as $slug ) {
-				$bn = monsterinsights_get_plugin_basename_from_slug( $slug );
-				if ( $bn && isset( $installed_plugins[ $bn ] ) ) {
-					$is_installed = true;
-					$basename     = $bn;
-					if ( is_plugin_active( $bn ) ) {
-						$is_active = true;
-					}
-					break;
-				}
-			}
-			$addons_active[ $key ] = $is_active;
+			$addons_active[ $key ] = true;
 			$addons_info[ $key ]   = array(
-				'installed' => $is_installed,
-				'basename'  => $basename,
+				'installed' => true,
+				'basename'  => 'heretek-analytics/' . $key,
 			);
 		}
 

@@ -1063,7 +1063,7 @@ add_action( 'wp_ajax_monsterinsights_dismiss_ai_insights_addon_notice', 'monster
  * @return bool
  */
 function monsterinsights_check_is_it_monsterinsights_lite() {
-	return 'googleanalytics.php' == basename( MONSTERINSIGHTS_PLUGIN_FILE );
+	return false;
 }
 
 /**

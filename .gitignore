@@ -1,0 +1,19 @@
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts & packages
+node_modules/
+vendor/
+*.zip
+*.tar.gz
+
+# Logs & cache
+*.log
+.phpunit.result.cache
+.system_generated/

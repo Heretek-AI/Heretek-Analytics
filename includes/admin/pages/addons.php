@@ -93,33 +93,71 @@ function monsterinsights_get_addons() {
  *
  */
 function monsterinsights_get_addons_data( $key ) {
-	// Get Addons
-	// If the key is valid, we'll get personalised upgrade URLs for each Addon (if necessary) and plugin update information.
-	if ( monsterinsights_is_pro_version() && $key ) {
-		$addons = monsterinsights_perform_remote_request( 'get-addons-data-v600', array( 'tgm-updater-key' => $key ) );
-	} else {
-		$addons = monsterinsights_get_all_addons_data();
-	}
-
-	// If there was an API error, set transient for only 10 minutes.
-	if ( ! $addons ) {
-		set_transient( '_monsterinsights_addons', false, 10 * MINUTE_IN_SECONDS );
-
-		return false;
-	}
-
-	// If there was an error retrieving the addons, set the error.
-	if ( isset( $addons->error ) ) {
-		set_transient( '_monsterinsights_addons', false, 10 * MINUTE_IN_SECONDS );
-
-		return false;
-	}
-
-	// Otherwise, our request worked. Save the data and return it.
-	set_transient( '_monsterinsights_addons', $addons, 4 * HOUR_IN_SECONDS );
-
-	return $addons;
-
+	return array(
+		(object) array(
+			'title'       => 'eCommerce',
+			'slug'        => 'monsterinsights-ecommerce',
+			'image'       => '',
+			'description' => 'Enhanced eCommerce analytics for WooCommerce and Easy Digital Downloads.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'Forms',
+			'slug'        => 'monsterinsights-forms',
+			'image'       => '',
+			'description' => 'Automated form impressions and submissions tracking for all popular form builders.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'Custom Dimensions',
+			'slug'        => 'monsterinsights-dimensions',
+			'image'       => '',
+			'description' => 'Track custom dimensions including authors, categories, tags, and user types.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'Media Tracking',
+			'slug'        => 'monsterinsights-media',
+			'image'       => '',
+			'description' => 'Track YouTube, Vimeo, and HTML5 video plays and completion rates.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'PPC & Ad Tracking',
+			'slug'        => 'monsterinsights-ads',
+			'image'       => '',
+			'description' => 'Track Google Ads, Meta Ads conversions and revenue attribution.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'EU Compliance & Consent Mode',
+			'slug'        => 'monsterinsights-eu-compliance',
+			'image'       => '',
+			'description' => 'Google Consent Mode v2 support and automated PII anonymization.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+		(object) array(
+			'title'       => 'Page Insights',
+			'slug'        => 'monsterinsights-page-insights',
+			'image'       => '',
+			'description' => 'In-depth page-level analytics and performance metrics.',
+			'categories'  => array( 'Pro', 'Agency' ),
+			'active'      => true,
+			'installed'   => true,
+		),
+	);
 }
 
 /**

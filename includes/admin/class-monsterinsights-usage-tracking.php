@@ -158,43 +158,14 @@ class MonsterInsights_Usage_Tracking {
 	}
 
 	public function send_checkin( $override = false, $ignore_last_checkin = false ) {
-		$home_url = trailingslashit( home_url() );
-		if ( strpos( $home_url, 'monsterinsights.com' ) !== false ) {
-			return false;
-		}
-
-		if ( ! self::tracking_allowed() && ! $override ) {
-			return false;
-		}
-		// Send a maximum of once per week
-		$last_send = get_option( 'monsterinsights_usage_tracking_last_checkin' );
-		if ( is_numeric( $last_send ) && $last_send > strtotime( '-1 week' ) && ! $ignore_last_checkin ) {
-			return false;
-		}
-
-		$request = wp_remote_post( 'https://miusage.com/v1/checkin/', array(
-			'method'      => 'POST',
-			'timeout'     => 5, // phpcs:ignore
-			'redirection' => 5,
-			'httpversion' => '1.1',
-			'blocking'    => false,
-			'body'        => $this->get_data(),
-			'user-agent'  => 'MI/' . MONSTERINSIGHTS_VERSION . '; ' . get_bloginfo( 'url' )
-		) );
-
-		// If we have completed successfully, recheck in 1 week
-		update_option( 'monsterinsights_usage_tracking_last_checkin', time() );
-
-		return true;
+		// Telemetry and external check-in permanently disabled in Heretek Analytics
+		return false;
 	}
 
 	/**
 	 * Whether this install has consented to usage tracking.
 	 *
-	 * Public and static because the Customer360 recorders gate their local writes on
-	 * the same condition -- collecting locally and only gating transmission would let
-	 * a Lite opt-in ship history from before consent was given, and consent is not
-	 * retroactive.
+	 * Permanently disabled in Heretek Analytics.
 	 *
 	 * @since 11.2.0
 	 * @access public
@@ -202,24 +173,13 @@ class MonsterInsights_Usage_Tracking {
 	 * @return bool True when tracking data may be collected and sent.
 	 */
 	public static function tracking_allowed() {
-		return (bool) monsterinsights_get_option( 'anonymous_data', false ) || monsterinsights_is_pro_version();
+		return false;
 	}
 
 	public function schedule_send() {
-		if ( ! wp_next_scheduled( 'monsterinsights_usage_tracking_cron' ) ) {
-			$tracking             = array();
-			$tracking['day']      = wp_rand( 0, 6 );
-			$tracking['hour']     = wp_rand( 0, 23 );
-			$tracking['minute']   = wp_rand( 0, 59 );
-			$tracking['second']   = wp_rand( 0, 59 );
-			$tracking['offset']   = ( $tracking['day'] * DAY_IN_SECONDS ) +
-									( $tracking['hour'] * HOUR_IN_SECONDS ) +
-									( $tracking['minute'] * MINUTE_IN_SECONDS ) +
-									$tracking['second'];
-			$tracking['initsend'] = strtotime( "next sunday" ) + $tracking['offset'];
-
-			wp_schedule_event( $tracking['initsend'], 'weekly', 'monsterinsights_usage_tracking_cron' );
-			update_option( 'monsterinsights_usage_tracking_config', $tracking );
+		// Telemetry cron permanently disabled
+		if ( wp_next_scheduled( 'monsterinsights_usage_tracking_cron' ) ) {
+			wp_clear_scheduled_hook( 'monsterinsights_usage_tracking_cron' );
 		}
 	}
 

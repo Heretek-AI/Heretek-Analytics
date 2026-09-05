@@ -318,11 +318,7 @@ function monsterinsights_hours_between( $start, $stop = false ) {
  * who want that feature.
  */
 function monsterinsights_is_pro_version() {
-	if ( class_exists( 'MonsterInsights' ) ) {
-		return true;
-	} else {
-		return false;
-	}
+	return true;
 }
 
 
