@@ -159,6 +159,25 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 			$options['wp_user_id'] = $value;
 		}
 
+		// Author tracking on singular views: emit `author_id` (numeric WP user
+		// ID) and `author` (display name) as gtag config keys so they can be
+		// picked up by GA4 Custom Dimensions registered with those exact API
+		// names. By wp_head priority 6 the main query is fully resolved so
+		// get_queried_object() returns the post being viewed.
+		if ( is_singular() ) {
+			$queried = get_queried_object();
+			if ( $queried && isset( $queried->post_author ) ) {
+				$author_id = (int) $queried->post_author;
+				if ( $author_id > 0 ) {
+					$options['author_id'] = (string) $author_id;
+					$display_name        = get_the_author_meta( 'display_name', $author_id );
+					if ( ! empty( $display_name ) ) {
+						$options['author'] = (string) $display_name;
+					}
+				}
+			}
+		}
+
 		$options = apply_filters( 'monsterinsights_frontend_tracking_options_gtag_end', $options );
 
 		if ( $encoded ) {

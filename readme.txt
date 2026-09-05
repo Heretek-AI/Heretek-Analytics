@@ -67,6 +67,11 @@ Heretek Analytics includes an integrated GitHub Releases updater. When a new ver
 * Autonomous Local REST Reporting Gateway for direct GA4 Data API queries.
 * Full Pro/Agency tier reporting modules unlocked.
 
+= 12.1.0 =
+* New: author tracking on singular views — gtag config keys `author` (display name) and `author_id` (numeric WP user ID) emitted alongside the existing page-view config. Pair with User-scoped GA4 Custom Dimensions of the same API names to surface per-author reporting.
+* New: date-range filter on the Reports page — two `<input type="date">` fields (start, end) with an Apply / Reset form. Server-side `$_GET` round-trip; no JS, no AJAX. The H1 reflects the chosen range.
+* New: Top Authors panel on the Reports dashboard, plus a dedicated **Heretek Analytics → Authors** sub-page (`admin.php?page=monsterinsights_authors`) with a per-author ranking table (Sessions / Users / Page Views / Engaged Sessions) and a CSV export (`?export=csv`).
+
 = 12.0.0 =
 * Stand-alone, no SaaS: dropped every call to monsterinsights.com / exactmetrics.com / app.monsterinsights.com / connect.monsterinsights.com / upgrade.monsterinsights.com / plugin-cdn.monsterinsights.com / ai-api.monsterinsights.com.
 * Removed the entire Vue 3 admin app (lite/assets/vue3/ and pro/assets/vue3/). Settings, Reports, Tools, Addons, and About pages are now pure PHP.

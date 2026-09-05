@@ -27,9 +27,30 @@ $fmt_int = static function ( $value ) {
 	return number_format( $value );
 };
 
-$overview  = isset( $reports['overview'] ) && is_array( $reports['overview'] ) ? $reports['overview'] : array();
-$top_pages = isset( $reports['top_pages'] ) && is_array( $reports['top_pages'] ) ? $reports['top_pages'] : array();
-$countries = isset( $reports['top_countries'] ) && is_array( $reports['top_countries'] ) ? $reports['top_countries'] : array();
+$overview    = isset( $reports['overview'] ) && is_array( $reports['overview'] ) ? $reports['overview'] : array();
+$top_pages   = isset( $reports['top_pages'] ) && is_array( $reports['top_pages'] ) ? $reports['top_pages'] : array();
+$countries   = isset( $reports['top_countries'] ) && is_array( $reports['top_countries'] ) ? $reports['top_countries'] : array();
+$top_authors = isset( $reports['top_authors'] ) && is_array( $reports['top_authors'] ) ? $reports['top_authors'] : array();
+
+// Resolve author_id -> WordPress user for the Top Authors panel.
+$author_ids = array();
+if ( ! empty( $top_authors['rows'] ) && is_array( $top_authors['rows'] ) ) {
+	foreach ( $top_authors['rows'] as $row ) {
+		if ( ! empty( $row['d'][0] ) && ctype_digit( (string) $row['d'][0] ) ) {
+			$author_ids[] = (int) $row['d'][0];
+		}
+	}
+}
+$author_lookup = array();
+if ( ! empty( $author_ids ) ) {
+	$users = get_users( array(
+		'include' => array_values( array_unique( $author_ids ) ),
+		'fields'  => array( 'ID', 'display_name', 'user_email' ),
+	) );
+	foreach ( $users as $u ) {
+		$author_lookup[ (int) $u->ID ] = $u;
+	}
+}
 
 $sum_metric = static function ( array $rows, int $idx ) {
 	$total = 0;
@@ -176,10 +197,26 @@ $sum_metric = static function ( array $rows, int $idx ) {
 .heretek-empty a,
 .heretek-error a,
 .heretek-info a { color:#fca5a5; }
+.heretek-date-filter { margin-bottom: 22px; padding: 18px 22px; }
+.heretek-date-filter__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 14px;
+}
+.heretek-date-filter__row .heretek-field { margin-bottom: 0; min-width: 170px; }
+.heretek-date-filter__row .heretek-actions { margin-top: 0; }
 </style>
 
 <div class="heretek-dashboard">
-	<h1><?php esc_html_e( 'Augur Reports — Last 30 Days', 'google-analytics-for-wordpress' ); ?></h1>
+	<h1><?php
+		printf(
+			/* translators: 1: start date, 2: end date */
+			esc_html__( 'Augur Reports — %1$s to %2$s', 'google-analytics-for-wordpress' ),
+			esc_html( $start_date ),
+			esc_html( $end_date )
+		);
+	?></h1>
 	<p class="heretek-lede">
 		<?php
 		printf(
@@ -189,6 +226,24 @@ $sum_metric = static function ( array $rows, int $idx ) {
 		);
 		?>
 	</p>
+
+	<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="heretek-card heretek-date-filter">
+		<input type="hidden" name="page" value="monsterinsights_reports" />
+		<div class="heretek-date-filter__row">
+			<div class="heretek-field">
+				<label for="heretek-start"><?php esc_html_e( 'Start date', 'google-analytics-for-wordpress' ); ?></label>
+				<input type="date" id="heretek-start" name="start" value="<?php echo esc_attr( $start_input ); ?>" required />
+			</div>
+			<div class="heretek-field">
+				<label for="heretek-end"><?php esc_html_e( 'End date', 'google-analytics-for-wordpress' ); ?></label>
+				<input type="date" id="heretek-end" name="end" value="<?php echo esc_attr( $end_input ); ?>" required />
+			</div>
+			<div class="heretek-actions">
+				<button type="submit" class="heretek-button"><?php esc_html_e( 'Apply', 'google-analytics-for-wordpress' ); ?></button>
+				<a class="heretek-button heretek-button--secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_reports' ) ); ?>"><?php esc_html_e( 'Reset', 'google-analytics-for-wordpress' ); ?></a>
+			</div>
+		</div>
+	</form>
 
 	<?php if ( ! empty( $missing ) ) : ?>
 		<div class="heretek-empty">
@@ -299,6 +354,58 @@ $sum_metric = static function ( array $rows, int $idx ) {
 							<?php endforeach; ?>
 						</tbody>
 					</table>
+				<?php endif; ?>
+			</div>
+
+			<div class="heretek-panel">
+				<h2><?php esc_html_e( 'Top Authors', 'google-analytics-for-wordpress' ); ?></h2>
+				<?php if ( empty( $top_authors['rows'] ) ) : ?>
+					<p class="heretek-empty"><?php esc_html_e( 'No author data in this window. Make sure your GA4 property has a User-scoped custom dimension named <code>author_id</code> registered, and that singular views are emitting it.', 'google-analytics-for-wordpress' ); ?></p>
+				<?php else : ?>
+					<table class="heretek-table">
+						<thead><tr><th><?php esc_html_e( 'Author', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Page Views', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
+						<tbody>
+							<?php foreach ( $top_authors['rows'] as $row ) :
+								$aid = ! empty( $row['d'][0] ) ? (int) $row['d'][0] : 0;
+								$user = isset( $author_lookup[ $aid ] ) ? $author_lookup[ $aid ] : null;
+								$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
+								$views    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
+								if ( $user ) {
+									$display = $user->display_name;
+									$sub     = $user->user_email;
+									$edit    = esc_url( get_edit_user_link( $user->ID ) );
+								} else {
+									$display = sprintf( __( 'Author #%d', 'google-analytics-for-wordpress' ), $aid );
+									$sub     = '';
+									$edit    = '';
+								}
+								?>
+								<tr>
+									<td>
+										<?php if ( $edit ) : ?>
+											<a href="<?php echo $edit; ?>"><?php echo esc_html( $display ); ?></a>
+										<?php else : ?>
+											<?php echo esc_html( $display ); ?>
+										<?php endif; ?>
+										<?php if ( $sub ) : ?>
+											<div class="heretek-table td muted"><?php echo esc_html( $sub ); ?></div>
+										<?php endif; ?>
+									</td>
+									<td class="num"><?php echo esc_html( $fmt_int( $sessions ) ); ?></td>
+									<td class="num"><?php echo esc_html( $fmt_int( $views ) ); ?></td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<p class="heretek-info" style="margin-top: 14px;">
+						<?php
+						printf(
+							/* translators: %s is a URL to the Authors admin sub-page. */
+							esc_html__( 'Need a full per-author breakdown across more metrics? Open %s.', 'google-analytics-for-wordpress' ),
+							'<a href="' . esc_url( admin_url( 'admin.php?page=monsterinsights_authors' ) ) . '">' . esc_html__( 'Heretek Analytics → Authors', 'google-analytics-for-wordpress' ) . '</a>'
+						);
+						?>
+					</p>
 				<?php endif; ?>
 			</div>
 

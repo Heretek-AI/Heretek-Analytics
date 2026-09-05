@@ -84,6 +84,16 @@ function monsterinsights_admin_menu()
 	// Tools — points at a real PHP page (tools.php).
 	add_submenu_page($parent_slug, __('Tools:', 'google-analytics-for-wordpress'), __('Tools', 'google-analytics-for-wordpress'), 'manage_options', 'monsterinsights_tools', 'monsterinsights_tools_page' );
 
+	// Authors — per-author ranking from the GA4 Data API.
+	add_submenu_page(
+		$parent_slug,
+		__('Authors:', 'google-analytics-for-wordpress'),
+		__('Authors', 'google-analytics-for-wordpress'),
+		'monsterinsights_view_dashboard',
+		'monsterinsights_authors',
+		'monsterinsights_authors_page'
+	);
+
 	// About Heretek AI — points at a real PHP page (about.php).
 	add_submenu_page($parent_slug, __('About Heretek AI:', 'google-analytics-for-wordpress'), __('About Heretek AI', 'google-analytics-for-wordpress'), 'manage_options', 'monsterinsights_about', 'monsterinsights_about_page' );
 }
