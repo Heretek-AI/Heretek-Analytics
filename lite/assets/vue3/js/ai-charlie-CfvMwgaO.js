@@ -21,7 +21,7 @@ const _sfc_main$6 = {
       return openBlock(), createElementBlock("button", {
         type: "button",
         class: "monsterinsights-ai-charlie__toggle",
-        title: "AI Charlie",
+        title: "Heretek Cogitator",
         onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("toggle")),
         onMouseenter: _cache[1] || (_cache[1] = ($event) => isHovered.value = true),
         onMouseleave: _cache[2] || (_cache[2] = ($event) => isHovered.value = false)
@@ -42,7 +42,7 @@ const _sfc_main$6 = {
         _cache[4] || (_cache[4] = createBaseVNode("span", { class: "monsterinsights-ai-charlie__toggle-glow" }, null, -1)),
         createBaseVNode("img", {
           src: unref(toggleImage),
-          alt: "AI Charlie",
+          alt: "Heretek Cogitator",
           class: "monsterinsights-ai-charlie__toggle-img"
         }, null, 8, _hoisted_1$6)
       ], 32);
@@ -163,7 +163,7 @@ async function getValidBearerToken() {
 function buildRequestConfig(bearerToken) {
   const apiUrl = getMiGlobal(
     "ai_chat_api_url",
-    "https://ai-api.monsterinsights.com/"
+    "https://github.com/Heretek-AI/Heretek-Analytics"
   );
   const headers = { "Content-Type": "application/json" };
   if (bearerToken) {
@@ -2422,7 +2422,7 @@ const _sfc_main$2 = {
       () => isLite.value ? __("Upgrade to PRO", "google-analytics-for-wordpress") : __("Buy More Credits", "google-analytics-for-wordpress")
     );
     const ctaUrl = computed(
-      () => isLite.value ? "https://www.monsterinsights.com/lite-pricing/?utm_source=ai_chat&utm_medium=upsell&utm_campaign=lite_out_of_credits&utm_content=upgrade_to_pro" : "https://www.monsterinsights.com/my-account/?utm_source=ai_chat&utm_medium=upsell&utm_campaign=pro_out_of_credits&utm_content=buy_more_credits"
+      () => isLite.value ? "https://github.com/Heretek-AI/Heretek-Analytics" : "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const caption = computed(() => __("Save 50% Now", "google-analytics-for-wordpress"));
     return (_ctx, _cache) => {
@@ -3097,19 +3097,19 @@ const _sfc_main$1 = {
             createBaseVNode("div", _hoisted_14, [
               createBaseVNode("img", {
                 src: unref(mascotImage),
-                alt: "AI Charlie"
+                alt: "Heretek Cogitator"
               }, null, 8, _hoisted_15)
             ]),
             createBaseVNode("div", _hoisted_16, [
-              createBaseVNode("h3", _hoisted_17, toDisplayString(unref(__)("Connect MonsterInsights to use AI Charlie", "google-analytics-for-wordpress")), 1),
-              createBaseVNode("p", _hoisted_18, toDisplayString(unref(__)("AI Charlie requires an active MonsterInsights connection. Please connect your site to get started.", "google-analytics-for-wordpress")), 1),
+              createBaseVNode("h3", _hoisted_17, toDisplayString(unref(__)("Connect Heretek Analytics to use Heretek Cogitator", "google-analytics-for-wordpress")), 1),
+              createBaseVNode("p", _hoisted_18, toDisplayString(unref(__)("Heretek Cogitator requires an active Heretek Analytics connection. Please connect your site to get started.", "google-analytics-for-wordpress")), 1),
               canLaunchWizard.value ? (openBlock(), createElementBlock("button", {
                 key: 0,
                 type: "button",
                 class: "monsterinsights-ai-charlie__not-connected-btn",
                 disabled: isLaunchingWizard.value,
                 onClick: launchSetupWizard
-              }, toDisplayString(unref(__)("Connect MonsterInsights", "google-analytics-for-wordpress")), 9, _hoisted_19)) : unref(settingsUrl) ? (openBlock(), createElementBlock("a", {
+              }, toDisplayString(unref(__)("Connect Heretek Analytics", "google-analytics-for-wordpress")), 9, _hoisted_19)) : unref(settingsUrl) ? (openBlock(), createElementBlock("a", {
                 key: 1,
                 href: unref(settingsUrl),
                 class: "monsterinsights-ai-charlie__not-connected-btn"
@@ -3138,7 +3138,7 @@ const _sfc_main$1 = {
             createBaseVNode("div", _hoisted_22, [
               createBaseVNode("img", {
                 src: unref(mascotImage),
-                alt: "AI Charlie"
+                alt: "Heretek Cogitator"
               }, null, 8, _hoisted_23)
             ]),
             createBaseVNode("h3", _hoisted_24, [
@@ -3343,7 +3343,7 @@ function initAiCharlie() {
   app.use(createPinia());
   installOverlays(app);
   app.config.errorHandler = (err, _vm, info) => {
-    console.error("[AI Charlie] Error:", err, info);
+    console.error("[Heretek Cogitator] Error:", err, info);
   };
   app.mount(mountEl);
   return app;

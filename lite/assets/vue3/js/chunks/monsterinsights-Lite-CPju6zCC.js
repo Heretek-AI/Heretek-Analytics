@@ -29,7 +29,7 @@ const hasV4 = computed(() => {
 const wizardUrl = computed(() => getMiGlobal("wizard_url", "#"));
 const needToAuthMessage = computed(() => {
   return sprintf(
-    __("You need to %1$sconnect MonsterInsights%2$s first", "google-analytics-for-wordpress"),
+    __("You need to %1$sconnect Heretek Analytics%2$s first", "google-analytics-for-wordpress"),
     `<a href="${wizardUrl.value}" class="monsterinsights-connect-inline">`,
     "</a>"
   );
@@ -320,7 +320,7 @@ const _sfc_main$1 = {
   setup(__props) {
     const { __: __2 } = wp.i18n;
     const addonsStore = useAddonsStore();
-    const text_addons_title = __2("MonsterInsights Addons", "google-analytics-for-wordpress");
+    const text_addons_title = __2("Heretek Analytics Addons", "google-analytics-for-wordpress");
     const text_addons_search = __2("Search Addons", "google-analytics-for-wordpress");
     const localSearch = computed({
       get() {

@@ -179,14 +179,14 @@ function sampleMetric(date, metricSeed, base, variance = 0.4) {
   return Math.max(1, Math.round(value));
 }
 const SAMPLE_VIDEOS = [
-  "[Case Study] 6 Ways WPBeginner Uses MonsterInsights to Grow Their Business",
+  "[Case Study] 6 Ways WPBeginner Uses Heretek Analytics to Grow Their Business",
   "How to Integrate TrustPulse with Google Tag Manager",
   "Announcing New RafflePress Polls & Surveys for Your Giveaways",
   "WPForms Hits 6,000 5-Star Reviews — Giveaway Time!",
   "Say Hello to WP Mail SMTP Pro – Easy Email Deliverability for WordPress",
-  "MonsterInsights Just got 10X Better – New Design + Custom Reports + Powerful Addons",
+  "Heretek Analytics Just got 10X Better – New Design + Custom Reports + Powerful Addons",
   "30 Easy Ways to Make Money With OptinMonster",
-  "Top 5 Creative Methods to Increase Sales with MonsterInsights in 2024",
+  "Top 5 Creative Methods to Increase Sales with Heretek Analytics in 2024",
   "How to Create a Mastermind Group with MemberPress",
   "SeedProd is Now Part of the Awesome Motive Family"
 ];

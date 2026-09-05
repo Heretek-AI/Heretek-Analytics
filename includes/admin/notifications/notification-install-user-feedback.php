@@ -34,7 +34,7 @@ final class MonsterInsights_Notification_Install_User_Feedback extends MonsterIn
 			$notification['title'] = sprintf( __( 'What Are Your Users Really Thinking?', 'google-analytics-for-wordpress' ) );
 			
 			// Translators: user feedback notification content
-			$notification['content'] = sprintf( __( 'MonsterInsights tells you WHAT your website visitors are doing on your website, but our latest plugin, UserFeedback, tells you WHY. Use its short surveys to make more money, increase engagement, and grow your business faster with candid customer feedback.', 'google-analytics-for-wordpress' ) );
+			$notification['content'] = sprintf( __( 'Heretek Analytics tells you WHAT your website visitors are doing on your website, but our latest plugin, UserFeedback, tells you WHY. Use its short surveys to make more money, increase engagement, and grow your business faster with candid customer feedback.', 'google-analytics-for-wordpress' ) );
 
 			if ( $is_em ) {
 				// Translators: user feedback notification content

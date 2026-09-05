@@ -61,7 +61,7 @@ class MonsterInsights_Report {
 	public function show_report( $args = array() ) {
 
 		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
-			return monsterinsights_get_message( 'error', esc_html__( 'Oops! Access is denied. If you believe you should be able to view this report, please contact your website administrator to ensure you have the correct user role to view MonsterInsights reports.', 'google-analytics-for-wordpress' ) );
+			return monsterinsights_get_message( 'error', esc_html__( 'Oops! Access is denied. If you believe you should be able to view this report, please contact your website administrator to ensure you have the correct user role to view Heretek Analytics reports.', 'google-analytics-for-wordpress' ) );
 		}
 
 		if ( monsterinsights_get_option( 'dashboard_disabled', false ) ) {
@@ -73,7 +73,7 @@ class MonsterInsights_Report {
 			} else {
 				$message = sprintf(
 				/* translators: link tag starts with url and link tag ends. */
-					esc_html__( 'Oops! The MonsterInsights dashboard has been disabled. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! The Heretek Analytics dashboard has been disabled. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-reports', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 					'</a>'
 				);
@@ -87,7 +87,7 @@ class MonsterInsights_Report {
 				$url = is_network_admin() ? network_admin_url( 'admin.php?page=monsterinsights_settings' ) : admin_url( 'admin.php?page=monsterinsights_settings' );
 				$message = sprintf(
 					/* translators: %1$s: Opening settings link tag, %2$s: Closing settings link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-					esc_html__( 'Oops! We did not find an active MonsterInsights license. Please %1$scheck your license settings%2$s or %3$scontact our support team%4$s for help.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! We did not find an active Heretek Analytics license. Please %1$scheck your license settings%2$s or %3$scontact our support team%4$s for help.', 'google-analytics-for-wordpress' ),
 					'<a href="' . $url . '">',
 					'</a>',
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'no-active-license', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -105,7 +105,7 @@ class MonsterInsights_Report {
 				$url = is_network_admin() ? network_admin_url( 'admin.php?page=monsterinsights_settings' ) : admin_url( 'admin.php?page=monsterinsights_settings' );
 
 				/* translators: placeholders add a link to the settings panel. */
-				return monsterinsights_get_message( 'error', sprintf( esc_html__( 'Oops! We did not find a properly authenticated analytics account. Please %1$sauthenticate with Google%2$s to allow MonsterInsights to show you reports.', 'google-analytics-for-wordpress' ), '<a href="' . $url . '">', '</a>' ) );
+				return monsterinsights_get_message( 'error', sprintf( esc_html__( 'Oops! We did not find a properly authenticated analytics account. Please %1$sauthenticate with Google%2$s to allow Heretek Analytics to show you reports.', 'google-analytics-for-wordpress' ), '<a href="' . $url . '">', '</a>' ) );
 			} else {
 				return monsterinsights_get_message( 'error', esc_html__( 'Oops! It appears as though you do not have the right user permissions to authenticate. Please contact your website administrator to check your user roles.', 'google-analytics-for-wordpress' ) );
 			}
@@ -226,7 +226,7 @@ class MonsterInsights_Report {
 
 			// return array(
 			// 	'success' => false,
-			// 	'error'   => __( 'Please upgrade to MonsterInsights Pro to use custom date ranges.', 'google-analytics-for-wordpress' ),
+			// 	'error'   => __( 'Please upgrade to Heretek Analytics Unlocked to use custom date ranges.', 'google-analytics-for-wordpress' ),
 			// 	'data'    => array(),
 			// );
 		}
@@ -361,7 +361,7 @@ class MonsterInsights_Report {
 				'success' => false,
 				'error'   => sprintf(
 					/* translators: Placeholders add a link to the Setup Wizard page. */
-					__( 'You must be properly authenticated with MonsterInsights to use our reports. Please use our %1$ssetup wizard%2$s to get started.', 'google-analytics-for-wordpress' ),
+					__( 'You must be properly authenticated with Heretek Analytics to use our reports. Please use our %1$ssetup wizard%2$s to get started.', 'google-analytics-for-wordpress' ),
 					'<a href="' . esc_url( $url ) . '">',
 					'</a>'
 				),
@@ -497,7 +497,7 @@ class MonsterInsights_Report {
 									<p>
 										<?php
 										/* translators: placeholdes add links to the account area and a guide. */
-										echo sprintf( esc_html__( 'It\'s easy! To upgrade, navigate to %1$sMy Account%2$s on MonsterInsights.com, go to the licenses tab, and click upgrade. We also have a %3$sstep by step guide%4$s with pictures of this process.', 'google-analytics-for-wordpress' ), '<a href="' . monsterinsights_get_url( 'reports-page', $this->name . '-report-upsell-license-link', 'https://monsterinsights.com/my-account/' ) . '"><strong>', '</strong></a>', '<a href="' . monsterinsights_get_url( 'reports-page', $this->name . '-report-upsell-license-link', 'https://www.monsterinsights.com/docs/upgrade-monsterinsights-license/' ) . '" style="text-decoration:underline !important">', '</a>' ); // phpcs:ignore
+										echo sprintf( esc_html__( 'It\'s easy! To upgrade, navigate to %1$sMy Account%2$s on Heretek Analytics.com, go to the licenses tab, and click upgrade. We also have a %3$sstep by step guide%4$s with pictures of this process.', 'google-analytics-for-wordpress' ), '<a href="' . monsterinsights_get_url( 'reports-page', $this->name . '-report-upsell-license-link', 'https://monsterinsights.com/my-account/' ) . '"><strong>', '</strong></a>', '<a href="' . monsterinsights_get_url( 'reports-page', $this->name . '-report-upsell-license-link', 'https://www.monsterinsights.com/docs/upgrade-monsterinsights-license/' ) . '" style="text-decoration:underline !important">', '</a>' ); // phpcs:ignore
 										?>
 									</p>
 									&nbsp;
@@ -506,14 +506,14 @@ class MonsterInsights_Report {
 									<p>
 										<?php
 										/* translators: placeholder adds a smiley face. */
-										echo sprintf( esc_html__( 'Hey there! %s It looks like you\'ve got the free version of MonsterInsights installed on your site. That\'s awesome!', 'google-analytics-for-wordpress' ), '<span class="dashicons dashicons-smiley"></span>' );
+										echo sprintf( esc_html__( 'Hey there! %s It looks like you\'ve got the free version of Heretek Analytics installed on your site. That\'s awesome!', 'google-analytics-for-wordpress' ), '<span class="dashicons dashicons-smiley"></span>' );
 										?>
 									</p>
 									&nbsp;
 									<p>
 										<?php
 										/* translators: placeholders make the text bold, add the license level and add a link to upgrade. */
-										echo sprintf( esc_html__( 'Do you you want to access to %1$s reporting right now%2$s in your WordPress Dashboard? That comes with %3$s level%4$s of our paid packages. To get instant access, you\'ll want to buy a MonsterInsights license, which also gives you access to powerful addons, expanded reporting (including the ability to use custom date ranges), comprehensive tracking features (like UserID tracking) and access to our world-class support team.', 'google-analytics-for-wordpress' ), '<strong>' . $this->title, '</strong>', '<a href="' . monsterinsights_get_upgrade_link( 'reports-page', $this->name . '-report-upsell-license-link' ) . '">' . $this->level, '</a>' ); // phpcs:ignore
+										echo sprintf( esc_html__( 'Do you you want to access to %1$s reporting right now%2$s in your WordPress Dashboard? That comes with %3$s level%4$s of our paid packages. To get instant access, you\'ll want to buy a Heretek Analytics license, which also gives you access to powerful addons, expanded reporting (including the ability to use custom date ranges), comprehensive tracking features (like UserID tracking) and access to our world-class support team.', 'google-analytics-for-wordpress' ), '<strong>' . $this->title, '</strong>', '<a href="' . monsterinsights_get_upgrade_link( 'reports-page', $this->name . '-report-upsell-license-link' ) . '">' . $this->level, '</a>' ); // phpcs:ignore
 										?>
 									</p>
 									&nbsp;
@@ -533,7 +533,7 @@ class MonsterInsights_Report {
 									   class="monsterinsights-upsell-card-button"><?php esc_html_e( 'Upgrade Now', 'google-analytics-for-wordpress' ); ?></a>
 								<?php } else { ?>
 									<a href="<?php echo monsterinsights_get_url( 'reports-page', $this->name . '-report-upsell-license-link', 'https://www.monsterinsights.com/docs/upgrade-monsterinsights-license/' ); // phpcs:ignore -- Escaped in the function ?>"
-									   class="monsterinsights-upsell-card-button"><?php esc_html_e( 'Get MonsterInsights Pro', 'google-analytics-for-wordpress' ); ?></a>
+									   class="monsterinsights-upsell-card-button"><?php esc_html_e( 'Get Heretek Analytics Unlocked', 'google-analytics-for-wordpress' ); ?></a>
 								<?php } ?>
 							</div>
 						</div>

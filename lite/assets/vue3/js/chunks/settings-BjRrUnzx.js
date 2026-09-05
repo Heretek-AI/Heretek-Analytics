@@ -8,7 +8,7 @@ const fetchSettings = async () => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-loading-settings",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __$1("Error Loading Settings", "google-analytics-for-wordpress"),
@@ -29,7 +29,7 @@ const saveSettings = async (setting) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-saving-settings",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __$1("Error Saving Settings", "google-analytics-for-wordpress"),
@@ -47,7 +47,7 @@ const saveBulkSettings = async (settings) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-bulk-saving-settings",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __$1("Error Saving Settings", "google-analytics-for-wordpress"),
@@ -104,7 +104,7 @@ const fetchIncludedMetrics = async () => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-fetching-metrics",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __$1("Error Fetching Metrics", "google-analytics-for-wordpress"),

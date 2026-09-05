@@ -199,7 +199,7 @@ const _sfc_main = {
     ];
     const gaAllPagesUrl = computed(() => {
       if (isBlocked.value) {
-        return getUpgradeUrl("report", "engagement-pages", "https://www.monsterinsights.com/pricing/");
+        return getUpgradeUrl("report", "engagement-pages", "https://github.com/Heretek-AI/Heretek-Analytics");
       }
       const referral = getMiGlobal("ga_referral_url", "");
       return buildGaExplorerReportUrl(referral, GA_PAGES_REPORT, dateRange.value);

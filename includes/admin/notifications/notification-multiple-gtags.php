@@ -36,7 +36,7 @@ class MonsterInsights_Notification_Multiple_Gtags extends MonsterInsights_Notifi
 			}
 
 			$notification['title']   = __( "Multiple Google Analytics Tags Found", "google-analytics-for-wordpress" );
-			$notification['content'] = __( "MonsterInsights has detected multiple analytics tags on your website. Please disable the other plugin to ensure accurate tracking.", 'google-analytics-for-wordpress' );
+			$notification['content'] = __( "Heretek Analytics has detected multiple analytics tags on your website. Please disable the other plugin to ensure accurate tracking.", 'google-analytics-for-wordpress' );
 
 			return $notification;
 		}

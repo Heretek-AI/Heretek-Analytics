@@ -84,11 +84,11 @@ const _sfc_main$1 = {
     ] : [
       {
         text: __("How to Set Up Marketing Campaign Tracking in Google Analytics", "google-analytics-for-wordpress"),
-        url: "https://www.monsterinsights.com/marketing-campaign-tracking-in-google-analytics-tutorial/"
+        url: "https://github.com/Heretek-AI/Heretek-Analytics"
       },
       {
         text: __("A Beginners Guide to UTM Parameters (And How to Use Them)", "google-analytics-for-wordpress"),
-        url: "https://www.monsterinsights.com/a-beginners-guide-to-utm-parameters/"
+        url: "https://github.com/Heretek-AI/Heretek-Analytics"
       },
       {
         text: __("Google Analytics Help Guide: Collect Campaign Data with Custom URLs", "google-analytics-for-wordpress"),

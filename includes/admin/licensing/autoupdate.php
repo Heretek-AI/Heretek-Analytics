@@ -60,7 +60,7 @@ function monsterinsights_modify_wordpress_autoupdater_setting( $html, $plugin_fi
 				'upgrade-to-autoupdate',
 				'https://www.monsterinsights.com/docs/go-lite-pro'
 			),
-			__( 'Enable the MonsterInsights PRO plugin to manage auto-updates', 'google-analytics-for-wordpress' )
+			__( 'Enable the Heretek Analytics Unlocked plugin to manage auto-updates', 'google-analytics-for-wordpress' )
 		);
 		add_filter( "monsterinsights_is_autoupdate_setting_html_filtered_" . $plugin_file, '__return_true' );
 	} elseif ( $has_permission &&

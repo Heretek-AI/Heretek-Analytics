@@ -210,15 +210,15 @@ const _sfc_main$8 = {
       { name: "MemberMouse", src: new URL("" + new URL("../../assets/memberhouse-BJdHvZB4.png", import.meta.url).href, import.meta.url).href }
     ];
     const upsellText = {
-      title: __("Upgrade to MonsterInsights Pro to Unlock More Actionable Insights", "google-analytics-for-wordpress"),
+      title: __("Upgrade to Heretek Analytics Unlocked to Unlock More Actionable Insights", "google-analytics-for-wordpress"),
       titleLine2: __("& Save 50% OFF!", "google-analytics-for-wordpress"),
-      description: __("It's easy to double your traffic and sales when you know exactly how people find and use your website. MonsterInsights Pro shows you the stats that matter!", "google-analytics-for-wordpress"),
+      description: __("It's easy to double your traffic and sales when you know exactly how people find and use your website. Heretek Analytics Unlocked shows you the stats that matter!", "google-analytics-for-wordpress"),
       couponLabel: __("SAVE 50% Coupon Code", "google-analytics-for-wordpress"),
       upgradeToPro: __("Upgrade to Pro", "google-analytics-for-wordpress")
     };
     const copiedLabel = __("Copied!", "google-analytics-for-wordpress");
     const upgradeUrl = computed(() => {
-      return getUpgradeUrl("ecommerce-upsell-overlay", "overview-report", "https://www.monsterinsights.com/lite/");
+      return getUpgradeUrl("ecommerce-upsell-overlay", "overview-report", "https://github.com/Heretek-AI/Heretek-Analytics");
     });
     const couponCopied = ref(false);
     let couponCopiedTimer = null;
@@ -1875,7 +1875,7 @@ const _sfc_main$4 = {
     const chartWithCharlieImage = new URL("" + new URL("../../assets/overview-upsell-cta-chart-with-charlie-L7ZsqcRa.png", import.meta.url).href, import.meta.url).href;
     const arrowImage = new URL("data:image/svg+xml,%3csvg%20width='101'%20height='53'%20viewBox='0%200%20101%2053'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cg%20clip-path='url(%23clip0_15653_6002)'%3e%3cpath%20d='M4.87516%2011.8474C10.7298%2010.3451%2016.5859%208.83737%2022.4405%207.33513C24.5001%206.65996%2026.5977%206.12434%2028.7188%205.71859C29.433%205.58519%2030.1591%205.89107%2030.3661%206.6579C30.5513%207.35426%2030.1366%208.18411%2029.427%208.36587C27.3711%208.89461%2025.3152%209.42336%2023.2593%209.95211C20.0344%2011.0034%2016.921%2012.396%2013.9627%2014.094C22.8624%2013.8458%2031.8239%2013.932%2040.5105%2015.8744C45.5205%2016.9947%2050.4464%2018.7711%2054.8736%2021.4145C56.0849%2022.1407%2057.2918%2022.9719%2058.4001%2023.9191C60.7722%2023.4486%2063.2657%2023.546%2065.6926%2024.0328C68.1141%2024.5183%2070.4631%2025.3504%2072.7598%2026.2516C75.1087%2027.1721%2077.4183%2028.2004%2079.6697%2029.3433C84.2016%2031.6484%2088.4803%2034.4243%2092.4829%2037.5826C93.4743%2038.3639%2094.4464%2039.1756%2095.4021%2040.0066C95.9468%2040.4836%2095.8792%2041.4505%2095.3943%2041.9557C94.848%2042.5216%2094.0483%2042.456%2093.4982%2041.9776C86.541%2035.9146%2078.4525%2031.1325%2069.7968%2028.0781C66.9455%2027.0687%2063.83%2026.1973%2060.759%2026.3453C61.8539%2027.7193%2062.7%2029.2823%2063.1467%2031.0425C64.0575%2034.65%2062.6932%2038.8828%2059.6971%2041.1015C58.187%2042.2137%2056.2082%2042.6209%2054.4191%2042.1636C52.4197%2041.6577%2050.7642%2040.1327%2049.7987%2038.303C48.8032%2036.4125%2048.4385%2034.1371%2048.9916%2032.0227C49.5458%2029.9262%2050.8287%2028.0597%2052.4771%2026.7004C53.355%2025.9787%2054.2885%2025.3951%2055.263%2024.9401C54.867%2024.6607%2054.4682%2024.3924%2054.0743%2024.1489C50.168%2021.6993%2045.8195%2020.0312%2041.3698%2018.9086C32.0261%2016.5484%2022.2604%2016.5901%2012.6573%2016.8861C12.0592%2016.9022%2011.4649%2016.9252%2010.8654%2016.9468C13.4258%2019.5431%2015.9901%2022.1463%2018.5505%2024.7426C19.7672%2025.9772%2017.8687%2027.9496%2016.6481%2026.7081C12.5232%2022.5219%208.39686%2018.3413%204.27196%2014.1551C3.58031%2013.4514%203.88362%2012.1035%204.86837%2011.8515L4.87516%2011.8474ZM57.3173%2026.9986C54.1733%2028.1122%2051.1559%2031.0091%2051.4279%2034.5691C51.5534%2036.1578%2052.3956%2037.8023%2053.642%2038.7675C54.7611%2039.6291%2056.1379%2039.8264%2057.4361%2039.2901C57.4186%2039.2914%2057.6988%2039.1577%2057.772%2039.1177C57.9334%2039.0239%2058.0908%2038.9232%2058.2443%2038.8156C58.3978%2038.7079%2058.2875%2038.8032%2058.4728%2038.6389C58.6349%2038.4982%2058.7877%2038.3491%2058.9381%2038.1876C59.3822%2037.7073%2059.7387%2037.1688%2060.0791%2036.4494C60.2431%2036.1028%2060.2724%2036.0338%2060.4058%2035.5849C60.5248%2035.1914%2060.6156%2034.7964%2060.6865%2034.3903C60.7592%2033.9552%2060.7726%2032.8446%2060.6978%2032.3832C60.3449%2030.2169%2059.1481%2028.3981%2057.6253%2026.8897C57.5254%2026.9228%2057.4201%2026.9545%2057.3187%2026.9931L57.3173%2026.9986Z'%20fill='%2310529D'/%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id='clip0_15653_6002'%3e%3crect%20width='29'%20height='96'%20fill='white'%20transform='matrix(0.250639%20-0.968081%20-0.968081%20-0.250639%2092.9358%2052.1357)'/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e", import.meta.url).href;
     const upgradeUrl = computed(() => {
-      return getUpgradeUrl("overview-upsell-cta", "overview-report", "https://www.monsterinsights.com/lite/");
+      return getUpgradeUrl("overview-upsell-cta", "overview-report", "https://github.com/Heretek-AI/Heretek-Analytics");
     });
     const text = {
       title: __("Get Better Insights. Take Action. ", "google-analytics-for-wordpress"),
@@ -3452,9 +3452,9 @@ const _sfc_main = {
         class: normalizeClass(["monsterinsights-overview-report", { "monsterinsights-blur": shouldBlur.value }])
       }, [
         !unref(canViewReports) ? (openBlock(), createElementBlock("div", _hoisted_1, [
-          createBaseVNode("h3", null, toDisplayString(unref(__)("You don't have permission to view MonsterInsights reports.", "google-analytics-for-wordpress")), 1),
+          createBaseVNode("h3", null, toDisplayString(unref(__)("You don't have permission to view Heretek Analytics reports.", "google-analytics-for-wordpress")), 1),
           createBaseVNode("div", _hoisted_2, [
-            createBaseVNode("p", null, toDisplayString(unref(__)("Please check with your site administrator that your role is included in the MonsterInsights permissions settings.", "google-analytics-for-wordpress")), 1)
+            createBaseVNode("p", null, toDisplayString(unref(__)("Please check with your site administrator that your role is included in the Heretek Analytics permissions settings.", "google-analytics-for-wordpress")), 1)
           ])
         ])) : createCommentVNode("", true),
         unref(canViewReports) && !unref(isAuthenticated) ? (openBlock(), createBlock(AuthModal, {

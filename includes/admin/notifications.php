@@ -127,20 +127,8 @@ class MonsterInsights_Notifications {
 	 *
 	 */
 	public function fetch_feed() {
-
-		$res = wp_remote_get( self::SOURCE_URL );
-
-		if ( is_wp_error( $res ) ) {
-			return false;
-		}
-
-		$body = wp_remote_retrieve_body( $res );
-
-		if ( empty( $body ) ) {
-			return false;
-		}
-
-		return $this->verify( json_decode( $body, true ) );
+		// Remote notification feed permanently disabled in Heretek Analytics
+		return array();
 	}
 
 	/**

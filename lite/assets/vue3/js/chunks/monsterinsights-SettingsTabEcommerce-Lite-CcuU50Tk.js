@@ -27,12 +27,12 @@ const _sfc_main = {
     const text_title = __("eCommerce Tracking and Reporting", "google-analytics-for-wordpress");
     const text_sub_title = __("Easily track and measure eCommerce activity across your website.", "google-analytics-for-wordpress");
     const text_one_click = __("One-click Enhanced eCommerce tracking for:", "google-analytics-for-wordpress");
-    const text_button_upgrade = __("Upgrade MonsterInsights Now", "google-analytics-for-wordpress");
+    const text_button_upgrade = __("Upgrade Heretek Analytics Now", "google-analytics-for-wordpress");
     const text_bottom_title = __("Start Making Data-Driven Decisions", "google-analytics-for-wordpress");
-    const text_bottom_content = __("It's time to take your eCommerce store to the next level. Upgrade to MonsterInsights Pro and unlock eCommerce tracking and reporting.", "google-analytics-for-wordpress");
+    const text_bottom_content = __("It's time to take your eCommerce store to the next level. Upgrade to Heretek Analytics Unlocked and unlock eCommerce tracking and reporting.", "google-analytics-for-wordpress");
     const text_affiliate_title = __("Affiliate Tracking", "google-analytics-for-wordpress");
     const text_affiliate_content_heading = __("Track Your Affiliate Links", "google-analytics-for-wordpress");
-    const text_affiliate_content_text_1 = __("MonsterInsights makes it easy to track your affiliate links with Google Analytics.", "google-analytics-for-wordpress");
+    const text_affiliate_content_text_1 = __("Heretek Analytics makes it easy to track your affiliate links with Google Analytics.", "google-analytics-for-wordpress");
     const text_affiliate_content_text_2 = __("Easily see which affiliate links are getting the most clicks, so you can maximize your revenue.", "google-analytics-for-wordpress");
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", null, [

@@ -40,9 +40,9 @@ const _sfc_main = {
     const miIllustration = new URL("" + new URL("../../assets/prettylinks-illustration-mi-DQmg-MF9.svg", import.meta.url).href, import.meta.url).href;
     new URL("" + new URL("../../assets/prettylinks-illustration-DiDnqFhJ.svg", import.meta.url).href, import.meta.url).href;
     const illustrationSrc = miIllustration;
-    const text_prettylinks_flow_title = __("Make your MonsterInsights campaign links prettier with Pretty Links!", "google-analytics-for-wordpress");
+    const text_prettylinks_flow_title = __("Make your Heretek Analytics campaign links prettier with Pretty Links!", "google-analytics-for-wordpress");
     const text_prettylinks_flow_description = __("Pretty Links turns those ugly, long campaign links into clean, memorable, speakable, totally shareable links.", "google-analytics-for-wordpress");
-    const text_prettylinks_flow_process = __("Take your MonsterInsights campaign links from our URL Builder and shorten them with Pretty Links!", "google-analytics-for-wordpress");
+    const text_prettylinks_flow_process = __("Take your Heretek Analytics campaign links from our URL Builder and shorten them with Pretty Links!", "google-analytics-for-wordpress");
     const text_use_prettylinks_user = __("Over 200,000 websites use Pretty Links!", "google-analytics-for-wordpress");
     const text_prettylinks_install_button = __("Install Pretty Links", "google-analytics-for-wordpress");
     const text_prettylinks_activate_button = __("Activate Pretty Links", "google-analytics-for-wordpress");

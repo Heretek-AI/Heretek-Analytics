@@ -87,7 +87,7 @@ final class MonsterInsights_API_Auth {
 		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'You don\'t have the correct WordPress user permissions to authenticate into MonsterInsights. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'You don\'t have the correct WordPress user permissions to authenticate into Heretek Analytics. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-save-settings', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -107,7 +107,7 @@ final class MonsterInsights_API_Auth {
 		if ( monsterinsights_is_pro_version() ) {
 			$valid = is_network_admin() ? MonsterInsights()->license->is_network_licensed() : MonsterInsights()->license->is_site_licensed();
 			if ( ! $valid ) {
-				wp_send_json_error( array( 'message' => __( "Cannot authenticate. Please enter a valid, active license key for MonsterInsights Pro into the settings page.", 'google-analytics-for-wordpress' ) ) );
+				wp_send_json_error( array( 'message' => __( "Cannot authenticate. Please enter a valid, active license key for Heretek Analytics Unlocked into the settings page.", 'google-analytics-for-wordpress' ) ) );
 			}
 		}
 
@@ -294,7 +294,7 @@ final class MonsterInsights_API_Auth {
 		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'You don\'t have the correct WordPress user permissions to re-authenticate into MonsterInsights. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'You don\'t have the correct WordPress user permissions to re-authenticate into Heretek Analytics. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-save-settings', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -314,7 +314,7 @@ final class MonsterInsights_API_Auth {
 		if ( monsterinsights_is_pro_version() ) {
 			$valid = is_network_admin() ? MonsterInsights()->license->is_network_licensed() : MonsterInsights()->license->is_site_licensed();
 			if ( monsterinsights_is_pro_version() && ! $valid ) {
-				wp_send_json_error( array( 'message' => __( "Your license key for MonsterInsights is invalid. The key no longer exists or the user associated with the key has been deleted. Please use a different key.", 'google-analytics-for-wordpress' ) ) );
+				wp_send_json_error( array( 'message' => __( "Your license key for Heretek Analytics is invalid. The key no longer exists or the user associated with the key has been deleted. Please use a different key.", 'google-analytics-for-wordpress' ) ) );
 			}
 		}
 
@@ -322,7 +322,7 @@ final class MonsterInsights_API_Auth {
 		if ( ! $this->is_network_admin() && ! MonsterInsights()->auth->is_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-				__( 'Oops! There was a problem while re-authenticating. Please try to complete the MonsterInsights %1$ssetup wizard%2$s again. If the problem persists, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
+				__( 'Oops! There was a problem while re-authenticating. Please try to complete the Heretek Analytics %1$ssetup wizard%2$s again. If the problem persists, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>',
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-re-authenticate', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -332,7 +332,7 @@ final class MonsterInsights_API_Auth {
 		} else if ( $this->is_network_admin() && ! MonsterInsights()->auth->is_network_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-				__( 'Oops! There was a problem while re-authenticating. Please try to complete the MonsterInsights %1$ssetup wizard%2$s again. If the problem persists, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
+				__( 'Oops! There was a problem while re-authenticating. Please try to complete the Heretek Analytics %1$ssetup wizard%2$s again. If the problem persists, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>',
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-re-authenticate', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -462,7 +462,7 @@ final class MonsterInsights_API_Auth {
 		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'You don\'t have the correct user permissions to verify the MonsterInsights license you are trying to use. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'You don\'t have the correct user permissions to verify the Heretek Analytics license you are trying to use. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" rel="noopener" href="' . monsterinsights_get_url( 'notice', 'cannot-save-settings', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -482,7 +482,7 @@ final class MonsterInsights_API_Auth {
 		if ( $this->is_network_admin() && ! MonsterInsights()->auth->is_network_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'Please enter a valid license within the MonsterInsights settings panel. You can check your license by logging into your MonsterInsights account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'Please enter a valid license within the Heretek Analytics settings panel. You can check your license by logging into your Heretek Analytics account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" rel="noopener" href="' . monsterinsights_get_url( 'notice', 'cannot-verify-license', 'https://www.monsterinsights.com/my-account/' ) . '">',
 				'</a>'
 			);
@@ -490,7 +490,7 @@ final class MonsterInsights_API_Auth {
 		} else if ( ! $this->is_network_admin() && ! MonsterInsights()->auth->is_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'Please enter a valid license within the MonsterInsights settings panel. You can check your license by logging into your MonsterInsights account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'Please enter a valid license within the Heretek Analytics settings panel. You can check your license by logging into your Heretek Analytics account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" rel="noopener" href="' . monsterinsights_get_url( 'notice', 'cannot-verify-license', 'https://www.monsterinsights.com/my-account/' ) . '">',
 				'</a>'
 			);
@@ -502,7 +502,7 @@ final class MonsterInsights_API_Auth {
 			if ( ! $valid ) {
 				$message = sprintf(
 					/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-					__( 'Please enter a valid license within the MonsterInsights settings panel. You can check your license by logging into your MonsterInsights account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
+					__( 'Please enter a valid license within the Heretek Analytics settings panel. You can check your license by logging into your Heretek Analytics account by %1$sclicking here%2$s.', 'google-analytics-for-wordpress' ),
 					'<a target="_blank" rel="noopener" href="' . monsterinsights_get_url( 'notice', 'cannot-verify-license', 'https://www.monsterinsights.com/my-account/' ) . '">',
 					'</a>'
 				);
@@ -567,7 +567,7 @@ final class MonsterInsights_API_Auth {
 		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				__( 'You don\'t have the correct WordPress user permissions to deauthenticate into MonsterInsights. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				__( 'You don\'t have the correct WordPress user permissions to deauthenticate into Heretek Analytics. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-save-settings', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -587,7 +587,7 @@ final class MonsterInsights_API_Auth {
 		if ( $this->is_network_admin() && ! MonsterInsights()->auth->is_network_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-				__( 'Could not disconnect as you are not currently authenticated properly. Please try to authenticate again with our MonsterInsights %1$ssetup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
+				__( 'Could not disconnect as you are not currently authenticated properly. Please try to authenticate again with our Heretek Analytics %1$ssetup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>',
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-de-authenticate-license', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -597,7 +597,7 @@ final class MonsterInsights_API_Auth {
 		} else if ( ! $this->is_network_admin() && ! MonsterInsights()->auth->is_authed() ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-				__( 'Could not disconnect as you are not currently authenticated properly. Please try to authenticate again with our MonsterInsights %1$ssetup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
+				__( 'Could not disconnect as you are not currently authenticated properly. Please try to authenticate again with our Heretek Analytics %1$ssetup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>',
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-de-authenticate-license', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -611,7 +611,7 @@ final class MonsterInsights_API_Auth {
 			if ( ! $valid ) {
 				$message = sprintf(
 					/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag, %3$s: Opening support link tag, %4$s: Closing support link tag. */
-					__( 'Could not disconnect your account, as you are not currently authenticated properly. Please try to authenticate again with our %1$sMonsterInsights setup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
+					__( 'Could not disconnect your account, as you are not currently authenticated properly. Please try to authenticate again with our %1$sHeretek Analytics setup wizard%2$s.  If you are still having problems, please %3$scontact our support%4$s team.', 'google-analytics-for-wordpress' ),
 					'<a href="' . esc_url( $url ) . '">',
 					'</a>',
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-de-authenticate-license', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
@@ -898,7 +898,7 @@ final class MonsterInsights_API_Auth {
 		if ( monsterinsights_is_pro_version() ) {
 			$valid = is_network_admin() ? MonsterInsights()->license->is_network_licensed() : MonsterInsights()->license->is_site_licensed();
 			if ( ! $valid ) {
-				wp_send_json_error( array( 'message' => __( 'Cannot authenticate. Please enter a valid, active license key for MonsterInsights Pro into the settings page.', 'google-analytics-for-wordpress' ) ) );
+				wp_send_json_error( array( 'message' => __( 'Cannot authenticate. Please enter a valid, active license key for Heretek Analytics Unlocked into the settings page.', 'google-analytics-for-wordpress' ) ) );
 			}
 		}
 

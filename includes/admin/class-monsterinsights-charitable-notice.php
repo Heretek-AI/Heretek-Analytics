@@ -32,13 +32,10 @@ class MonsterInsights_Charitable_Notice {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'schedule_monthly_update' ) );
-
-		add_filter( 'cron_schedules', array( $this, 'add_intervals' ) );
-
-		add_action( $this->cron_key, array( $this, 'check_charitablewp_notice' ) );
-
-		add_action( 'wp_ajax_monsterinsights_dismiss_charitablewp_notice', array( $this, 'dismiss_charitablewp_notice' ) );
+		// Permanently disarmed in Heretek Analytics
+		if ( wp_next_scheduled( $this->cron_key ) ) {
+			wp_clear_scheduled_hook( $this->cron_key );
+		}
 	}
 
 	/**

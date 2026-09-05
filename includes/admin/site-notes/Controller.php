@@ -629,7 +629,7 @@ class MonsterInsights_SiteNotes_Controller {
 		) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'You must be properly authenticated with MonsterInsights to export annotations.', 'google-analytics-for-wordpress' ),
+					'message' => __( 'You must be properly authenticated with Heretek Analytics to export annotations.', 'google-analytics-for-wordpress' ),
 				)
 			);
 		}
@@ -718,7 +718,7 @@ class MonsterInsights_SiteNotes_Controller {
 	public function deleted_note_from_ga4_single($ga4_annotation_id) {
 		// Check if user is authenticated
 		if (!(MonsterInsights()->auth->is_authed() || MonsterInsights()->auth->is_network_authed())) {
-			return new WP_Error('not_authenticated', __('You must be properly authenticated with MonsterInsights to delete annotations.', 'google-analytics-for-wordpress'));
+			return new WP_Error('not_authenticated', __('You must be properly authenticated with Heretek Analytics to delete annotations.', 'google-analytics-for-wordpress'));
 		}
 
 		// Prepare API request options
@@ -775,7 +775,7 @@ class MonsterInsights_SiteNotes_Controller {
 			wp_send_json_error(
 				array(
 					'message' => esc_html__(
-						'You must be properly authenticated with MonsterInsights to import annotations.',
+						'You must be properly authenticated with Heretek Analytics to import annotations.',
 						'google-analytics-for-wordpress'
 					),
 				)

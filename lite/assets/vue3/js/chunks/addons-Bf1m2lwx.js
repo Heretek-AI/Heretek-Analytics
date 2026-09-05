@@ -596,7 +596,7 @@ const activateAddon = async (addon) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-activating-addon",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __$1("Addon activation failed", "monsterinsights"),
@@ -865,14 +865,14 @@ const useAddonsStore = defineStore("addons", {
         const learnMoreLink = `<a target="_blank" rel="noopener noreferrer" href="${getMonsterInsightsUrl(
           "settings-panel",
           "amp-plugin-notice",
-          "https://www.monsterinsights.com/docs/how-to-get-started-with-the-google-amp-addon/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )}">`;
         let content;
         if (getMiGlobal("install_plugins", false)) {
           content = sprintf(
             // Translators: Adds link to activate/install plugin and documentation.
             __(
-              "In order for the MonsterInsights Google AMP addon to work properly, you need to install the WordPress AMP plugin by Automattic. %1$s%2$s Plugin%3$s | %4$sLearn More%5$s",
+              "In order for the Heretek Analytics Google AMP addon to work properly, you need to install the WordPress AMP plugin by Automattic. %1$s%2$s Plugin%3$s | %4$sLearn More%5$s",
               "google-analytics-for-wordpress"
             ),
             `<a href="${installUrl}">`,
@@ -885,7 +885,7 @@ const useAddonsStore = defineStore("addons", {
           content = sprintf(
             // Translators: Adds a link to documentation.
             __(
-              "In order for the MonsterInsights Google AMP addon to work properly, please ask your webmaster to install the WordPress AMP plugin by Automattic. %1$sLearn More%2$s",
+              "In order for the Heretek Analytics Google AMP addon to work properly, please ask your webmaster to install the WordPress AMP plugin by Automattic. %1$sLearn More%2$s",
               "google-analytics-for-wordpress"
             ),
             learnMoreLink,
@@ -900,7 +900,7 @@ const useAddonsStore = defineStore("addons", {
       }
     },
     /**
-     * Install an addon by url (MonsterInsights addon download URL).
+     * Install an addon by url (Heretek Analytics addon download URL).
      * Matches Vue 2 `$_addons/installAddon` behavior.
      */
     async installAddonAction(addon) {

@@ -493,7 +493,7 @@ const _sfc_main$4 = {
     const { __, sprintf } = wp.i18n;
     const text_add_top_5_ga = __("Add Top 5 Posts from Google Analytics", "google-analytics-for-wordpress");
     const text_add_top_5_ga_tooltip = __(
-      "To load the top posts from Google Analytics, you must enable the Custom Dimensions addon and set up the Post Type custom dimension in the MonsterInsights settings.",
+      "To load the top posts from Google Analytics, you must enable the Custom Dimensions addon and set up the Post Type custom dimension in the Heretek Analytics settings.",
       "google-analytics-for-wordpress"
     );
     const text_needs_pro = __("Pro version is required", "google-analytics-for-wordpress");
@@ -630,7 +630,7 @@ const _sfc_main$2 = {
       ),
       // Translators: Placeholders add a bold tag.
       sprintf(
-        __("%1$sStep 2%2$s - Search for “Inline Popular Posts by MonsterInsights”.", "google-analytics-for-wordpress"),
+        __("%1$sStep 2%2$s - Search for “Inline Popular Posts by Heretek Analytics”.", "google-analytics-for-wordpress"),
         "<b>",
         "</b>"
       ),

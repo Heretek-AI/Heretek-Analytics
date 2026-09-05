@@ -22,12 +22,12 @@ const _sfc_main$2 = {
     const is_loading = ref(false);
     const show_connect = ref(false);
     const connect_key = ref("");
-    const text_license_row_1 = sprintf(__("You're using %1$sMonsterInsights Lite%2$s - no license needed. Enjoy! %3$s", "google-analytics-for-wordpress"), "<strong>", "</strong>", '<span class="monsterinsights-bg-img monsterinsights-smile"></span>');
+    const text_license_row_1 = sprintf(__("You're using %1$sHeretek Analytics%2$s - no license needed. Enjoy! %3$s", "google-analytics-for-wordpress"), "<strong>", "</strong>", '<span class="monsterinsights-bg-img monsterinsights-smile"></span>');
     const text_license_row_2 = sprintf(__("To unlock more features consider %1$supgrading to PRO%2$s.", "google-analytics-for-wordpress"), '<a href="' + getUpgradeUrl("settings-panel", "license") + '" class="monsterinsights-bold" target="_blank">', "</a>");
-    const text_license_row_3 = sprintf(__("As a valued MonsterInsights Lite user you %1$sreceive 50%% off%2$s, automatically applied at checkout!", "google-analytics-for-wordpress"), '<span class="monsterinsights-highlighted-text">', "</span>");
+    const text_license_row_3 = sprintf(__("As a valued Heretek Analytics user you %1$sreceive 50%% off%2$s, automatically applied at checkout!", "google-analytics-for-wordpress"), '<span class="monsterinsights-highlighted-text">', "</span>");
     const text_upgrade_to_pro = __("Unlock PRO Features Now", "google-analytics-for-wordpress");
     const text_license_placeholder = __("Paste your license key here", "google-analytics-for-wordpress");
-    const text_license_label = sprintf(__("Already purchased? Simply enter your license key below to connect with MonsterInsights PRO! %1$sRetrieve your license key%2$s.", "google-analytics-for-wordpress"), '<a href="' + getUrl("license", "settings_panel", "https://www.monsterinsights.com/my-account/") + '" target="_blank">', "</a>");
+    const text_license_label = sprintf(__("Already purchased? Simply enter your license key below to connect with Heretek Analytics Unlocked! %1$sRetrieve your license key%2$s.", "google-analytics-for-wordpress"), '<a href="' + getUrl("license", "settings_panel", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">', "</a>");
     let fieldInputTimer = null;
     function fieldInput() {
       clearTimeout(fieldInputTimer);
@@ -43,7 +43,7 @@ const _sfc_main$2 = {
         } else if (response && response.url) {
           window.location = response.url;
         } else {
-          const message = response.data && response.data.message ? response.data.message : __("There was an error unlocking MonsterInsights PRO please try again or install manually.", "google-analytics-for-wordpress");
+          const message = response.data && response.data.message ? response.data.message : __("There was an error unlocking Heretek Analytics Unlocked please try again or install manually.", "google-analytics-for-wordpress");
           errorToast({ title: __("Error", "google-analytics-for-wordpress"), text: message });
         }
       }).catch(() => {
@@ -147,9 +147,9 @@ const _sfc_main = {
     const showButtons = ref(false);
     const showManualOnClick = ref(false);
     const has_error = ref(false);
-    const text_button_connect = __("Connect MonsterInsights", "google-analytics-for-wordpress");
+    const text_button_connect = __("Connect Heretek Analytics", "google-analytics-for-wordpress");
     const text_button_verify = __("Verify Credentials", "google-analytics-for-wordpress");
-    const text_button_reconnect = __("Reconnect MonsterInsights", "google-analytics-for-wordpress");
+    const text_button_reconnect = __("Reconnect Heretek Analytics", "google-analytics-for-wordpress");
     const text_website_profile = __("Website Profile", "google-analytics-for-wordpress");
     const text_active_profile = __("Active Profile", "google-analytics-for-wordpress");
     const text_auth_network = __("Your website profile has been set at the network level of your WordPress Multisite.", "google-analytics-for-wordpress");
@@ -160,11 +160,11 @@ const _sfc_main = {
     const text_v4_measurement_protocol = __("Measurement Protocol API Secret", "google-analytics-for-wordpress");
     const text_v4_measurement_protocol_description = sprintf(
       __("The Measurement Protocol API secret allows your site to send tracking data to Google Analytics. To retrieve your Measurement Protocol API Secret, follow %1$sthis guide%2$s.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("dual-tracking", "settings", "https://www.monsterinsights.com/docs/how-to-create-your-measurement-protocol-api-secret-in-ga4/") + '" target="_blank">',
+      '<a href="' + getUrl("dual-tracking", "settings", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     const text_button_disconnect_label = computed(() => {
-      return force_deauth.value ? __("Force Deauthenticate", "google-analytics-for-wordpress") : __("Disconnect MonsterInsights", "google-analytics-for-wordpress");
+      return force_deauth.value ? __("Force Deauthenticate", "google-analytics-for-wordpress") : __("Disconnect Heretek Analytics", "google-analytics-for-wordpress");
     });
     const iconClass = computed(() => {
       let cls = "monstericon-arrow";
@@ -226,7 +226,7 @@ const _sfc_main = {
         dialog.alert({
           variant: "success",
           title: response.message || __("Successfully verified.", "google-analytics-for-wordpress"),
-          message: __("Your site is connected to MonsterInsights!", "google-analytics-for-wordpress"),
+          message: __("Your site is connected to Heretek Analytics!", "google-analytics-for-wordpress"),
           confirmText: __("Ok", "google-analytics-for-wordpress")
         });
       } catch (err) {
@@ -250,7 +250,7 @@ const _sfc_main = {
         dialog.alert({
           variant: "success",
           title: response.message || __("Disconnected", "google-analytics-for-wordpress"),
-          message: __("You've disconnected your site from MonsterInsights. Your site is no longer being tracked by Google Analytics and you won't see reports anymore.", "google-analytics-for-wordpress"),
+          message: __("You've disconnected your site from Heretek Analytics. Your site is no longer being tracked by Google Analytics and you won't see reports anymore.", "google-analytics-for-wordpress"),
           confirmText: __("Ok", "google-analytics-for-wordpress")
         });
       } catch (err) {

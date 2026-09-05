@@ -8,7 +8,7 @@ const fetchAuth = async () => {
     const support_url = getUrl(
       "admin-notices",
       "error-loading-auth",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error loading auth details", "google-analytics-for-wordpress"),
@@ -26,7 +26,7 @@ const getAuthRedirect = async (network = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-loading-auth-redirect",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error getting auth redirect", "google-analytics-for-wordpress"),
@@ -44,7 +44,7 @@ const getReAuthRedirect = async (network = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-loading-reauth-redirect",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error getting re-auth redirect", "google-analytics-for-wordpress"),
@@ -62,7 +62,7 @@ const verifyAuth = async (network = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-verifying-auth",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error verifying auth", "google-analytics-for-wordpress"),
@@ -81,7 +81,7 @@ const deleteAuth = async (network = false, force = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-deleting-auth",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error de-authenticating", "google-analytics-for-wordpress"),
@@ -100,7 +100,7 @@ const updateManualV4 = async (v4 = "", network = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-updating-v4",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error updating V4 code", "google-analytics-for-wordpress"),
@@ -119,7 +119,7 @@ const updateMeasurementProtocolSecret = async (value = "", network = false) => {
     const support_url = getUrl(
       "admin-notices",
       "error-updating-mpsecret",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     throw {
       title: __("Error updating Measurement Protocol Secret", "google-analytics-for-wordpress"),

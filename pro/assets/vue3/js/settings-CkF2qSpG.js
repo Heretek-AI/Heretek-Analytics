@@ -356,10 +356,10 @@ const _sfc_main$3 = {
     const firstRunNotice = ref(getMiGlobal("first_run_notice", false));
     const reports_url = getMiGlobal("reports_url", "#");
     const notice_button = __2("View Reports", "google-analytics-for-wordpress");
-    const text_notice_title = __2("Welcome to MonsterInsights", "google-analytics-for-wordpress");
+    const text_notice_title = __2("Welcome to Heretek Analytics", "google-analytics-for-wordpress");
     const text_notice_title_auth = __2("Congratulations!", "google-analytics-for-wordpress");
     const notice_content_noauth = sprintf(
-      __2("MonsterInsights makes it easy to connect your website with Google Analytics and see all important website stats right inside your WordPress dashboard. In order to setup website analytics, please take a look at our %1$sGetting started video%2$s", "google-analytics-for-wordpress"),
+      __2("Heretek Analytics makes it easy to connect your website with Google Analytics and see all important website stats right inside your WordPress dashboard. In order to setup website analytics, please take a look at our %1$sGetting started video%2$s", "google-analytics-for-wordpress"),
       '<a href="https://www.youtube.com/watch?v=4Y8TGGkdcGY" target="_blank" id="monsterinsights-view-video">',
       "</a>"
     );
@@ -367,7 +367,7 @@ const _sfc_main$3 = {
     const or_text = __2("or", "google-analytics-for-wordpress");
     const text_onboarding_note = sprintf(
       __2("Note: You will be transfered to %1$s.com to complete the setup wizard.", "google-analytics-for-wordpress"),
-      "MonsterInsights"
+      "Heretek Analytics"
     );
     const noticeTitle = computed(() => {
       return isAuthed.value ? text_notice_title_auth : text_notice_title;

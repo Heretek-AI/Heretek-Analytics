@@ -37,7 +37,7 @@ final class MonsterInsights_Notification_Upgrade_To_Pro_Five_Hundred_Session ext
 
 		$notification['title'] = __( "Congrats! You've hit 500 monthly sessions!", 'google-analytics-for-wordpress' );
 		// Translators: upgrade to pro notification content
-		$notification['content'] = __( 'Folks like you who upgrade to MonsterInsights Pro get access to advanced reporting, powerful integrations to help you grow even more!', 'google-analytics-for-wordpress' );
+		$notification['content'] = __( 'Folks like you who upgrade to Heretek Analytics Unlocked get access to advanced reporting, powerful integrations to help you grow even more!', 'google-analytics-for-wordpress' );
 		$notification['btns']    = array(
 			"upgrade_to_pro" => array(
 				'url'         => $this->get_upgrade_url(),

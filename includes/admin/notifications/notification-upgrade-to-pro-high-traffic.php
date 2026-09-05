@@ -34,7 +34,7 @@ final class MonsterInsights_Notification_Upgrade_To_Pro_High_Traffic extends Mon
 
 		$notification['title'] = __( 'Upgrade to Unlock Advanced Tracking & Reports', 'google-analytics-for-wordpress' );
 		// Translators: upgrade to pro notification content
-		$notification['content'] = __( 'Upgrade to MonsterInsights Pro to take advantage of advanced Google Analytics settings, unlock advanced insights, utilize Custom Dimensions, and more.', 'google-analytics-for-wordpress' );
+		$notification['content'] = __( 'Upgrade to Heretek Analytics Unlocked to take advantage of advanced Google Analytics settings, unlock advanced insights, utilize Custom Dimensions, and more.', 'google-analytics-for-wordpress' );
 		$notification['btns']    = array(
 			"upgrade_to_pro" => array(
 				'url'         => $this->get_upgrade_url(),

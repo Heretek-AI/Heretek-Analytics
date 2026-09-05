@@ -12,8 +12,8 @@ const _sfc_main = {
   __name: "SettingsLiteUpsellLarge",
   setup(__props) {
     const { __, sprintf } = wp.i18n;
-    const text_upsell_title = __("Thank you for being a loyal MonsterInsights Lite user.", "google-analytics-for-wordpress");
-    const text_upsell_subtitle = __("Upgrade to MonsterInsights Pro and unlock all the awesome features.", "google-analytics-for-wordpress");
+    const text_upsell_title = __("Thank you for being a loyal Heretek Analytics user.", "google-analytics-for-wordpress");
+    const text_upsell_subtitle = __("Upgrade to Heretek Analytics Unlocked and unlock all the awesome features.", "google-analytics-for-wordpress");
     const text_upsell_coupon = __("Use coupon code %s to get 50%% off.", "google-analytics-for-wordpress");
     const text_features = [
       __("Dashboard Widget", "google-analytics-for-wordpress"),
@@ -29,7 +29,7 @@ const _sfc_main = {
       __("Google Search Console", "google-analytics-for-wordpress"),
       __("Realtime Reports", "google-analytics-for-wordpress")
     ];
-    const text_button_upgrade = __("Upgrade to MonsterInsights Pro", "google-analytics-for-wordpress");
+    const text_button_upgrade = __("Upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress");
     const upgrade_button_url = getUpgradeUrl("settings-panel", "ecommerce-tab");
     const text_much_more = __("...and much more!", "google-analytics-for-wordpress");
     function selectText() {

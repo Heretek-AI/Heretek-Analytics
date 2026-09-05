@@ -989,10 +989,10 @@ const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_6__.registerStore)('mo
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_3__.registerBlockType)(blockId, {
   ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
   title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inline Popular Posts', "google-analytics-for-wordpress"),
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add inline popular posts from MonsterInsights', "google-analytics-for-wordpress"),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add inline popular posts from Heretek Analytics', "google-analytics-for-wordpress"),
   category: 'widgets',
   icon: _components_GUTENBERG_APP_THEME_InlineIcons__WEBPACK_IMPORTED_MODULE_0__["default"].inlinepop,
-  keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Popular', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Posts', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inline', "google-analytics-for-wordpress"), 'MonsterInsights'],
+  keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Popular', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Posts', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inline', "google-analytics-for-wordpress"), 'Heretek Analytics'],
   example: {
     attributes: {
       preview: true
@@ -1800,10 +1800,10 @@ const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.registerStore)('mo
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.registerBlockType)(blockId, {
   ..._block_json__WEBPACK_IMPORTED_MODULE_2__,
   title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Popular Posts', "google-analytics-for-wordpress"),
-  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add popular posts from MonsterInsights', "google-analytics-for-wordpress"),
+  description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add popular posts from Heretek Analytics', "google-analytics-for-wordpress"),
   category: 'widgets',
   icon: _components_GUTENBERG_APP_THEME_WidgetIcons__WEBPACK_IMPORTED_MODULE_7__["default"].widgetpop,
-  keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Popular', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Widget', "google-analytics-for-wordpress"), 'MonsterInsights'],
+  keywords: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Popular', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Posts', "google-analytics-for-wordpress"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Widget', "google-analytics-for-wordpress"), 'Heretek Analytics'],
   example: {
     attributes: {
       preview: true
@@ -3949,17 +3949,17 @@ class HeadlineAnalyzerErrorBoundary extends _wordpress_element__WEBPACK_IMPORTED
 }
 
 // The single-owner election (see utils/headline-ownership.js) guarantees only
-// one analyzer mounts even when MonsterInsights and ExactMetrics are both
+// one analyzer mounts even when Heretek Analytics and ExactMetrics are both
 // active, so there is exactly one pinned "Headline Analyzer" button — no
 // cross-instance DOM-ownership dance is needed, just find that button.
 const scoreBadgeClass = 'monsterinsights-headline-analyzer-score-badge';
 const findPinnedButton = label => document.querySelector(`.components-button[aria-label='${label}']`);
-const MonsterInsightsHeadlineAnalyzer = () => {
+const Heretek AnalyticsHeadlineAnalyzer = () => {
   const postTitle = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => select('core/editor').getEditedPostAttribute('title'));
   const textHeadlineAnalyzer = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Headline Analyzer', "google-analytics-for-wordpress");
   const emptyTitleWarning = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Write your post title to see the analyzer data. This Headline Analyzer tool enables you to write irresistible SEO headlines that drive traffic, shares, and rank better in search results.', "google-analytics-for-wordpress");
   const notice = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.sprintf)(/* translators: %1s: opening anchor tag. %2s: closing anchor tag. */
-  (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('This headline analyzer is part of MonsterInsights to help you increase your traffic. See your %1swebsite traffic reports%2s.', "google-analytics-for-wordpress"), `<a href="${monsterinsights_gutenberg_tool_vars.reports_url}" class="monsterinsights-headline-analyzer-link">`, '</a>');
+  (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('This headline analyzer is part of Heretek Analytics to help you increase your traffic. See your %1swebsite traffic reports%2s.', "google-analytics-for-wordpress"), `<a href="${monsterinsights_gutenberg_tool_vars.reports_url}" class="monsterinsights-headline-analyzer-link">`, '</a>');
   const toolVars = window.monsterinsights_gutenberg_tool_vars;
   const licenseType = toolVars.license_type ?? 'lite';
   const upgradeUrl = toolVars.upgrade_url ?? '';
@@ -3970,7 +3970,7 @@ const MonsterInsightsHeadlineAnalyzer = () => {
   // optimizer (and its license upsell) is hidden for them — see HeadlineOptimizeButton.
   const userCanOptimize = toolVars?.can_optimize_headline ?? false;
 
-  // MonsterInsights + ExactMetrics both active: only the elected owner renders
+  // Heretek Analytics + ExactMetrics both active: only the elected owner renders
   // this panel, but warn the user that duplicate analytics are loaded (which
   // also means duplicate tracking on the front end). See headline-ownership.js.
   const isDuplicate = (0,_utils_headline_ownership__WEBPACK_IMPORTED_MODULE_7__.hasDuplicateHeadlineAnalyzer)();
@@ -4327,7 +4327,7 @@ if ('undefined' !== typeof monsterinsights_gutenberg_tool_vars && monsterinsight
 (0,_utils_headline_ownership__WEBPACK_IMPORTED_MODULE_7__.claimHeadlineAnalyzerOwnership)()) {
   (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_2__.registerPlugin)('monsterinsights-headline-analyzer', {
     icon: _icons__WEBPACK_IMPORTED_MODULE_8__["default"].headlineBlack,
-    render: MonsterInsightsHeadlineAnalyzer
+    render: Heretek AnalyticsHeadlineAnalyzer
   });
 }
 
@@ -4431,7 +4431,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Single-owner election for the Headline Analyzer.
  *
- * When MonsterInsights and ExactMetrics are both active, two editor bundles load
+ * When Heretek Analytics and ExactMetrics are both active, two editor bundles load
  * (each product ships its own editor.js). Without coordination both would mount
  * the analyzer: duplicate sidebar, two pinned toolbar buttons with the same
  * aria-label, and stacked score badges (the "43/10043/100" bug). The first
@@ -4602,7 +4602,7 @@ const MonsterinsightsAddConversionEventControl = (0,_wordpress_compose__WEBPACK_
           ...props
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-            title: "MonsterInsights",
+            title: "Heretek Analytics",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
               label: "Mark as a conversion event",
               checked: false,
@@ -4673,7 +4673,7 @@ const MonsterinsightsAddConversionEventControl = (0,_wordpress_compose__WEBPACK_
         ...props
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-          title: "MonsterInsights",
+          title: "Heretek Analytics",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
             label: "Mark as a conversion event",
             checked: markAsConversionEvent,
@@ -5272,7 +5272,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const MonsterInsightsMetabox = () => {
+const Heretek AnalyticsMetabox = () => {
   const MonsterInsightsVars = window.monsterinsights_gutenberg_tool_vars;
 
   // Basic validation - ensure vars are loaded
@@ -5295,7 +5295,7 @@ const MonsterInsightsMetabox = () => {
   if ('1' !== MonsterInsightsVars.public_post_type) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginDocumentSettingPanel, {
       name: "monsterinsights-metabox",
-      title: "MonsterInsights",
+      title: "Heretek Analytics",
       className: "monsterinsights-metabox-wrapper",
       icon: "mi",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_components_site_notes__WEBPACK_IMPORTED_MODULE_8__["default"], {})
@@ -5305,7 +5305,7 @@ const MonsterInsightsMetabox = () => {
   // For public post types, show everything
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__.PluginDocumentSettingPanel, {
     name: "monsterinsights-metabox",
-    title: "MonsterInsights",
+    title: "Heretek Analytics",
     className: "monsterinsights-metabox-wrapper",
     icon: "mi",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.ToggleControl, {
@@ -5332,7 +5332,7 @@ const MonsterInsightsMetabox = () => {
   });
 };
 (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('monsterinsights-metabox', {
-  render: MonsterInsightsMetabox
+  render: Heretek AnalyticsMetabox
 });
 
 /***/ },

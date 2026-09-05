@@ -2531,7 +2531,7 @@ function rejectReport(title, message) {
     support_url: getMonsterInsightsUrl(
       "admin-notices",
       "error-overview-api",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     ),
     isAjaxError: true
   });
@@ -3348,7 +3348,7 @@ const fetchFunnelData = async (dateRange, activeFunnel, apiFilters = null) => {
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3362,7 +3362,7 @@ const fetchFunnelData = async (dateRange, activeFunnel, apiFilters = null) => {
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3374,7 +3374,7 @@ const fetchFunnelData = async (dateRange, activeFunnel, apiFilters = null) => {
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3578,7 +3578,7 @@ const fetchOverviewData = async (dateRange, apiFilters = null, selectedMetrics =
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3592,7 +3592,7 @@ const fetchOverviewData = async (dateRange, apiFilters = null, selectedMetrics =
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3603,7 +3603,7 @@ const fetchOverviewData = async (dateRange, apiFilters = null, selectedMetrics =
     const supportUrl = getMonsterInsightsUrl(
       "admin-notices",
       "error-overview-api",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const message = err?.message || __("An unknown error occurred.", "google-analytics-for-wordpress");
     return Promise.reject({
@@ -3627,7 +3627,7 @@ async function fetchOverviewSection({ dateRange, errorLabel, onBearer, onFallbac
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3641,7 +3641,7 @@ async function fetchOverviewSection({ dateRange, errorLabel, onBearer, onFallbac
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3742,7 +3742,7 @@ const fetchCustomDimensionsData = async (dateRange, apiFilters = null, includeEc
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3756,7 +3756,7 @@ const fetchCustomDimensionsData = async (dateRange, apiFilters = null, includeEc
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-overview-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       ),
       isAjaxError: true
     });
@@ -3767,7 +3767,7 @@ const fetchCustomDimensionsData = async (dateRange, apiFilters = null, includeEc
     const supportUrl = getMonsterInsightsUrl(
       "admin-notices",
       "error-overview-api",
-      "https://www.monsterinsights.com/my-account/support"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     return Promise.reject({
       title: __("Error loading custom dimensions data", "google-analytics-for-wordpress"),
@@ -5767,7 +5767,7 @@ const _sfc_main$1 = {
     );
     const bonusLabel = computed(() => __$2("Bonus:", "google-analytics-for-wordpress"));
     const bonusText = computed(
-      () => __$2("MonsterInsights Lite users get ", "google-analytics-for-wordpress")
+      () => __$2("Heretek Analytics users get ", "google-analytics-for-wordpress")
     );
     const bonusHighlight = computed(() => __$2("50% off", "google-analytics-for-wordpress"));
     const bonusSuffix = computed(
@@ -5778,7 +5778,7 @@ const _sfc_main$1 = {
       () => getUpgradeUrl(
         "overview-pro-feature-modal",
         "overview-report",
-        "https://www.monsterinsights.com/lite/"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       )
     );
     function close() {
@@ -6106,7 +6106,7 @@ const _sfc_main = {
     const overviewStore = useOverviewReportStore();
     const { isAuthenticated } = useAuthGate();
     const isLicenseExpired = computed(() => getMiGlobal$1("license_expired", false));
-    const licenseRenewalUrl = computed(() => getUrl("admin-notices", "license-expired", "https://www.monsterinsights.com/my-account/"));
+    const licenseRenewalUrl = computed(() => getUrl("admin-notices", "license-expired", "https://github.com/Heretek-AI/Heretek-Analytics"));
     const hideReportNav = computed(() => route.meta?.hideNav === true);
     const navStuck = ref(false);
     const headerStuck = ref(false);
@@ -6203,7 +6203,7 @@ const _sfc_main = {
           createVNode(_sfc_main$c),
           isLicenseExpired.value ? (openBlock(), createElementBlock("div", _hoisted_2, [
             createBaseVNode("p", null, [
-              createTextVNode(toDisplayString(unref(__$2)("Your MonsterInsights license has expired or has an error. Some reports may not load correctly.", "google-analytics-for-wordpress")) + " ", 1),
+              createTextVNode(toDisplayString(unref(__$2)("Your Heretek Analytics license has expired or has an error. Some reports may not load correctly.", "google-analytics-for-wordpress")) + " ", 1),
               createBaseVNode("a", {
                 href: licenseRenewalUrl.value,
                 target: "_blank"

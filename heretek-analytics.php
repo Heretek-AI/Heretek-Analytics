@@ -3,8 +3,8 @@
 /**
  * Plugin Name:         Heretek Analytics
  * Plugin URI:          https://github.com/Heretek-AI/Heretek-Analytics
- * Description:         The 100% open-source Google Analytics plugin with all Pro/Agency features permanently unlocked. Direct GA4 Data API reporting, eCommerce, Forms, PPC, Media, and EU Consent compliance with zero upsells, zero telemetry, and zero paywalls.
- * Author:              Heretek AI (Chris Christoff, MonsterInsights upstream)
+ * Description:         The unrestricted GA4 Data Augur & Telemetry Cogitator for WordPress. 100% open-source, Pro/Agency unlocked, direct GA4 Data API reporting, eCommerce, Forms, PPC, Media, and EU Consent with zero upsells, zero phone-home, and zero paywalls.
+ * Author:              Heretek AI
  * Author URI:          https://github.com/Heretek-AI
  *
  * Version:             11.2.0
@@ -828,7 +828,19 @@ if ( ! function_exists( 'Heretek_Analytics' ) ) {
 	}
 }
 
+if ( ! class_exists( 'Heretek_Analytics' ) ) {
+	class_alias( 'MonsterInsights', 'Heretek_Analytics' );
+}
+
 add_action( 'plugins_loaded', 'MonsterInsights' );
+
+// Initialize Heretek GitHub release updater in admin context
+if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	add_action( 'plugins_loaded', function () {
+		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/class-heretek-github-updater.php';
+		new Heretek_Analytics_GitHub_Updater();
+	}, 20 );
+}
 
 /**
  * Remove scheduled cron hooks during deactivation.

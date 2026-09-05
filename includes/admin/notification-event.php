@@ -254,7 +254,7 @@ class MonsterInsights_Notification_Event {
 		if ( monsterinsights_is_pro_version() && ! MonsterInsights()->license->license_can( $report->level ) ) {
 			$data = array(
 				'success' => false,
-				'message' => __( "You don't have permission to view MonsterInsights reports.", 'google-analytics-for-wordpress' ),
+				'message' => __( "You don't have permission to view Heretek Analytics reports.", 'google-analytics-for-wordpress' ),
 			);
 		} else {
 			$data = $report->get_data( $args );

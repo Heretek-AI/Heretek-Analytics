@@ -32,7 +32,7 @@ final class MonsterInsights_Notification_To_Add_More_File_Extensions extends Mon
 
 			$notification['content'] = sprintf(
 				/* translators: Placeholders add links to settings pages. */
-				__( 'By default, MonsterInsights automatically tracks downloads of the following file extensions: doc, pdf, ppt, zip, xls, docx, pptx, and xlsx. You can easily add or remove extensions from that list in the %1$sEngagement settings%2$s of MonsterInsights.<br><br> You can view your Top Downloads report directly in the MonsterInsights %3$sPublishers report%4$s.', 'google-analytics-for-wordpress' ),
+				__( 'By default, Heretek Analytics automatically tracks downloads of the following file extensions: doc, pdf, ppt, zip, xls, docx, pptx, and xlsx. You can easily add or remove extensions from that list in the %1$sEngagement settings%2$s of Heretek Analytics.<br><br> You can view your Top Downloads report directly in the Heretek Analytics %3$sPublishers report%4$s.', 'google-analytics-for-wordpress' ),
 				'<a href="' . $settings_url . '">',
 				'</a>',
 				'<a href="' . $publishers_report_url . '">',

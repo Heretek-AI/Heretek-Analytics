@@ -113,7 +113,7 @@ class MonsterInsights_Connect {
 			// Deactivate plugin.
 			deactivate_plugins( plugin_basename( MONSTERINSIGHTS_PLUGIN_FILE ), false, false );
 			wp_send_json_error( array(
-				'message' => esc_html__( 'You already have MonsterInsights Pro installed.', 'google-analytics-for-wordpress' ),
+				'message' => esc_html__( 'You already have Heretek Analytics installed.', 'google-analytics-for-wordpress' ),
 				'reload'  => true,
 			) );
 		}
@@ -141,8 +141,8 @@ class MonsterInsights_Connect {
 	public function process() {
 		$error = sprintf(
 			/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-			esc_html__( 'Oops! We could not automatically install an upgrade. Please install manually by visiting %1$smonsterinsights.com%2$s.', 'google-analytics-for-wordpress' ),
-			'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'could-not-upgrade', 'https://www.monsterinsights.com/' ) . '">',
+			esc_html__( 'Oops! We could not automatically install an update. Please download manually from %1$sGitHub%2$s.', 'google-analytics-for-wordpress' ),
+			'<a target="_blank" href="https://github.com/Heretek-AI/Heretek-Analytics/releases">',
 			'</a>'
 		);
 
@@ -240,7 +240,7 @@ class MonsterInsights_Connect {
 			} else {
 				// Reactivate the lite plugin if pro activation failed.
 				activate_plugin( plugin_basename( MONSTERINSIGHTS_PLUGIN_FILE ), '', $network, true );
-				wp_send_json_error( esc_html__( 'Please activate MonsterInsights Pro from your WordPress plugins page.', 'google-analytics-for-wordpress' ) );
+				wp_send_json_error( esc_html__( 'Please activate Heretek Analytics from your WordPress plugins page.', 'google-analytics-for-wordpress' ) );
 			}
 		}
 		wp_send_json_error( $error );

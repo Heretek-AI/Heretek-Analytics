@@ -67,8 +67,8 @@ const _sfc_main$2 = {
     );
     const addonTitle = computed(() => {
       let title = props.addon.title || "";
-      if (title.indexOf("MonsterInsights") === 0) {
-        title = title.replace("MonsterInsights ", "");
+      if (title.indexOf("Heretek Analytics") === 0) {
+        title = title.replace("Heretek Analytics ", "");
       }
       return title;
     });
@@ -212,7 +212,7 @@ const _sfc_main$2 = {
             "If you have any questions or issues just %slet us know%s.",
             "google-analytics-for-wordpress"
           ),
-          '<a href="https://www.monsterinsights.com/contact/" target="_blank">',
+          '<a href="https://github.com/Heretek-AI/Heretek-Analytics" target="_blank">',
           "</a>"
         )
       );
@@ -221,7 +221,7 @@ const _sfc_main$2 = {
         sprintf(
           // Translators: Placeholders make the text bold.
           __(
-            "After purchasing a license, %1$sjust enter your license key on the MonsterInsights Settings page%2$s. This will let your site automatically upgrade to MonsterInsights Pro! (Don't worry, all your reports and settings will be preserved.)",
+            "After purchasing a license, %1$sjust enter your license key on the Heretek Analytics Settings page%2$s. This will let your site automatically upgrade to Heretek Analytics Unlocked! (Don't worry, all your reports and settings will be preserved.)",
             "google-analytics-for-wordpress"
           ),
           "<strong>",
@@ -236,14 +236,14 @@ const _sfc_main$2 = {
             "Check out %1$sour documentation%2$s for step-by-step instructions.",
             "google-analytics-for-wordpress"
           ),
-          '<a href="https://www.monsterinsights.com/docs/go-lite-pro/" target="_blank">',
+          '<a href="https://github.com/Heretek-AI/Heretek-Analytics" target="_blank">',
           "</a>"
         )
       );
       dialog.alert({
         variant: "info",
         title: __(
-          "Thanks for your interest in MonsterInsights Pro!",
+          "Thanks for your interest in Heretek Analytics Unlocked!",
           "google-analytics-for-wordpress"
         ),
         html

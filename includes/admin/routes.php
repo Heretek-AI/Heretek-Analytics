@@ -1189,7 +1189,7 @@ class MonsterInsights_Rest_Routes {
 		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				esc_html__( 'Oops! You do not have permissions to view MonsterInsights reporting. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'Oops! You do not have permissions to view Heretek Analytics reporting. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-reports', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -1208,7 +1208,7 @@ class MonsterInsights_Rest_Routes {
 			if ( ! MonsterInsights()->license->is_site_licensed() && ! MonsterInsights()->license->is_network_licensed() ) {
 				$message = sprintf(
 					/* translators: %1$s: Opening support link tag, %2$s: Closing support link tag. */
-					esc_html__( 'Oops! You cannot view MonsterInsights reports because you are not licensed. Please try again in a few minutes. If the issue continues, please %1$scontact our support%2$s team.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! You cannot view Heretek Analytics reports because you are not licensed. Please try again in a few minutes. If the issue continues, please %1$scontact our support%2$s team.', 'google-analytics-for-wordpress' ),
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-reports', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
 					'</a>'
 				);
@@ -1242,7 +1242,7 @@ class MonsterInsights_Rest_Routes {
 
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag. */
-				esc_html__( 'You need to authenticate into MonsterInsights before viewing reports. Please run our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'You need to authenticate into Heretek Analytics before viewing reports. Please run our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>'
 			);
@@ -1614,7 +1614,7 @@ class MonsterInsights_Rest_Routes {
 		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				esc_html__( 'Oops! You do not have permissions to view or access Popular Posts. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'Oops! You do not have permissions to view or access Popular Posts. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-dashboard', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -1637,7 +1637,7 @@ class MonsterInsights_Rest_Routes {
 				}
 				$message = sprintf(
 					/* translators: %1$s: Opening settings page link tag, %2$s: Closing settings page link tag. */
-					esc_html__( 'Oops! We could not find a valid license key for MonsterInsights. Please %1$senter a valid license key%2$s to view this report.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! We could not find a valid license key for Heretek Analytics. Please %1$senter a valid license key%2$s to view this report.', 'google-analytics-for-wordpress' ),
 					'<a href="' . esc_url( $url ) . '">',
 					'</a>'
 				);
@@ -1652,7 +1652,7 @@ class MonsterInsights_Rest_Routes {
 			} else {
 				$message = sprintf(
 					/* translators: %1$s: Opening account link tag, %2$s: Closing account link tag. */
-					esc_html__( 'Oops! We could not find a valid license key. Please enter a valid license key to view this report. You can find your license by logging into your %1$sMonsterInsights account%2$s.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! We could not find a valid license key. Please enter a valid license key to view this report. You can find your license by logging into your %1$sHeretek Analytics account%2$s.', 'google-analytics-for-wordpress' ),
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'license-errors', 'https://www.monsterinsights.com/my-account/licenses/' ) . '">',
 					'</a>'
 				);
@@ -1672,7 +1672,7 @@ class MonsterInsights_Rest_Routes {
 			}
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag. */
-				esc_html__( 'You need to authenticate into MonsterInsights before viewing reports. Please complete the setup by going through our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'You need to authenticate into Heretek Analytics before viewing reports. Please complete the setup by going through our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>'
 			);
@@ -1931,7 +1931,7 @@ class MonsterInsights_Rest_Routes {
 		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
 			$message = sprintf(
 				/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-				esc_html__( 'Oops! You do not have permissions to view MonsterInsights reporting. Please check with your site administrator that your role is included in the MonsterInsights permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'Oops! You do not have permissions to view Heretek Analytics reporting. Please check with your site administrator that your role is included in the Heretek Analytics permissions settings. %1$sClick here for more information%2$s.', 'google-analytics-for-wordpress' ),
 				'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-reports', 'https://www.monsterinsights.com/docs/how-to-allow-user-roles-to-access-the-monsterinsights-reports-and-settings/' ) . '">',
 				'</a>'
 			);
@@ -1949,7 +1949,7 @@ class MonsterInsights_Rest_Routes {
 			if ( ! MonsterInsights()->license->is_site_licensed() && ! MonsterInsights()->license->is_network_licensed() ) {
 				$message = sprintf(
 					/* translators: %1$s: Opening support link tag, %2$s: Closing support link tag. */
-					esc_html__( 'Oops! You cannot view MonsterInsights reports because you are not licensed. Please try again in a few minutes. If the issue continues, please %1$scontact our support%2$s team.', 'google-analytics-for-wordpress' ),
+					esc_html__( 'Oops! You cannot view Heretek Analytics reports because you are not licensed. Please try again in a few minutes. If the issue continues, please %1$scontact our support%2$s team.', 'google-analytics-for-wordpress' ),
 					'<a target="_blank" href="' . monsterinsights_get_url( 'notice', 'cannot-view-reports', 'https://www.monsterinsights.com/my-account/support/' ) . '">',
 					'</a>'
 				);
@@ -1983,7 +1983,7 @@ class MonsterInsights_Rest_Routes {
 
 			$message = sprintf(
 				/* translators: %1$s: Opening wizard link tag, %2$s: Closing wizard link tag. */
-				esc_html__( 'You need to authenticate into MonsterInsights before viewing reports. Please run our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
+				esc_html__( 'You need to authenticate into Heretek Analytics before viewing reports. Please run our %1$ssetup wizard%2$s.', 'google-analytics-for-wordpress' ),
 				'<a href="' . esc_url( $url ) . '">',
 				'</a>'
 			);

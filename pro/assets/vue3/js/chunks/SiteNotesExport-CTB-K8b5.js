@@ -29,8 +29,8 @@ const _sfc_main = {
     const text_download_msg = __("Your download will start very soon.", "google-analytics-for-wordpress");
     const text_export = __("Export Site Notes", "google-analytics-for-wordpress");
     const upsell = {
-      title: __("Upgrade to MonsterInsights Pro", "google-analytics-for-wordpress"),
-      subtitle: __("Create your own categories, add colors, and export your site notes with MonsterInsights Pro.", "google-analytics-for-wordpress"),
+      title: __("Upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress"),
+      subtitle: __("Create your own categories, add colors, and export your site notes with Heretek Analytics Unlocked.", "google-analytics-for-wordpress"),
       unlock: __("Upgrade and Unlock", "google-analytics-for-wordpress"),
       view_all: __("View all Pro features", "google-analytics-for-wordpress"),
       features: [

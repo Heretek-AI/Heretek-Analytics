@@ -27,7 +27,7 @@ const _sfc_main$1 = {
     const text_description = __("By allowing us to track usage data we can better help you because we know with which WordPress configurations, themes and plugins we should test.", "google-analytics-for-wordpress");
     const text_anonymous_data_tooltip = sprintf(
       __("Complete documentation on usage tracking is available %1$shere%2$s.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "usage-tracking", "https://www.monsterinsights.com/docs/usage-tracking/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "usage-tracking", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     return (_ctx, _cache) => {
@@ -93,12 +93,12 @@ const _sfc_main = {
     const text_license_title = __("License Key", "google-analytics-for-wordpress");
     const text_auth_title = __("Google Authentication", "google-analytics-for-wordpress");
     const text_auth_label = __("Connect Google Analytics + WordPress", "google-analytics-for-wordpress");
-    const text_auth_description = __("You will be taken to the MonsterInsights website where you'll need to connect your Analytics account.", "google-analytics-for-wordpress");
+    const text_auth_description = __("You will be taken to the Heretek Analytics website where you'll need to connect your Analytics account.", "google-analytics-for-wordpress");
     const text_automatic_updates = __("Automatic Updates", "google-analytics-for-wordpress");
     const text_setup_wizard_title = __("Setup Wizard", "google-analytics-for-wordpress");
     const text_setup_wizard_label = __("Use our configuration wizard to properly setup Google Analytics with WordPress (with just a few clicks).", "google-analytics-for-wordpress");
     const text_setup_wizard_button = __("Launch Setup Wizard", "google-analytics-for-wordpress");
-    const text_setup_wizard_disclaimer = __("Note: You will be transfered to MonsterInsights.com to complete the setup wizard.", "google-analytics-for-wordpress");
+    const text_setup_wizard_disclaimer = __("Note: You will be transfered to Heretek Analytics.com to complete the setup wizard.", "google-analytics-for-wordpress");
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("main", _hoisted_1, [
         hasAuth.value ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [

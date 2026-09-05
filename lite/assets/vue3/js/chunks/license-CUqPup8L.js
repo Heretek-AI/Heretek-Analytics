@@ -9,7 +9,7 @@ const fetchLicense = async () => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-loading-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -43,7 +43,7 @@ const verifyLicense = async (key, isNetwork = false) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-verifying-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -76,7 +76,7 @@ const validateLicense = async (isNetwork = false) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-validating-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -110,7 +110,7 @@ const deactivateLicense = async (key, isNetwork = false) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-deactivating-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -144,7 +144,7 @@ const deactivateExpiredLicense = async (key, isNetwork = false) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-deactivating-expired-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -183,7 +183,7 @@ const getUpgradeLink = async (key) => {
       support_url: getMonsterInsightsUrl(
         "admin-notices",
         "error-upgrading-license",
-        "https://www.monsterinsights.com/my-account/support/"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       )
     };
   } catch (error) {
@@ -193,7 +193,7 @@ const getUpgradeLink = async (key) => {
     const support_url = getMonsterInsightsUrl(
       "admin-notices",
       "error-upgrading-license",
-      "https://www.monsterinsights.com/my-account/support/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const title = sprintf(
       __$1(
@@ -520,7 +520,7 @@ const useLicenseStore = defineStore("license", {
             link: getUrl(
               "admin-notices",
               "expired-license",
-              "https://www.monsterinsights.com/login/"
+              "https://github.com/Heretek-AI/Heretek-Analytics"
             )
           },
           icon: '<svg width="27" height="23" viewBox="0 0 27 23" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25.5742 19.6992L15.2617 1.78125C14.4883 0.449219 12.4688 0.40625 11.6953 1.78125L1.38281 19.6992C0.609375 21.0312 1.59766 22.75 3.1875 22.75H23.7695C25.3594 22.75 26.3477 21.0742 25.5742 19.6992ZM13.5 15.9609C14.5742 15.9609 15.4766 16.8633 15.4766 17.9375C15.4766 19.0547 14.5742 19.9141 13.5 19.9141C12.3828 19.9141 11.5234 19.0547 11.5234 17.9375C11.5234 16.8633 12.3828 15.9609 13.5 15.9609ZM11.6094 8.87109C11.5664 8.57031 11.8242 8.3125 12.125 8.3125H14.832C15.1328 8.3125 15.3906 8.57031 15.3477 8.87109L15.0469 14.7148C15.0039 15.0156 14.7891 15.1875 14.5312 15.1875H12.4258C12.168 15.1875 11.9531 15.0156 11.9102 14.7148L11.6094 8.87109Z" fill="#E64949"/></svg>',
@@ -532,7 +532,7 @@ const useLicenseStore = defineStore("license", {
         addNotice({
           id: "license_disabled",
           content: __(
-            "Your license key for MonsterInsights has been disabled. Please use a different key.",
+            "Your license key for Heretek Analytics has been disabled. Please use a different key.",
             "google-analytics-for-wordpress"
           ),
           type: "error"
@@ -543,7 +543,7 @@ const useLicenseStore = defineStore("license", {
         addNotice({
           id: "license_invalid",
           content: __(
-            "Your license key for MonsterInsights is invalid. The key no longer exists or the user associated with the key has been deleted. Please use a different key.",
+            "Your license key for Heretek Analytics is invalid. The key no longer exists or the user associated with the key has been deleted. Please use a different key.",
             "google-analytics-for-wordpress"
           ),
           type: "error"

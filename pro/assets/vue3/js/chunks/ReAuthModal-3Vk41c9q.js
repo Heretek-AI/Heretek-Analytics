@@ -29,11 +29,11 @@ const _sfc_main$1 = {
     const sanitizedErrorMessage = computed(
       () => errorMessage.value ? purify.sanitize(errorMessage.value, { ADD_ATTR: ["target"] }) : ""
     );
-    const productName = "MonsterInsights";
-    const text_no_auth = __("You must connect with MonsterInsights before you can view reports.", "google-analytics-for-wordpress");
-    const text_auth_label = __("MonsterInsights makes it effortless for you to connect your site with Google Analytics and see reports right here in the WordPress dashboard.", "google-analytics-for-wordpress");
+    const productName = "Heretek Analytics";
+    const text_no_auth = __("You must connect with Heretek Analytics before you can view reports.", "google-analytics-for-wordpress");
+    const text_auth_label = __("Heretek Analytics makes it effortless for you to connect your site with Google Analytics and see reports right here in the WordPress dashboard.", "google-analytics-for-wordpress");
     const text_wizard = __("Launch Setup Wizard", "google-analytics-for-wordpress");
-    const text_ask_webmaster = __("Please ask your webmaster to connect MonsterInsights to Google Analytics.", "google-analytics-for-wordpress");
+    const text_ask_webmaster = __("Please ask your webmaster to connect Heretek Analytics to Google Analytics.", "google-analytics-for-wordpress");
     const text_onboarding_note = sprintf(__("Note: You will be transfered to %1$s.com to complete the setup wizard.", "google-analytics-for-wordpress"), productName);
     const text_error = __("We could not start the Setup Wizard. Please refresh the page and try again.", "google-analytics-for-wordpress");
     function launchSetupWizard() {
@@ -123,9 +123,9 @@ const _sfc_main = {
     const sanitizedErrorMessage = computed(
       () => errorMessage.value ? purify.sanitize(errorMessage.value, { ADD_ATTR: ["target"] }) : ""
     );
-    const text_no_auth = __("MonsterInsights encountered an error loading your report data", "google-analytics-for-wordpress");
+    const text_no_auth = __("Heretek Analytics encountered an error loading your report data", "google-analytics-for-wordpress");
     const text_auth_label = __("There is an issue with your Google Account authentication. Please use the button below to fix it by re-authenticating.", "google-analytics-for-wordpress");
-    const text_button_reconnect = __("Reconnect MonsterInsights", "google-analytics-for-wordpress");
+    const text_button_reconnect = __("Reconnect Heretek Analytics", "google-analytics-for-wordpress");
     const text_error = __("We could not start the re-authentication flow. Please refresh the page and try again.", "google-analytics-for-wordpress");
     async function doReAuth() {
       isLoading.value = true;

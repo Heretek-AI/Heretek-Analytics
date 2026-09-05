@@ -21,7 +21,7 @@ const _sfc_main$2 = {
   setup(__props) {
     const { __ } = wp.i18n;
     const text_amp_title = __("Google AMP", "google-analytics-for-wordpress");
-    const text_amp_upsell = __("Want to use track users visiting your AMP pages? By upgrading to MonsterInsights Pro, you can enable AMP page tracking.", "google-analytics-for-wordpress");
+    const text_amp_upsell = __("Want to use track users visiting your AMP pages? By upgrading to Heretek Analytics Unlocked, you can enable AMP page tracking.", "google-analytics-for-wordpress");
     return (_ctx, _cache) => {
       return openBlock(), createBlock(_sfc_main$4, { title: unref(text_amp_title) }, {
         default: withCtx(() => [
@@ -90,15 +90,15 @@ const _sfc_main = {
     const text_affiliate_title = __("Affiliate Links", "google-analytics-for-wordpress");
     const text_affiliate_description_tooltip = sprintf(
       __("Enable tracking for your custom affiliate links to see how they perform. By setting a path like '/go/,' any URL starting with this will be tracked. In Google Analytics, these links are uniquely labeled with 'outbound-link-' followed by your custom label, helping you identify them easily. Read %1$shere%2$s for a detailed guide on setting up affiliate link tracking.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "publisher-tab", "https://www.monsterinsights.com/how-to-set-up-affiliate-link-tracking-in-wordpress/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "publisher-tab", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     const text_affiliate_repeater_description = __("Our affiliate link tracking works by setting path for internal links to track as outbound links.", "google-analytics-for-wordpress");
     const text_headline_analyzer = __("Headline Analyzer", "google-analytics-for-wordpress");
-    const text_headline_analyzer_description = __("The MonsterInsights Headline Analyzer tool in the Gutenberg editor enables you to write irresistible SEO-friendly headlines that drive traffic, social media shares, and rank better in search results.", "google-analytics-for-wordpress");
+    const text_headline_analyzer_description = __("The Heretek Analytics Headline Analyzer tool in the Gutenberg editor enables you to write irresistible SEO-friendly headlines that drive traffic, social media shares, and rank better in search results.", "google-analytics-for-wordpress");
     const text_disable_headline_analyzer = __("Disable the Headline Analyzer", "google-analytics-for-wordpress");
     const text_pretty_links_settings = __("Pretty Links Tracking Settings", "google-analytics-for-wordpress");
-    const text_pretty_links_settings_description = __("Select how you want MonsterInsights to track Pretty Links URLs.", "google-analytics-for-wordpress");
+    const text_pretty_links_settings_description = __("Select how you want Heretek Analytics to track Pretty Links URLs.", "google-analytics-for-wordpress");
     const prettyLinksoptions = [
       {
         value: "target_url",

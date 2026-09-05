@@ -1549,7 +1549,7 @@ const _sfc_main$7 = {
       if (isProLicensed.value) {
         return getMiGlobal("custom_dashboard_url", "#");
       }
-      return getUrl("logo", "header", "https://www.monsterinsights.com/lite/");
+      return getUrl("logo", "header", "https://github.com/Heretek-AI/Heretek-Analytics");
     });
     const linkTarget = computed(() => isProLicensed.value ? "_self" : "_blank");
     const logo = computed(() => {
@@ -2423,7 +2423,7 @@ const _sfc_main$1 = {
     const barLink = getMonsterInsightsUrl(
       "floatbar",
       "upgrade",
-      "https://www.monsterinsights.com/lite/"
+      "https://github.com/Heretek-AI/Heretek-Analytics"
     );
     const barText = sprintf(
       __2(
@@ -2431,7 +2431,7 @@ const _sfc_main$1 = {
         "google-analytics-for-wordpress"
       ),
       "<strong>",
-      "MonsterInsights",
+      "Heretek Analytics",
       "</strong>",
       `<a href="${barLink}" target="_blank" rel="noopener">`,
       "</a>"

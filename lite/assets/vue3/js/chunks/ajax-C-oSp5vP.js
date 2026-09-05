@@ -166,7 +166,7 @@ function getUrl(medium, campaign, url) {
   const source = "liteplugin", default_url = "lite/", content = getMiGlobal("plugin_version", "1.0.0");
   medium = medium ? medium : "defaultmedium";
   campaign = campaign ? campaign : "defaultcampaign";
-  url = url ? url : `https://www.monsterinsights.com/${default_url}`;
+  url = url ? url : `https://github.com/Heretek-AI/Heretek-Analytics${default_url}`;
   url = addQueryArg(url, "utm_source", source);
   url = addQueryArg(url, "utm_medium", medium);
   url = addQueryArg(url, "utm_campaign", campaign);

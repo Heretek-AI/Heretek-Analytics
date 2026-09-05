@@ -58,7 +58,7 @@ final class MonsterInsights_Notification_Product_Feed_Upgrade extends MonsterIns
 					$notification['title'] = __( 'Upgrade to Pro for Product Feed Analytics', 'google-analytics-for-wordpress' );
 					$notification['content'] = sprintf(
 						/* translators: %1$s: Opening link tag, %2$s: Closing link tag. */
-						__( 'Great news! We detected that you have WooCommerce Product Feed Pro installed and there\'s product feed data available. Upgrade to MonsterInsights Pro to unlock detailed analytics for your product feed campaigns, track conversions, and optimize your shopping ads performance. %1$sUpgrade now%2$s to see your product feed insights!', 'google-analytics-for-wordpress' ),
+						__( 'Great news! We detected that you have WooCommerce Product Feed Pro installed and there\'s product feed data available. Upgrade to Heretek Analytics Unlocked to unlock detailed analytics for your product feed campaigns, track conversions, and optimize your shopping ads performance. %1$sUpgrade now%2$s to see your product feed insights!', 'google-analytics-for-wordpress' ),
 						'<a href="' . $this->build_external_link( $upgrade_url ) . '" target="_blank">', 
 						'</a>' 
 					);

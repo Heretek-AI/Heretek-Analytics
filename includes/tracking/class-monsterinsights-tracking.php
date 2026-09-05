@@ -110,7 +110,7 @@ class MonsterInsights_Tracking {
 	public function send($event_name, array $payload = [], array $extra = []) {
 		
 		if ( !MonsterInsights()->auth->is_authed() && !MonsterInsights()->auth->is_network_authed() ) {
-			return new WP_Error('401', __('MonsterInsights is not connected.', 'google-analytics-for-wordpress'));
+			return new WP_Error('401', __('Heretek Analytics is not connected.', 'google-analytics-for-wordpress'));
 		}
 		
 		$extra_params = [];

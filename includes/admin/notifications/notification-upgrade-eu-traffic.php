@@ -79,11 +79,11 @@ final class MonsterInsights_Notification_Upgrade_EU_Traffic extends MonsterInsig
 		}
 
 		$notification['title']   = __( 'Help Your Site Become GDPR Compliant', 'google-analytics-for-wordpress' );
-		$notification['content'] = __( 'Your site is receiving traffic from the EU. Help ensure your site is more compliant with GDPR by upgrading to MonsterInsights Pro and enable our EU Privacy addon.', 'google-analytics-for-wordpress' );
+		$notification['content'] = __( 'Your site is receiving traffic from the EU. Help ensure your site is more compliant with GDPR by upgrading to Heretek Analytics Unlocked and enable our EU Privacy addon.', 'google-analytics-for-wordpress' );
 		$notification['btns']    = array(
 			"get_monsterinsights_pro" => array(
 				'url'         => $this->get_upgrade_url(),
-				'text'        => __( 'Get MonsterInsights Pro', 'google-analytics-for-wordpress' ),
+				'text'        => __( 'Get Heretek Analytics Unlocked', 'google-analytics-for-wordpress' ),
 				'is_external' => true,
 			),
 		);

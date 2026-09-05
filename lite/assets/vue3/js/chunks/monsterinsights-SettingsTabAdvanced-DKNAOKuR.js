@@ -442,12 +442,12 @@ const _sfc_main$5 = {
     const settingsStore = useSettingsStore();
     useLicenseStore();
     const settings = computed(() => settingsStore.getSettings);
-    const text_description = __("Our exception alerts feature will instantly notify you when MonsterInsights detects potential problems with your website's key metrics and stats.", "google-analytics-for-wordpress");
+    const text_description = __("Our exception alerts feature will instantly notify you when Heretek Analytics detects potential problems with your website's key metrics and stats.", "google-analytics-for-wordpress");
     const text_exception_alerts = __("Exception Alerts", "google-analytics-for-wordpress");
-    const text_summaries_description = __("Our exception alerts feature will instantly notify you when MonsterInsights detects potential problems with your website's key metrics and stats.", "google-analytics-for-wordpress");
+    const text_summaries_description = __("Our exception alerts feature will instantly notify you when Heretek Analytics detects potential problems with your website's key metrics and stats.", "google-analytics-for-wordpress");
     const text_enabled = __("Enabled", "google-analytics-for-wordpress");
     const text_add_site_note = __("Add a Site Note when an exception is triggered", "google-analytics-for-wordpress");
-    const text_add_notification = __("Add a MonsterInsights Notification when an exception is triggered", "google-analytics-for-wordpress");
+    const text_add_notification = __("Add a Heretek Analytics Notification when an exception is triggered", "google-analytics-for-wordpress");
     const max_emails_error_text = __("You can add up to 5 emails.", "google-analytics-for-wordpress");
     const min_emails_error_text = __("At least 1 email required.", "google-analytics-for-wordpress");
     const text_email_addresses = __("Email addresses", "google-analytics-for-wordpress");
@@ -634,7 +634,7 @@ const _hoisted_10$1 = ["innerHTML"];
 const _hoisted_11$1 = ["innerHTML"];
 const _hoisted_12$1 = ["innerHTML"];
 const _hoisted_13$1 = ["innerHTML"];
-const link = "https://www.monsterinsights.com/docs/cookie-consent-plugins-gdpr-compliance/";
+const link = "https://github.com/Heretek-AI/Heretek-Analytics";
 const wpconsent_link = "https://www.wpconsent.com";
 const _sfc_main$3 = {
   __name: "SettingsInputConsentMode",
@@ -654,7 +654,7 @@ const _sfc_main$3 = {
     const text_warning = __("Enabling Consent Mode may lead to analytics data loss.", "google-analytics-for-wordpress");
     const text_toggle_label = __("Enable Consent Mode Banner", "google-analytics-for-wordpress");
     const text_wpconsent_header = __("Cookie Banner by WPConsent", "google-analytics-for-wordpress");
-    const text_wpconsent = __("Get the most powerful and easy to use consent manager. Built by the same people behind MonsterInsights.", "google-analytics-for-wordpress");
+    const text_wpconsent = __("Get the most powerful and easy to use consent manager. Built by the same people behind Heretek Analytics.", "google-analytics-for-wordpress");
     const text_wpconsent_link = __("Install Free", "google-analytics-for-wordpress");
     const isEUComplianceActive = computed(() => {
       const addons = addonsStore.addons || {};
@@ -957,7 +957,7 @@ const _sfc_main$1 = {
     const text_anonymous_data_label = __("Allow usage tracking", "google-analytics-for-wordpress");
     const text_anonymous_data_tooltip = sprintf(
       __("Complete documentation on usage tracking is available %1$shere%2$s.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "usage-tracking", "https://www.monsterinsights.com/docs/usage-tracking/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "usage-tracking", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     const text_reset_google_ads_experience = __("Reset Google Ads Experience", "google-analytics-for-wordpress");
@@ -1036,7 +1036,7 @@ const _sfc_main = {
     const text_permissions_title = __("Permissions", "google-analytics-for-wordpress");
     const text_permissions_view_label = __("Allow These User Roles to See Reports", "google-analytics-for-wordpress");
     const text_permissions_view_description = __("Users that have at least one of these roles will be able to view the reports.", "google-analytics-for-wordpress");
-    const text_permissions_view_tooltip = __("Enable specific user roles to access and view the MonsterInsights reports here. A user with the 'manage_options' capability and any user with at least one of these roles can view the reports.", "google-analytics-for-wordpress");
+    const text_permissions_view_tooltip = __("Enable specific user roles to access and view the Heretek Analytics reports here. A user with the 'manage_options' capability and any user with at least one of these roles can view the reports.", "google-analytics-for-wordpress");
     const text_permissions_save_label = __("Allow These User Roles to Save Settings", "google-analytics-for-wordpress");
     const text_permissions_save_description = __("Users that have at least one of these roles will be able to view and save the settings panel.", "google-analytics-for-wordpress");
     const text_permissions_save_tooltip = __("A user with the 'manage_options' capability and any user with at least one of these roles will have permission to view and save the settings panel.", "google-analytics-for-wordpress");
@@ -1054,7 +1054,7 @@ const _sfc_main = {
     const text_exclude_query_params = __("Exclude URL Query Parameters", "google-analytics-for-wordpress");
     const label_exclude_query_params = __("Filter out specific URL query parameters from being tracked inside Google Analytics.", "google-analytics-for-wordpress");
     const label_exclude_query_params_options = __("Exclude Query Parameters", "google-analytics-for-wordpress");
-    const text_error_exclude_query_params = __("MonsterInsights can only exclude parameters that are alphanumeric, contain dashes, or underscores.", "google-analytics-for-wordpress");
+    const text_error_exclude_query_params = __("Heretek Analytics can only exclude parameters that are alphanumeric, contain dashes, or underscores.", "google-analytics-for-wordpress");
     const text_tooltip_exclude_query_params = __("Remove specific URL query parameters from your reports by listing them here, separated by commas. Only use alphanumeric characters, hyphens, and underscores.", "google-analytics-for-wordpress");
     const reports_options = [
       {

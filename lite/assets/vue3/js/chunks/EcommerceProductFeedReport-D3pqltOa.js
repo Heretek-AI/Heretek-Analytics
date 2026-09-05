@@ -52,7 +52,7 @@ const fetchReportData = (report, start, end, compareDateOptions = null) => {
       const support_url = getMonsterInsightsUrl(
         "admin-notices",
         "error-reports-api",
-        "https://www.monsterinsights.com/my-account/support"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       );
       const errorDetails = {
         title: __("Error loading report data", "monsterinsights"),

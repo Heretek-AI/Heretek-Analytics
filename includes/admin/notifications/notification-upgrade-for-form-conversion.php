@@ -24,7 +24,7 @@ final class MonsterInsights_Notification_Upgrade_For_Form_Conversion extends Mon
 	public function prepare_notification_data( $notification ) {
 		$notification['title'] = __( 'Easily Track Form Conversions', 'google-analytics-for-wordpress' );
 		/* translators: Placeholders add a link to the settings page. */
-		$notification['content'] = sprintf( __( 'Track your website\'s form conversion rates by upgrading to %1$sMonsterInsights Pro%2$s.', 'google-analytics-for-wordpress' ), '<a href="' . $this->get_upgrade_url() . '" target="_blank">', '</a>' );
+		$notification['content'] = sprintf( __( 'Track your website\'s form conversion rates by upgrading to %1$sHeretek Analytics Unlocked%2$s.', 'google-analytics-for-wordpress' ), '<a href="' . $this->get_upgrade_url() . '" target="_blank">', '</a>' );
 		$notification['btns']    = array(
 			"get_monsterinsights_pro" => array(
 				'url'         => $this->get_upgrade_url(),

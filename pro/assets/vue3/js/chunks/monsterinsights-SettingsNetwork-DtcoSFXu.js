@@ -44,14 +44,14 @@ const _sfc_main = {
     const license_network = computed(() => licenseStore.license_network);
     const isNetworkLicenseExpired = computed(() => !!license_network.value?.is_expired);
     const text_license_title = __("License Key", "google-analytics-for-wordpress");
-    const text_license_label = sprintf(__("Add your MonsterInsights license key from the email receipt or account area. %1$sRetrieve your license key%2$s.", "google-analytics-for-wordpress"), '<a href="#">', "</a>");
+    const text_license_label = sprintf(__("Add your Heretek Analytics license key from the email receipt or account area. %1$sRetrieve your license key%2$s.", "google-analytics-for-wordpress"), '<a href="#">', "</a>");
     const text_auth_title = __("Google Authentication", "google-analytics-for-wordpress");
     const text_auth_label = __("Connect Google Analytics + WordPress", "google-analytics-for-wordpress");
-    const text_auth_description = __("You will be taken to the MonsterInsights website where you'll need to connect your Analytics account.", "google-analytics-for-wordpress");
+    const text_auth_description = __("You will be taken to the Heretek Analytics website where you'll need to connect your Analytics account.", "google-analytics-for-wordpress");
     const text_setup_wizard_title = __("Setup Wizard", "google-analytics-for-wordpress");
     const text_setup_wizard_label = __("Use our configuration wizard to properly setup Google Analytics with WordPress (with just a few clicks).", "google-analytics-for-wordpress");
     const text_setup_wizard_button = __("Launch Setup Wizard", "google-analytics-for-wordpress");
-    const text_onboarding_note = __("Note: You will be transfered to MonsterInsights.com to complete the setup wizard.", "google-analytics-for-wordpress");
+    const text_onboarding_note = __("Note: You will be transfered to Heretek Analytics.com to complete the setup wizard.", "google-analytics-for-wordpress");
     const text_misc_title = __("Miscellaneous", "google-analytics-for-wordpress");
     const text_announcements_title = __("Hide Announcements", "google-analytics-for-wordpress");
     const text_announcements_description = __("Hides plugin announcements and update details. This includes critical notices we use to inform about deprecations and important required configuration changes.", "google-analytics-for-wordpress");

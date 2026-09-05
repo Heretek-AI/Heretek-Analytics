@@ -132,10 +132,10 @@ const _sfc_main = {
     const text_label_tag_links_in_rss = __("Enable Tag Links in RSS", "google-analytics-for-wordpress");
     const text_title_file_downloads = __("File Downloads", "google-analytics-for-wordpress");
     const text_label_extensions_of_files = __("Extensions of Files to Track as Downloads", "google-analytics-for-wordpress");
-    const text_description_extensions_of_files = __("MonsterInsights will send an event to Google Analytics if a link to a file has one of the above extensions.", "google-analytics-for-wordpress");
+    const text_description_extensions_of_files = __("Heretek Analytics will send an event to Google Analytics if a link to a file has one of the above extensions.", "google-analytics-for-wordpress");
     const text_tooltip_demographics = sprintf(
       __("Enable this setting to add the Demographics and Remarketing features to your Google Analytics tracking code. Make sure to enable Demographics and Remarketing in your Google Analytics account. We have a guide for how to do that in our %1$sknowledge base%2$s. For more information about Remarketing, we refer you to %3$sGoogle's documentation%4$s. Note that usage of this function is affected by privacy and cookie laws around the world. Be sure to follow the laws that affect your target audience.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "demographics", "https://www.monsterinsights.com/docs/enable-demographics-and-interests-report-in-google-analytics/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "demographics", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>",
       '<a href="https://support.google.com/analytics/answer/2444872?hl=en_US" target="_blank" rel="noopener noreferrer">',
       "</a>"
@@ -166,11 +166,11 @@ const _sfc_main = {
     const text_cross_domain = __("Cross Domain Tracking", "google-analytics-for-wordpress");
     const text_cross_domain_description = sprintf(
       __("Cross domain tracking makes it possible for Analytics to see sessions on two related sites as a single session. More info on specific setup steps can be found in our %1$sknowledge base%2$s.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings", "cross-domain", "https://www.monsterinsights.com/docs/setup-cross-domain-tracking/") + '" target="_blank" rel="noopener noreferrer">',
+      '<a href="' + getUrl("settings", "cross-domain", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank" rel="noopener noreferrer">',
       "</a>"
     );
     const text_edd_recommended = sprintf(
-      __("Want to easily sell digital products? MonsterInsights recommends %1$sEasy Digital Downloads%2$s.", "google-analytics-for-wordpress"),
+      __("Want to easily sell digital products? Heretek Analytics recommends %1$sEasy Digital Downloads%2$s.", "google-analytics-for-wordpress"),
       '<a href="' + exit_url + '#/edd-installer">',
       "</a>"
     );

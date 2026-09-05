@@ -213,13 +213,13 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 			});
 		}
 		ob_start(); ?>
-		<!-- This site uses the Google Analytics by MonsterInsights plugin v<?php echo MONSTERINSIGHTS_VERSION; // phpcs:ignore ?> - Using Analytics tracking - https://www.monsterinsights.com/ -->
+		<!-- This site uses the Heretek Analytics plugin v<?php echo MONSTERINSIGHTS_VERSION; // phpcs:ignore ?> - Using Analytics tracking - https://github.com/Heretek-AI/Heretek-Analytics -->
 		<?php if ( ! $track_user ) {
 			if ( empty( $v4_id ) ) {
-				$reason = __( 'Note: MonsterInsights is not currently configured on this site. The site owner needs to authenticate with Google Analytics in the MonsterInsights settings panel.', 'google-analytics-for-wordpress' );
+				$reason = __( 'Note: Heretek Analytics is not currently configured on this site. The site owner needs to authenticate with Google Analytics in the Heretek Analytics settings panel.', 'google-analytics-for-wordpress' );
 				$output .= '<!-- ' . esc_html( $reason ) . ' -->' . PHP_EOL;
 			} elseif ( current_user_can( 'monsterinsights_save_settings' ) ) {
-				$reason = __( 'Note: MonsterInsights does not track you as a logged-in site administrator to prevent site owners from accidentally skewing their own Google Analytics data. If you are testing Google Analytics code, please do so either logged out or in the private browsing/incognito mode of your web browser.', 'google-analytics-for-wordpress' );
+				$reason = __( 'Note: Heretek Analytics does not track you as a logged-in site administrator to prevent site owners from accidentally skewing their own Google Analytics data. If you are testing Google Analytics code, please do so either logged out or in the private browsing/incognito mode of your web browser.', 'google-analytics-for-wordpress' );
 				$output .= '<!-- ' . esc_html( $reason ) . ' -->' . PHP_EOL;
 			} else {
 				$reason = __( 'Note: The site owner has disabled Google Analytics tracking for your user role.', 'google-analytics-for-wordpress' );
@@ -524,7 +524,7 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 		<?php } else { ?>
 			<!-- No tracking code set -->
 		<?php } ?>
-		<!-- / Google Analytics by MonsterInsights -->
+		<!-- / Heretek Analytics -->
 		<?php
 		$output = ob_get_contents();
 		ob_end_clean();

@@ -39,7 +39,7 @@ function useUpsellContent() {
           Lite: __("Upgrade to Pro", "google-analytics-for-wordpress"),
           Plus: __("Upgrade to Pro", "google-analytics-for-wordpress")
         },
-        learnMoreUrl: "https://www.monsterinsights.com/features/custom-dashboard/",
+        learnMoreUrl: "https://github.com/Heretek-AI/Heretek-Analytics",
         sampleDataAvailable: true,
         requiredLicense: "Pro"
       },
@@ -62,7 +62,7 @@ function useUpsellContent() {
         buttonText: {
           Lite: __("Upgrade to Plus", "google-analytics-for-wordpress")
         },
-        learnMoreUrl: "https://www.monsterinsights.com/addon/ecommerce/",
+        learnMoreUrl: "https://github.com/Heretek-AI/Heretek-Analytics",
         sampleDataAvailable: true,
         requiredLicense: "Plus"
       },
@@ -80,7 +80,7 @@ function useUpsellContent() {
         buttonText: {
           Lite: __("Upgrade to Plus", "google-analytics-for-wordpress")
         },
-        learnMoreUrl: "https://www.monsterinsights.com/addon/forms/",
+        learnMoreUrl: "https://github.com/Heretek-AI/Heretek-Analytics",
         sampleDataAvailable: true,
         requiredLicense: "Plus"
       },
@@ -102,7 +102,7 @@ function useUpsellContent() {
           Lite: __("Upgrade to Pro", "google-analytics-for-wordpress"),
           Plus: __("Upgrade to Pro", "google-analytics-for-wordpress")
         },
-        learnMoreUrl: "https://www.monsterinsights.com/addon/publisher/",
+        learnMoreUrl: "https://github.com/Heretek-AI/Heretek-Analytics",
         sampleDataAvailable: true,
         requiredLicense: "Pro"
       },
@@ -125,7 +125,7 @@ function useUpsellContent() {
         buttonText: {
           Lite: __("Upgrade to Plus", "google-analytics-for-wordpress")
         },
-        learnMoreUrl: "https://www.monsterinsights.com/addon/dimensions/",
+        learnMoreUrl: "https://github.com/Heretek-AI/Heretek-Analytics",
         sampleDataAvailable: true,
         requiredLicense: "Plus"
       }
@@ -200,7 +200,7 @@ function useFeatureGate(feature) {
     isSampleMode.value = false;
   };
   const handleUpgrade = () => {
-    const learnMoreUrl = upsellContent.value?.learnMoreUrl || "https://www.monsterinsights.com/pricing/";
+    const learnMoreUrl = upsellContent.value?.learnMoreUrl || "https://github.com/Heretek-AI/Heretek-Analytics";
     const upgradeUrl = getUpgradeUrl(
       "custom-dashboard-upsell",
       `upgrade-${feature}`,
@@ -209,7 +209,7 @@ function useFeatureGate(feature) {
     window.open(upgradeUrl, "_blank");
   };
   const handleLearnMore = () => {
-    const learnMoreUrl = upsellContent.value?.learnMoreUrl || "https://www.monsterinsights.com/";
+    const learnMoreUrl = upsellContent.value?.learnMoreUrl || "https://github.com/Heretek-AI/Heretek-Analytics";
     window.open(learnMoreUrl, "_blank");
   };
   const shouldBlurContent = computed(() => {

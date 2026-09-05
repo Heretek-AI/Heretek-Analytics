@@ -367,7 +367,7 @@ const _sfc_main$1 = {
       }
       return "plus" === license.type || "starter" === license.type;
     });
-    const text_ads_upsell = __("In order to use the PPC Ads Pixel Tracking, upgrade to MonsterInsights Pro", "google-analytics-for-wordpress");
+    const text_ads_upsell = __("In order to use the PPC Ads Pixel Tracking, upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress");
     __("Ads Tracking", "google-analytics-for-wordpress");
     __("In order to use the PPC Ads Pixel Tracking, upgrade to ExactMetrics Pro", "google-analytics-for-wordpress");
     __("Upgrade to PRO", "google-analytics-for-wordpress");
@@ -375,7 +375,7 @@ const _sfc_main$1 = {
     const text_ads_adsense_title = __("Google Ads Tracking", "google-analytics-for-wordpress");
     const text_ads_adsense_description = sprintf(
       __("Requires integration of your Analytics and Ads account. For how to do this, %1$ssee this help page%2$s.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "ads-input", "https://www.monsterinsights.com/how-to-use-google-analytics-with-adwords/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "ads-input", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     const text_ads_adsense_label = __("Enable Google Ads Tracking", "google-analytics-for-wordpress");
@@ -397,7 +397,7 @@ const _sfc_main$1 = {
     const text_ads_google_enhanced_conversions_title = __("Google Enhanced Conversions", "google-analytics-for-wordpress");
     const text_ads_google_enhanced_conversions_description = sprintf(
       __("Improve conversion tracking and attribution with Enhanced Conversions. This setting must be enabled in your Google Ads account for it to take effect. %1$sLearn more here%2$s", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "ads-input", "https://www.monsterinsights.com/docs/how-to-enable-enhanced-conversions-in-google-analytics") + '" target="_blank" rel="noopener">',
+      '<a href="' + getUrl("settings-panel", "ads-input", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank" rel="noopener">',
       "</a>"
     );
     const text_ads_google_enable_enhanced_conversions = __("Enable Enhanced Conversions", "google-analytics-for-wordpress");
@@ -405,7 +405,7 @@ const _sfc_main$1 = {
     const text_ads_meta_description = __("", "google-analytics-for-wordpress");
     const text_ads_meta_pixel_id = __("Pixel ID", "google-analytics-for-wordpress");
     const text_ads_meta_pixel_id_description = sprintf(
-      __("Add your Meta (Formally known as Facebook) Pixel ID. This will automatically enable MonsterInsights to track page views and purchase events.", "google-analytics-for-wordpress"),
+      __("Add your Meta (Formally known as Facebook) Pixel ID. This will automatically enable Heretek Analytics to track page views and purchase events.", "google-analytics-for-wordpress"),
       "<b>",
       "</b>"
     );
@@ -430,11 +430,11 @@ const _sfc_main$1 = {
     const text_ads_bing_tag_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_tiktok_title = __("TikTok Ads Tracking", "google-analytics-for-wordpress");
     const text_ads_tiktok_pixel_id = __("Pixel ID", "google-analytics-for-wordpress");
-    const text_ads_tiktok_pixel_id_description = __("Add your TikTok Pixel ID. This will automatically enable MonsterInsights to track page views and purchase events.", "google-analytics-for-wordpress");
+    const text_ads_tiktok_pixel_id_description = __("Add your TikTok Pixel ID. This will automatically enable Heretek Analytics to track page views and purchase events.", "google-analytics-for-wordpress");
     const text_ads_tiktok_pixel_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_pinterest_title = __("Pinterest Ads Tracking", "google-analytics-for-wordpress");
     const text_ads_pinterest_tag_id = __("Tag ID", "google-analytics-for-wordpress");
-    const text_ads_pinterest_tag_id_description = __("Add your Pinterest Tag ID. This will automatically enable MonsterInsights to track page views and purchase events.", "google-analytics-for-wordpress");
+    const text_ads_pinterest_tag_id_description = __("Add your Pinterest Tag ID. This will automatically enable Heretek Analytics to track page views and purchase events.", "google-analytics-for-wordpress");
     const text_ads_pinterest_tag_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_pinterest_conversion_api_title = __("Pinterest Conversions API", "google-analytics-for-wordpress");
     const text_ads_pinterest_conversions_api_description = __("Get more accurate tracking with the Conversions API from Pinterest by adding your API Token and Ad Account ID.", "google-analytics-for-wordpress");
@@ -446,14 +446,14 @@ const _sfc_main$1 = {
     const text_ads_pinterest_ad_account_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_linkedin_title = __("LinkedIn Ads Tracking", "google-analytics-for-wordpress");
     const text_ads_linkedin_partner_id = __("LinkedIn Partner ID", "google-analytics-for-wordpress");
-    const text_ads_linkedin_partner_id_description = __("Add your LinkedIn partner ID. This will automatically enable MonsterInsights to track page views.", "google-analytics-for-wordpress");
+    const text_ads_linkedin_partner_id_description = __("Add your LinkedIn partner ID. This will automatically enable Heretek Analytics to track page views.", "google-analytics-for-wordpress");
     const text_ads_linkedin_partner_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_linkedin_purchase_conversion_id = __("Purchase Conversion ID", "google-analytics-for-wordpress");
     const text_ads_linkedin_purchase_conversion_id_description = __("Enter your LinkedIn purchase conversion ID.", "google-analytics-for-wordpress");
     const text_ads_linkedin_purchase_conversion_id_tooltip = __("Create Insight Tag conversion from <strong>Measurement > Conversion tracking</strong>. Select conversion category as Purchase.", "google-analytics-for-wordpress");
     const text_ads_snapchat_title = __("Snapchat Ads Tracking", "google-analytics-for-wordpress");
     const text_ads_snapchat_pixel_id = __("Pixel ID", "google-analytics-for-wordpress");
-    const text_ads_snapchat_pixel_id_description = __("Add your Snapchat Pixel ID. This will automatically enable MonsterInsights to track page views.", "google-analytics-for-wordpress");
+    const text_ads_snapchat_pixel_id_description = __("Add your Snapchat Pixel ID. This will automatically enable Heretek Analytics to track page views.", "google-analytics-for-wordpress");
     const text_ads_snapchat_pixel_id_tooltip = __("Works automatically with WooCommerce, Easy Digital Downloads, Restrict Content Pro, MemberPress, LifterLMS, and GiveWP.", "google-analytics-for-wordpress");
     const text_ads_snapchat_api_token = __("Conversions API Token", "google-analytics-for-wordpress");
     const text_ads_snapchat_api_token_description = __("Enter your Snapchat Conversions API Token here.", "google-analytics-for-wordpress");
@@ -855,8 +855,8 @@ const _sfc_main = {
       '<a href="' + addons_url + '">',
       "</a>"
     );
-    const text_forms_upsell = __("In order to use Forms tracking features, upgrade to MonsterInsights Pro", "google-analytics-for-wordpress");
-    const text_dimensions_upsell = __("In order to use Custom Dimensions features, upgrade to MonsterInsights Pro", "google-analytics-for-wordpress");
+    const text_forms_upsell = __("In order to use Forms tracking features, upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress");
+    const text_dimensions_upsell = __("In order to use Custom Dimensions features, upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress");
     const text_forms_input_title = __("Track Form Conversion in Google Analytics", "google-analytics-for-wordpress");
     const text_forms_input_description = __("Form impressions and conversions are being logged for visitors to your site. No configuration is required.", "google-analytics-for-wordpress");
     const text_forms_input_label = __("Enable Form Conversion Tracking", "google-analytics-for-wordpress");
@@ -867,9 +867,9 @@ const _sfc_main = {
     const text_forms_misc_label = __("Miscellaneous WordPress Forms", "google-analytics-for-wordpress");
     const text_dimesions_description_1 = sprintf(
       __("Visit our knowledge base to learn %1$show to setup%2$s and %3$show to use%4$s custom dimensions in Google Analytics.", "google-analytics-for-wordpress"),
-      '<a href="' + getUrl("settings-panel", "custom-dimensions", "https://www.monsterinsights.com/docs/how-do-i-set-up-custom-dimensions") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "custom-dimensions", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>",
-      '<a href="' + getUrl("settings-panel", "custom-dimensions", "https://www.monsterinsights.com/docs/can-find-custom-dimension-reports/") + '" target="_blank">',
+      '<a href="' + getUrl("settings-panel", "custom-dimensions", "https://github.com/Heretek-AI/Heretek-Analytics") + '" target="_blank">',
       "</a>"
     );
     const text_dimesions_description_2 = sprintf(

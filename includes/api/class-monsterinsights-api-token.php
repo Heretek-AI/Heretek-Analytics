@@ -76,7 +76,7 @@ class MonsterInsights_API_Token {
 		if ( empty( $public_key ) || empty( $token_key ) ) {
 			return new WP_Error(
 				'not_authenticated',
-				__( 'Site is not authenticated with MonsterInsights.', 'google-analytics-for-wordpress' )
+				__( 'Site is not authenticated with Heretek Analytics.', 'google-analytics-for-wordpress' )
 			);
 		}
 

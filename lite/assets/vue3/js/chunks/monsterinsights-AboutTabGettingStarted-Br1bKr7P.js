@@ -36,13 +36,13 @@ const _sfc_main = {
   __name: "monsterinsights-AboutTabGettingStarted",
   setup(__props) {
     const { __, sprintf } = wp.i18n;
-    const productName = "MonsterInsights";
+    const productName = "Heretek Analytics";
     const text_getting_started_title = __(
-      "Getting Started with MonsterInsights",
+      "Getting Started with Heretek Analytics",
       "google-analytics-for-wordpress"
     );
     const text_getting_started_p1 = __(
-      "MonsterInsights is the easiest analytics solution on the market to get started with, as we walk you through exactly what you need to do, in plain english, using our 3 minute setup wizard.",
+      "Heretek Analytics is the easiest analytics solution on the market to get started with, as we walk you through exactly what you need to do, in plain english, using our 3 minute setup wizard.",
       "google-analytics-for-wordpress"
     );
     const text_getting_started_p2 = __(
@@ -55,12 +55,12 @@ const _sfc_main = {
     );
     const text_getting_started_link1 = __("Launch the wizard!", "google-analytics-for-wordpress");
     const text_get_pro = __(
-      "Get MonsterInsights Pro and Unlock all the Powerful Features",
+      "Get Heretek Analytics Unlocked and Unlock all the Powerful Features",
       "google-analytics-for-wordpress"
     );
     const text_get_pro_text = sprintf(
       __(
-        "Thanks for being a loyal MonsterInsights Lite user. %1$sUpgrade to MonsterInsights Pro%2$s to unlock all the awesome features and experience why MonsterInsights is consistently rated the best Google Analytics solution for WordPress.",
+        "Thanks for being a loyal Heretek Analytics user. %1$sUpgrade to Heretek Analytics Unlocked%2$s to unlock all the awesome features and experience why Heretek Analytics is consistently rated the best Google Analytics solution for WordPress.",
         "google-analytics-for-wordpress"
       ),
       "<strong>",
@@ -98,12 +98,12 @@ const _sfc_main = {
       __("More advanced features", "google-analytics-for-wordpress")
     ];
     const text_get_upgrade = __(
-      "Get MonsterInsights Pro Today and Unlock all the Powerful Features",
+      "Get Heretek Analytics Unlocked Today and Unlock all the Powerful Features",
       "google-analytics-for-wordpress"
     );
     const text_upgrade_subtitle = sprintf(
       __(
-        "Bonus: MonsterInsights Lite users get %1$s50%% off regular price%2$s, automatically applied at checkout.",
+        "Bonus: Heretek Analytics users get %1$s50%% off regular price%2$s, automatically applied at checkout.",
         "google-analytics-for-wordpress"
       ),
       '<span class="monsterinsights-green-text">',
@@ -123,13 +123,13 @@ const _sfc_main = {
         image: "monsterinsights-bg-img monsterinsights-about-docs-1",
         title: __("How to Connect to Google Analytics", "google-analytics-for-wordpress"),
         text: __(
-          "After you install MonsterInsights, you’ll need to connect your WordPress site with your Google Analytics account. MonsterInsights makes the process easy, with no coding required.",
+          "After you install Heretek Analytics, you’ll need to connect your WordPress site with your Google Analytics account. Heretek Analytics makes the process easy, with no coding required.",
           "google-analytics-for-wordpress"
         ),
         link: getUrl(
           "about-page",
           "documentation",
-          "https://www.monsterinsights.com/docs/connect-google-analytics/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )
       },
       {
@@ -139,55 +139,55 @@ const _sfc_main = {
           "google-analytics-for-wordpress"
         ),
         text: __(
-          "Our goal is to make it as easy as possible for you to measure and track your stats so you can grow your business. This easy-to-follow guide and checklist will get you set up with MonsterInsights’ advanced tracking.",
+          "Our goal is to make it as easy as possible for you to measure and track your stats so you can grow your business. This easy-to-follow guide and checklist will get you set up with Heretek Analytics’ advanced tracking.",
           "google-analytics-for-wordpress"
         ),
         link: getUrl(
           "about-page",
           "documentation",
-          "https://www.monsterinsights.com/docs/getting-started-guide-checklist/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )
       },
       {
         image: "monsterinsights-bg-img monsterinsights-about-docs-3",
         title: __("GDPR Guide", "google-analytics-for-wordpress"),
         text: __(
-          "Compliance with European data laws including GDPR can be confusing and time-consuming. In order to help MonsterInsights users comply with these laws, we’ve created an addon that automates a lot of the necessary configuration changes for you. ",
+          "Compliance with European data laws including GDPR can be confusing and time-consuming. In order to help Heretek Analytics users comply with these laws, we’ve created an addon that automates a lot of the necessary configuration changes for you. ",
           "google-analytics-for-wordpress"
         ),
         link: getUrl(
           "about-page",
           "documentation",
-          "https://www.monsterinsights.com/docs/getting-started-with-the-eu-compliance-addon/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )
       },
       {
         image: "monsterinsights-bg-img monsterinsights-about-docs-4",
         title: __(
-          "How to Install and Activate MonsterInsights Addons",
+          "How to Install and Activate Heretek Analytics Addons",
           "google-analytics-for-wordpress"
         ),
         text: __(
-          "The process for installing and activating addons is quick and easy after you install the MonsterInsights plugin. In this guide we’ll walk you through the process, step by step.",
+          "The process for installing and activating addons is quick and easy after you install the Heretek Analytics plugin. In this guide we’ll walk you through the process, step by step.",
           "google-analytics-for-wordpress"
         ),
         link: getUrl(
           "about-page",
           "documentation",
-          "https://www.monsterinsights.com/docs/how-to-install-monsterinsights-addon/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )
       },
       {
         image: "monsterinsights-bg-img monsterinsights-about-docs-5",
         title: __("Enabling eCommerce Tracking and Reports", "google-analytics-for-wordpress"),
         text: __(
-          "Want to track your eCommerce sales data for your WooCommerce, MemberPress, or Easy Digital Downloads store with MonsterInsights? In this guide, we’ll show you how to enable eCommerce tracking in Google Analytics in just a few clicks.",
+          "Want to track your eCommerce sales data for your WooCommerce, MemberPress, or Easy Digital Downloads store with Heretek Analytics? In this guide, we’ll show you how to enable eCommerce tracking in Google Analytics in just a few clicks.",
           "google-analytics-for-wordpress"
         ),
         link: getUrl(
           "about-page",
           "documentation",
-          "https://www.monsterinsights.com/docs/enable-ecommerce-tracking/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         )
       }
     ];

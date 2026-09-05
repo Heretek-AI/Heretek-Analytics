@@ -66,8 +66,8 @@ const _sfc_main$1 = {
     const isUserFeedback = computed(() => props.addon.slug === "userfeedback-lite");
     const addonTitle = computed(() => {
       let title = props.addon.title || "";
-      if (title.indexOf("MonsterInsights") === 0) {
-        title = title.replace("MonsterInsights ", "");
+      if (title.indexOf("Heretek Analytics") === 0) {
+        title = title.replace("Heretek Analytics ", "");
       }
       return title;
     });
@@ -271,7 +271,7 @@ const _sfc_main = {
   setup(__props) {
     const { __ } = wp.i18n;
     const text_about_title = __(
-      "Hello and welcome to MonsterInsights, the best Google Analytics plugin for WordPress. MonsterInsights shows you exactly which content gets the most visits, so you can analyze and optimize it for higher conversions.",
+      "Hello and welcome to Heretek Analytics, the best Google Analytics plugin for WordPress. Heretek Analytics shows you exactly which content gets the most visits, so you can analyze and optimize it for higher conversions.",
       "google-analytics-for-wordpress"
     );
     const text_about_p1 = __(
@@ -283,14 +283,14 @@ const _sfc_main = {
       "google-analytics-for-wordpress"
     );
     const text_about_p3 = __(
-      "MonsterInsights is brought to you by the same team that's behind the largest WordPress resource site, WPBeginner, the most popular lead-generation software, OptinMonster, and the best WordPress forms plugin, WPForms.",
+      "Heretek Analytics is brought to you by the same team that's behind the largest WordPress resource site, WPBeginner, the most popular lead-generation software, OptinMonster, and the best WordPress forms plugin, WPForms.",
       "google-analytics-for-wordpress"
     );
     const text_about_p4 = __(
       "Yup, we know a thing or two about building awesome products that customers love.",
       "google-analytics-for-wordpress"
     );
-    const text_team_members = __("The MonsterInsights Team", "google-analytics-for-wordpress");
+    const text_team_members = __("The Heretek Analytics Team", "google-analytics-for-wordpress");
     const addonsIncluded = [
       "userfeedback-lite",
       "wpconsent",

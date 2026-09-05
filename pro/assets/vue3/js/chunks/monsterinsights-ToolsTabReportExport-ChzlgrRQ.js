@@ -132,7 +132,7 @@ const _sfc_main = {
   setup(__props) {
     const { __: __2, sprintf } = wp.i18n;
     const pro = isPro();
-    const brandPro = "MonsterInsights Pro";
+    const brandPro = "Heretek Analytics Unlocked";
     const upgradeUrl = getUpgradeUrl("tools", "report-export");
     const texts = {
       sectionTitle: __2("Report Export", "google-analytics-for-wordpress"),

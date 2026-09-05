@@ -130,7 +130,7 @@ function _monsterinsights_deprecated_hook( $hook, $version, $message = null ) {
 	if ( ( WP_DEBUG && apply_filters( 'deprecated_hook_trigger_error', true ) ) || monsterinsights_is_debug_mode() ) {
 		$message = empty( $message ) ? '' : ' ' . $message;
 		// Translators: Placeholders add the hook name, plugin version and bold text.
-		trigger_error( sprintf( esc_html__( '%1$s is %3$sdeprecated%4$s since MonsterInsights version %2$s!', 'google-analytics-for-wordpress' ), $hook, $version, '<strong>', '</strong>' ) . $message ); // phpcs:ignore
+		trigger_error( sprintf( esc_html__( '%1$s is %3$sdeprecated%4$s since Heretek Analytics version %2$s!', 'google-analytics-for-wordpress' ), $hook, $version, '<strong>', '</strong>' ) . $message ); // phpcs:ignore
 	}
 }
 
@@ -187,7 +187,7 @@ function _monsterinsights_deprecated_function( $function, $version, $backtrace =
 	 */
 	if ( ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) || monsterinsights_is_debug_mode() ) {
 		// Translators: Placeholders add the hook name, plugin version and bold text.
-		trigger_error( sprintf( esc_html__( '%1$s is %3$sdeprecated%4$s since MonsterInsights version %2$s.', 'google-analytics-for-wordpress' ), $function, $version, '<strong>', '</strong>' ) );
+		trigger_error( sprintf( esc_html__( '%1$s is %3$sdeprecated%4$s since Heretek Analytics version %2$s.', 'google-analytics-for-wordpress' ), $function, $version, '<strong>', '</strong>' ) );
 		// Limited to previous 1028 characters, but since we only need to move back 1 in stack that should be fine.
 		trigger_error( print_r( $backtrace, 1 ) ); // phpcs:ignore
 		// Alternatively we could dump this to a file.
@@ -290,7 +290,7 @@ function _monsterinsights_notice_deprecated_facebook_instant_articles()
 	?>
 	<div data-dismissible="deprecated-addon-facebook-instant-articles" class="notice notice-error is-dismissible">
 		<p>
-			<?php echo __( 'Facebook Instant Article support ended in April 2023. You may deactivate and delete the MonsterInsights addon at your earliest convenience.', 'google-analytics-for-wordpress' ); ?>
+			<?php echo __( 'Facebook Instant Article support ended in April 2023. You may deactivate and delete the legacy addon at your earliest convenience.', 'google-analytics-for-wordpress' ); ?>
 		</p>
 	</div>
 	<?php
@@ -309,7 +309,7 @@ function _monsterinsights_notice_deprecated_google_optimize()
 	?>
 	<div data-dismissible="deprecated-addon-facebook-instant-articles" class="notice notice-error is-dismissible">
 		<p>
-			<?php echo __( 'Google Optimize and Optimize 360 support ended in September 2023. You may deactivate and delete the MonsterInsights addon at your earliest convenience.', 'google-analytics-for-wordpress' ); ?>
+			<?php echo __( 'Google Optimize and Optimize 360 support ended in September 2023. You may deactivate and delete the legacy addon at your earliest convenience.', 'google-analytics-for-wordpress' ); ?>
 		</p>
 	</div>
 	<?php

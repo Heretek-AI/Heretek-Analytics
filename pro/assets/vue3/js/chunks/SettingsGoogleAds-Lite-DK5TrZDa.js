@@ -25,13 +25,13 @@ const _sfc_main$1 = {
         '<a href="' + getMonsterInsightsUrl(
           "google-ads",
           "google-pax",
-          "https://www.monsterinsights.com/docs/google-ads-credit-terms-and-conditions/"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         ) + '" target="_blank">',
         "</a>"
       ),
       google_ads_policies: sprintf(
         __(
-          `*By clicking "Get Started" you agree with MonsterInsights' Terms and Conditions and %sGoogle Ads Policies%s.`,
+          `*By clicking "Get Started" you agree with Heretek Analytics' Terms and Conditions and %sGoogle Ads Policies%s.`,
           "google-analytics-premium"
         ),
         '<a href="https://support.google.com/adspolicy/answer/6008942" target="_blank">',
@@ -63,7 +63,7 @@ const _sfc_main$1 = {
               createBaseVNode("li", null, [
                 _cache[3] || (_cache[3] = createBaseVNode("span", { class: "monsterinsights-google-ads-welcome__check" }, "✔", -1)),
                 createBaseVNode("strong", null, toDisplayString(unref(__)("Manage your campaign performance", "google-analytics-premium")), 1),
-                createTextVNode(" " + toDisplayString(unref(__)(" and track conversions all within MonsterInsights", "google-analytics-premium")), 1)
+                createTextVNode(" " + toDisplayString(unref(__)(" and track conversions all within Heretek Analytics", "google-analytics-premium")), 1)
               ])
             ]),
             createBaseVNode("p", _hoisted_4$1, [
@@ -120,7 +120,7 @@ const _sfc_main = {
     const upsellData = computed(() => ({
       mainheading: __("Google Ads", "google-analytics-premium"),
       title: __(
-        "Automatically set up Google Ads and conversion tracking inside MonsterInsights",
+        "Automatically set up Google Ads and conversion tracking inside Heretek Analytics",
         "google-analytics-premium"
       ),
       subheading: __("Get started with Google Ads in minutes", "google-analytics-premium"),

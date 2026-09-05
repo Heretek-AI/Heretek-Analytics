@@ -162,42 +162,8 @@ class MonsterInsights_Translation {
 	 * @return array Translation data.
 	 */
 	private function get_available_translations( $slug ) {
-		$translations = get_site_transient( $this->remote_cache_key );
-
-		if ( $translations !== false ) {
-			return $translations;
-		}
-
-		$translations = json_decode(
-			wp_remote_retrieve_body(
-				wp_remote_get(
-					sprintf( $this->api_url, $slug ),
-					[
-						'timeout' => 3,
-					]
-				)
-			),
-			true
-		);
-
-		if ( ! is_array( $translations ) || empty( $translations['translations'] ) ) {
-			$translations = [ 'translations' => [] ];
-		}
-
-		// Convert translations from API to a WordPress standard.
-		foreach ( $translations['translations'] as $key => $translation ) {
-			$translations['translations'][ $key ]['type'] = 'plugin';
-			$translations['translations'][ $key ]['slug'] = $slug;
-			$translations['translations'][ $key ]['autoupdate'] = true;
-
-			if ( isset( $translations['translations'][ $key ]['iso'] ) ) {
-				unset( $translations['translations'][ $key ]['iso'] );
-			}
-		}
-
-		set_site_transient( $this->remote_cache_key, $translations );
-
-		return $translations;
+		// External translation CDN calls permanently disabled in Heretek Analytics
+		return array( 'translations' => array() );
 	}
 
 	/**

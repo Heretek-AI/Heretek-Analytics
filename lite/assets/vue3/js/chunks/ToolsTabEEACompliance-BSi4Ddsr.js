@@ -43,20 +43,20 @@ const _sfc_main = {
     const text_no = __("No", "google-analytics-for-wordpress");
     const text_check = __("Check", "google-analytics-for-wordpress");
     const text_based_upon_your_current = sprintf(
-      __("Based upon your current ads and analytics settings, you may need to use a Consent Management Platform (CMP) plugin. See which %1$splatforms work with MonsterInsights%2$s.", "google-analytics-for-wordpress"),
-      '<a target="_blank" href="' + getMonsterInsightsUrl("tools_eea_checker", "compliance_fail", "https://www.monsterinsights.com/docs/cookie-consent-plugins-gdpr-compliance/") + '">',
+      __("Based upon your current ads and analytics settings, you may need to use a Consent Management Platform (CMP) plugin. See which %1$splatforms work with Heretek Analytics%2$s.", "google-analytics-for-wordpress"),
+      '<a target="_blank" href="' + getMonsterInsightsUrl("tools_eea_checker", "compliance_fail", "https://github.com/Heretek-AI/Heretek-Analytics") + '">',
       "</a>"
     );
     const text_changing_privacy_laws = __("Changing privacy laws now require website visitors from EEA based countries to provide consent in order to use personalized advertising or data modeling with either Google Ads & Analytics.", "google-analytics-for-wordpress");
     const text_our_one_click_eea_scanner = __("Our one click EEA scanner will indicate whether your website is compliant or if you might need to use a CMP (Consent Management Platform).", "google-analytics-for-wordpress");
-    const text_not_connected = __("You must connect with MonsterInsights before you can check EEA Compliance.", "google-analytics-for-wordpress");
-    const text_required_adlink_tooltip = __("MonsterInsights will check to see if your Analytics profile is connected to an Ads account.", "google-analytics-for-wordpress");
-    const text_required_ad_plugin_tooltip = __("MonsterInsights will check to see if you have our PPC addon installed and activated.", "google-analytics-for-wordpress");
-    const text_required_google_signals_tooltip = __("MonsterInsights will check your Google Analytics settings to verify if Google Signals is enabled.", "google-analytics-for-wordpress");
+    const text_not_connected = __("You must connect with Heretek Analytics before you can check EEA Compliance.", "google-analytics-for-wordpress");
+    const text_required_adlink_tooltip = __("Heretek Analytics will check to see if your Analytics profile is connected to an Ads account.", "google-analytics-for-wordpress");
+    const text_required_ad_plugin_tooltip = __("Heretek Analytics will check to see if you have our PPC addon installed and activated.", "google-analytics-for-wordpress");
+    const text_required_google_signals_tooltip = __("Heretek Analytics will check your Google Analytics settings to verify if Google Signals is enabled.", "google-analytics-for-wordpress");
     const text_last_result_from = __("Last Result From", "google-analytics-for-wordpress");
     const text_currently_there_is_not = sprintf(
       __("We have not detected a requirement to use a Consent Management Tool for EEA compliance. If you'd like to learn more about this or other privacy regulations %1$splease read our tutorial%2$s.", "google-analytics-for-wordpress"),
-      '<a target="_blank" href="' + getMonsterInsightsUrl("tools_eea_checker", "compliance_success", "https://www.monsterinsights.com/docs/cookie-consent-plugins-gdpr-compliance/") + '">',
+      '<a target="_blank" href="' + getMonsterInsightsUrl("tools_eea_checker", "compliance_success", "https://github.com/Heretek-AI/Heretek-Analytics") + '">',
       "</a>"
     );
     const checking = ref(false);

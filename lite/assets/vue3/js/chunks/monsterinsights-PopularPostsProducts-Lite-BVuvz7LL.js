@@ -10,7 +10,7 @@ const _sfc_main$1 = {
   __name: "PopularPostsProductsUpsell",
   setup(__props) {
     const { __ } = wp.i18n;
-    const text_title = __("This feature requires MonsterInsights Pro", "google-analytics-for-wordpress");
+    const text_title = __("This feature requires Heretek Analytics Unlocked", "google-analytics-for-wordpress");
     const text_subtitle = __(
       "By upgrading you will also get access to advanced eCommerce tracking, Custom Dimensions and more.",
       "google-analytics-for-wordpress"

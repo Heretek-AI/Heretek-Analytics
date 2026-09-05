@@ -391,7 +391,7 @@ const _sfc_main$6 = {
     const { __, sprintf } = wp.i18n;
     const text_unlock = sprintf(
       __("Unlock with %s", "google-analytics-for-wordpress"),
-      "MonsterInsights Pro"
+      "Heretek Analytics Unlocked"
     );
     const text_upgrade = __("Upgrade", "google-analytics-for-wordpress");
     const form_upgrade_button_url = getUpgradeUrl("settings-panel", "conversions-forms");
@@ -7668,7 +7668,7 @@ const _sfc_main$2 = {
         const support_url = getUrl(
           "admin-notices",
           "error-upgrading-license",
-          "https://www.monsterinsights.com/my-account/support"
+          "https://github.com/Heretek-AI/Heretek-Analytics"
         );
         errorToast({
           // Translators: Support link tag starts with url and support link tag ends.

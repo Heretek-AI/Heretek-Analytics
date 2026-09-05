@@ -115,6 +115,9 @@ class MonsterInsights_Admin_Assets {
 			$entry_key = $this->get_vue3_entry_key( $page );
 			$this->enqueue_vue3_entry_css( $entry_key );
 		}
+
+		// Enqueue Heretek Blood & Steel Mechanicus Theme
+		wp_enqueue_style( 'heretek-theme-style', plugins_url( 'assets/css/heretek-theme.css', MONSTERINSIGHTS_PLUGIN_FILE ), array(), monsterinsights_get_asset_version() );
 	}
 
 	/**

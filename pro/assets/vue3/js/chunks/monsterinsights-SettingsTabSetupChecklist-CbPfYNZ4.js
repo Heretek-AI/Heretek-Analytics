@@ -263,7 +263,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/how-does-google-analytics-work-beginners-guide/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -278,7 +278,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/what-can-you-measure-with-google-analytics-top-11-metrics/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -293,7 +293,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/how-to-track-organic-keyword-conversions-in-google-analytics/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -308,7 +308,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/crucial-ecommerce-kpis-to-track-in-google-analytics/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -323,7 +323,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/the-beginners-guide-to-custom-dimensions-in-google-analytics/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -338,7 +338,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/conversion-tracking/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -353,7 +353,7 @@ const _sfc_main$1 = {
         }, {
           button: withCtx(() => [
             createBaseVNode("a", {
-              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/how-to-create-google-analytics-4-custom-reports-step-by-step/"),
+              href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
               class: "monsterinsights-button monsterinsights-button-outline",
               target: "_blank",
               textContent: toDisplayString(unref(text_know_more))
@@ -421,7 +421,7 @@ const _sfc_main = {
     const landingPagesTopReportsUrl = reportsUrl + "#/traffic-landing-pages";
     const customViewUrl = getMiGlobal("custom_dashboard_url", "#") + "#/dashboards/add";
     const addonsPageUrl = getAddonsPageUrl();
-    const productName = getMiGlobal("product_name", "MonsterInsights");
+    const productName = getMiGlobal("product_name", "Heretek Analytics");
     const isProVersion = isPro();
     const auth = ref(getMiGlobal("auth", {}));
     const checklist = ref({
@@ -430,15 +430,15 @@ const _sfc_main = {
     const ecommerceProvider = ref("");
     const expandedStep = ref("");
     const dataLoaded = ref(false);
-    const text_step_one_title = __("Step 1 - Set Up MonsterInsights", "google-analytics-for-wordpress");
+    const text_step_one_title = __("Step 1 - Set Up Heretek Analytics", "google-analytics-for-wordpress");
     const step_one = {
-      milestone_one_title: __("Install MonsterInsights", "google-analytics-for-wordpress"),
-      milestone_two_title: __("Customize MonsterInsights", "google-analytics-for-wordpress"),
+      milestone_one_title: __("Install Heretek Analytics", "google-analytics-for-wordpress"),
+      milestone_two_title: __("Customize Heretek Analytics", "google-analytics-for-wordpress"),
       milestone_two_one_title: __("Launch the setup wizard to connect to Google Analytics", "google-analytics-for-wordpress"),
       milestone_two_two_title: __("Select a property to send data to Google Analytics", "google-analytics-for-wordpress"),
       milestone_two_three_title: __("Verify Google Analytics is receiving data (this may take up to 24 hours)", "google-analytics-for-wordpress")
     };
-    const step_two_title = __("Step 2 - Customize MonsterInsights", "google-analytics-for-wordpress");
+    const step_two_title = __("Step 2 - Customize Heretek Analytics", "google-analytics-for-wordpress");
     const step_two = {
       milestone_one_title: __("Google Analytics 4 tracking is set up", "google-analytics-for-wordpress"),
       milestone_one_subtitle: sprintf(__("Google Analytics 3 is sunsetting on July 1, 2023. %1$sLearn More%2$s", "google-analytics-for-wordpress"), '<a target="_blank" href="#">', "</a>"),
@@ -453,7 +453,7 @@ const _sfc_main = {
     };
     const step_three_title = __("Step 3 - Add a Site Note", "google-analytics-for-wordpress");
     const step_three = {
-      milestone_one_title: __("Create a new Site Note that you have installed MonsterInsights", "google-analytics-for-wordpress"),
+      milestone_one_title: __("Create a new Site Note that you have installed Heretek Analytics", "google-analytics-for-wordpress"),
       milestone_one_button_text: __("See How", "google-analytics-for-wordpress"),
       milestone_one_add_site_note_text: __("Add Site Note", "google-analytics-for-wordpress")
     };
@@ -661,7 +661,7 @@ const _sfc_main = {
                   }, null, 8, _hoisted_8)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[1] || (_cache[1] = withModifiers(($event) => clickMilestoneButton($event, "step_2_ecommerce_tracking"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_9))
@@ -682,7 +682,7 @@ const _sfc_main = {
                   }, null, 8, _hoisted_10)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[3] || (_cache[3] = withModifiers(($event) => clickMilestoneButton($event, "step_2_google_search_console"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_11))
@@ -704,7 +704,7 @@ const _sfc_main = {
                   ], 64)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[4] || (_cache[4] = withModifiers(($event) => clickMilestoneButton($event, "step_2_form_conversion"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_13))
@@ -861,7 +861,7 @@ const _sfc_main = {
                   ], 64)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[8] || (_cache[8] = withModifiers(($event) => clickMilestoneButton($event, "step_4_performance_addon"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_30))
@@ -875,14 +875,14 @@ const _sfc_main = {
                 button: withCtx(() => [
                   isProLicensed.value ? (openBlock(), createElementBlock("a", {
                     key: 0,
-                    href: "https://www.monsterinsights.com/docs/",
+                    href: "https://github.com/Heretek-AI/Heretek-Analytics",
                     class: "monsterinsights-button",
                     target: "_blank",
                     textContent: toDisplayString(unref(text_learn_more))
                   }, null, 8, _hoisted_31)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("customevents", "customevents", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("customevents", "customevents", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[9] || (_cache[9] = withModifiers(($event) => clickMilestoneButton($event, "step_4_custom_events"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_32))
@@ -910,7 +910,7 @@ const _sfc_main = {
                   ], 64)) : (openBlock(), createElementBlock("a", {
                     key: 1,
                     class: "monsterinsights-button monsterinsights-button-green",
-                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://www.monsterinsights.com/lite/"),
+                    href: unref(getUrl)("setupchecklist", "setupchecklist", "https://github.com/Heretek-AI/Heretek-Analytics"),
                     onClick: _cache[10] || (_cache[10] = withModifiers(($event) => clickMilestoneButton($event, "step_4_custom_dimensions"), ["prevent"])),
                     textContent: toDisplayString(unref(text_upgrade))
                   }, null, 8, _hoisted_35))

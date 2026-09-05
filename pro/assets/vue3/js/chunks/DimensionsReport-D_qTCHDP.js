@@ -278,7 +278,7 @@ const _sfc_main = {
       const settingsUrl = `${adminUrl}admin.php?page=monsterinsights_settings#/conversions?section=dimensions`;
       showConfirmModal({
         title: __$1("No Custom Dimensions Configured", "google-analytics-for-wordpress"),
-        message: __$1("Please enable at least 1 custom dimension in your MonsterInsights settings to use this report.", "google-analytics-for-wordpress"),
+        message: __$1("Please enable at least 1 custom dimension in your Heretek Analytics settings to use this report.", "google-analytics-for-wordpress"),
         confirmButtonText: __$1("View Dimensions Settings", "google-analytics-for-wordpress"),
         cancelButtonText: __$1("Close", "google-analytics-for-wordpress"),
         clickToClose: true,

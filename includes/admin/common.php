@@ -519,40 +519,7 @@ function monsterinsights_get_upgrade_license_key() {
  *
  */
 function monsterinsights_get_upgrade_link( $medium = '', $campaign = '', $url = '' ) {
-	$license_key = '';
-
-	// Only override the default; an explicit URL is always honoured as passed.
-	if ( empty( $url ) ) {
-		$license_key = monsterinsights_get_upgrade_license_key();
-
-		if ( ! empty( $license_key ) ) {
-			$url = 'https://www.monsterinsights.com/pricing/';
-		}
-	}
-
-	$url = monsterinsights_get_url( $medium, $campaign, $url, false );
-
-	// Appended after monsterinsights_get_url(), whose trailingslashit() would
-	// otherwise append a slash to the key itself.
-	if ( ! empty( $license_key ) ) {
-		$url = add_query_arg( 'license_key', rawurlencode( $license_key ), $url );
-	}
-
-	if ( monsterinsights_is_pro_version() ) {
-		return esc_url( $url );
-	}
-
-	// Get the ShareASale ID
-	$shareasale_id = monsterinsights_get_shareasale_id();
-
-	// If we have a shareasale ID return the shareasale url
-	if ( ! empty( $shareasale_id ) ) {
-		$shareasale_id = absint( $shareasale_id );
-
-		return esc_url( monsterinsights_get_shareasale_url( $shareasale_id, $url ) );
-	} else {
-		return esc_url( $url );
-	}
+	return esc_url( 'https://github.com/Heretek-AI/Heretek-Analytics#readme' );
 }
 
 function monsterinsights_ublock_notice() {
@@ -560,7 +527,7 @@ function monsterinsights_ublock_notice() {
 	<div id="monsterinsights-ublock-origin-error" class="error inline" style="display:none;">
 		<?php
 		// Translators: Placeholders are for links to fix the issue.
-		printf( esc_html__( 'MonsterInsights has detected that it\'s files are being blocked. This is usually caused by a adblock browser plugin (particularly uBlock Origin), or a conflicting WordPress theme or plugin. This issue only affects the admin side of MonsterInsights. To solve this, ensure MonsterInsights is whitelisted for your website URL in any adblock browser plugin you use. For step by step directions on how to do this, %1$sclick here%2$s. If this doesn\'t solve the issue (rare), send us a ticket %3$shere%2$s and we\'ll be happy to help diagnose the issue.', 'google-analytics-for-wordpress' ), '<a href="https://monsterinsights.com/docs/monsterinsights-asset-files-blocked/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">', '</a>', '<a href="https://monsterinsights.com/contact/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">' );
+		printf( esc_html__( 'Heretek Analytics has detected that it\'s files are being blocked. This is usually caused by a adblock browser plugin (particularly uBlock Origin), or a conflicting WordPress theme or plugin. This issue only affects the admin side of Heretek Analytics. To solve this, ensure Heretek Analytics is whitelisted for your website URL in any adblock browser plugin you use. For step by step directions on how to do this, %1$sclick here%2$s. If this doesn\'t solve the issue (rare), send us a ticket %3$shere%2$s and we\'ll be happy to help diagnose the issue.', 'google-analytics-for-wordpress' ), '<a href="https://monsterinsights.com/docs/monsterinsights-asset-files-blocked/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">', '</a>', '<a href="https://monsterinsights.com/contact/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">' );
 		?>
 	</div>
 	<?php

@@ -32,19 +32,19 @@ const _sfc_main = {
     const { __, sprintf } = wp.i18n;
     const text_lite_vs_pro = __("Lite vs Pro", "google-analytics-for-wordpress");
     const text_subtitle = __(
-      "Get the most out of MonsterInsights by upgrading to Pro and unlocking all of the powerful features.",
+      "Get the most out of Heretek Analytics by upgrading to Pro and unlocking all of the powerful features.",
       "google-analytics-for-wordpress"
     );
     const text_feature = __("Feature", "google-analytics-for-wordpress");
     const text_lite = __("Lite", "google-analytics-for-wordpress");
     const text_pro = __("Pro", "google-analytics-for-wordpress");
     const text_get_upgrade = __(
-      "Get MonsterInsights Pro Today and Unlock all the Powerful Features",
+      "Get Heretek Analytics Unlocked Today and Unlock all the Powerful Features",
       "google-analytics-for-wordpress"
     );
     const text_upgrade_subtitle = sprintf(
       __(
-        "Bonus: MonsterInsights Lite users get %1$s50%% off regular price%2$s, automatically applied at checkout.",
+        "Bonus: Heretek Analytics users get %1$s50%% off regular price%2$s, automatically applied at checkout.",
         "google-analytics-for-wordpress"
       ),
       '<span class="monsterinsights-green-text">',

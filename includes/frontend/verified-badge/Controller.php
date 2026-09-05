@@ -92,7 +92,7 @@ class MonsterInsights_VerifiedBadge_Controller
 			'<div style="text-align: %1$s;"><a href="%2$s" target="_blank" rel="nofollow"><img style="display: inline-block" alt="%3$s" title="%3$s" src="%4$s"/></a></div>',
 			(in_array($atts['position'], array('left', 'center', 'right'), true) ? $atts['position'] : 'center'),
 			$this->get_link(),
-			__('Verified by MonsterInsights', 'google-analytics-for-wordpress'),
+			__('Verified by Heretek Analytics', 'google-analytics-for-wordpress'),
 			$img_src
 		);
 	}

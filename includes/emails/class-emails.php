@@ -256,7 +256,7 @@ class MonsterInsights_WP_Emails {
 	 */
 	public function set_initial_args() {
 		$header_args = array(
-			'title' => esc_html__( 'MonsterInsights', 'google-analytics-for-wordpress' ),
+			'title' => esc_html__( 'Heretek Analytics', 'google-analytics-for-wordpress' ),
 		);
 
 		$args = array(

@@ -674,7 +674,7 @@ const _sfc_main$v = {
       "google-analytics-for-wordpress"
     );
     const screenOptionsHelp = __2(
-      "https://www.monsterinsights.com/docs/how-to-hide-the-monsterinsights-dashboard-widget/",
+      "https://github.com/Heretek-AI/Heretek-Analytics",
       "google-analytics-for-wordpress"
     );
     return (_ctx, _cache) => {
@@ -3088,7 +3088,7 @@ const _sfc_main$1 = {
     const { __: __2 } = wp.i18n;
     const text_heading = __2("Authentication Expired", "google-analytics-for-wordpress");
     const text_body = __2(
-      "Your Google Analytics authentication has expired. Please re-authenticate from MonsterInsights Settings.",
+      "Your Google Analytics authentication has expired. Please re-authenticate from Heretek Analytics Settings.",
       "google-analytics-for-wordpress"
     );
     const text_button = __2("Open Settings", "google-analytics-for-wordpress");
@@ -3133,7 +3133,7 @@ const _sfc_main = {
     const wizardUrl = computed(() => getMiGlobal("wizard_url", "#"));
     const text_overview_report = __2("Overview Report", "google-analytics-for-wordpress");
     const text_no_permission = __2(
-      "You don't have permission to view MonsterInsights reports.",
+      "You don't have permission to view Heretek Analytics reports.",
       "google-analytics-for-wordpress"
     );
     const text_not_authed_heading = __2(
@@ -3141,7 +3141,7 @@ const _sfc_main = {
       "google-analytics-for-wordpress"
     );
     const text_not_authed_body = __2(
-      "To see your website stats, please connect MonsterInsights to Google Analytics.",
+      "To see your website stats, please connect Heretek Analytics to Google Analytics.",
       "google-analytics-for-wordpress"
     );
     const text_setup_button = __2("Setup Website Analytics", "google-analytics-for-wordpress");

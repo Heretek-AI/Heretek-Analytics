@@ -32,7 +32,7 @@ final class MonsterInsights_Notification_Headline_Analyzer extends MonsterInsigh
 
 		$notification['title'] = __( 'Try the Headline Analyzer to Boost Your Clicks & Traffic', 'google-analytics-for-wordpress' );
 		// Translators: Headline Analyzer notification content.
-		$notification['content'] = sprintf( __( 'Try the %1$sMonsterInsights Headline Analyzer%2$s tool. We built it to help increase engagement and make your content get more traffic from search engines.', 'google-analytics-for-wordpress' ), '<a href="' . $this->build_external_link( 'https://www.monsterinsights.com/announcing-monsterinsights-new-headline-analyzer/' ) . '" target="_blank">', '</a>' );
+		$notification['content'] = sprintf( __( 'Try the %1$sHeretek Analytics Headline Analyzer%2$s tool. We built it to help increase engagement and make your content get more traffic from search engines.', 'google-analytics-for-wordpress' ), '<a href="' . $this->build_external_link( 'https://www.monsterinsights.com/announcing-monsterinsights-new-headline-analyzer/' ) . '" target="_blank">', '</a>' );
 		$notification['btns']    = array(
 			"learn_more" => array(
 				'url'         => $this->build_external_link( $learn_more_url ),

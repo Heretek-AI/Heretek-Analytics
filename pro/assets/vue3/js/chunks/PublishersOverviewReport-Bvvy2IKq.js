@@ -522,7 +522,7 @@ const LANDING_PAGE_ROWS = [
   { title: "How to Set Up Google Analytics in WordPress", path: "/blog/google-analytics-wordpress/" },
   { title: "Pricing & Plans", path: "/pricing/" },
   { title: "Contact Support", path: "/contact/" },
-  { title: "Features — MonsterInsights Overview", path: "/features/" },
+  { title: "Features — Heretek Analytics Overview", path: "/features/" },
   { title: "Documentation: Getting Started", path: "/docs/getting-started/" },
   { title: "Thank You — Newsletter Confirmed", path: "/thank-you/newsletter/" }
 ];
@@ -1028,7 +1028,7 @@ const _sfc_main = {
       const url = getMonsterInsightsUrl(
         "docs",
         "scroll-tracking",
-        "https://www.monsterinsights.com/docs/scroll-tracking-and-reporting/"
+        "https://github.com/Heretek-AI/Heretek-Analytics"
       );
       return sprintf(
         __$1(
@@ -1070,7 +1070,7 @@ const _sfc_main = {
     };
     function gaLinkOrUpgrade(key) {
       if (isBlocked.value) {
-        return getUpgradeUrl("report", "publisher", "https://www.monsterinsights.com/pricing/");
+        return getUpgradeUrl("report", "publisher", "https://github.com/Heretek-AI/Heretek-Analytics");
       }
       const cfg = GA_LINKS_CONFIG[key];
       if (!cfg) return "";

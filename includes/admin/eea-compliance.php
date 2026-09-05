@@ -197,7 +197,7 @@ class MonsterInsights_EEA_Compliance {
 		// User is not compliant, ask him to check.
 		if ( isset( $compliant_info['compliant'] ) && ! $compliant_info['compliant'] ) {
 			$tests['direct']['monsterinsights_eea_compliance_checker'] = array(
-				'label' => __( 'MonsterInsights EEA Compliance Check', 'google-analytics-for-wordpress' ),
+				'label' => __( 'Heretek Analytics EEA Compliance Check', 'google-analytics-for-wordpress' ),
 				'test'  => array( $this, 'test_eea_compliance_checker' ),
 			);
 		}
@@ -212,13 +212,13 @@ class MonsterInsights_EEA_Compliance {
 		$link = admin_url('admin.php?page=monsterinsights_settings#/tools/eea-compliance');
 
 		return array(
-			'label'       => __( 'Check EEA Compliance with MonsterInsights', 'google-analytics-for-wordpress' ),
+			'label'       => __( 'Check EEA Compliance with Heretek Analytics', 'google-analytics-for-wordpress' ),
 			'status'      => 'recommended',
 			'badge'       => array(
-				'label' => __( 'MonsterInsights', 'google-analytics-for-wordpress' ),
+				'label' => __( 'Heretek Analytics', 'google-analytics-for-wordpress' ),
 				'color' => 'blue',
 			),
-			'description' => __( 'New privacy regulations will soon require you to receive consent from website visitors located inside an EEA country in order to use Google Ads or interest, demographics or location data (Google Analytics Signals). Use the MonsterInsights compliance checker to see if your site requires consent.', 'google-analytics-for-wordpress' ),
+			'description' => __( 'New privacy regulations will soon require you to receive consent from website visitors located inside an EEA country in order to use Google Ads or interest, demographics or location data (Google Analytics Signals). Use the Heretek Analytics compliance checker to see if your site requires consent.', 'google-analytics-for-wordpress' ),
 			'actions'     => sprintf(
 				'<p><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></p>',
 				$link,

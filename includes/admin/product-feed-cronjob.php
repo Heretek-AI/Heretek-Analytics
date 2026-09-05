@@ -145,7 +145,7 @@ class MonsterInsights_Product_Feed_Cronjob extends MonsterInsights_Notification_
 			'start'    => gmdate( 'Y-m-d H:i:s' ),
 			'end'      => gmdate( 'Y-m-d H:i:s', strtotime( '+7 days' ) ), // Show for 7 days
 			'title'    => __( 'See How Your Feeds Perform', 'google-analytics-for-wordpress' ),
-			'content'  => __( 'With MonsterInsights Pro, you can easily measure and track the performance of your product feeds, automatically, with no coding needed. Get started now for 50% off.', 'google-analytics-for-wordpress' ),
+			'content'  => __( 'With Heretek Analytics Unlocked, you can easily measure and track the performance of your product feeds, automatically, with no coding needed. Get started now for 50% off.', 'google-analytics-for-wordpress' ),
 			'btns'     => array(
 				'save_50_percent' => array(
 					'url'         => $this->get_upgrade_url(),

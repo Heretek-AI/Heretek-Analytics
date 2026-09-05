@@ -1,0 +1,307 @@
+/**
+ * Heretek Analytics — Blood & Steel Theme
+ *
+ * Authentic Adeptus Mechanicus / Cyber-Theurgy Visual Identity
+ * Maintained by Heretek AI · Unlocked & Telemetry-Free
+ */
+
+/* =========================================================================
+ * 1. Self-Hosted Typography: Cinzel & Geist
+ * ========================================================================= */
+
+@font-face {
+	font-family: "Cinzel";
+	src: url("../fonts/Cinzel-Bold.woff2") format("woff2");
+	font-weight: 600 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Geist";
+	src: url("../fonts/Geist-Variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* =========================================================================
+ * 2. Theme Custom Properties
+ * ========================================================================= */
+
+:root,
+body.monsterinsights_page,
+.monsterinsights_page,
+#monsterinsights-overview-report-app,
+#monsterinsights-custom-dashboard-app,
+#monsterinsights-settings-app {
+	--htk-font-heading: "Cinzel", "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--htk-font-body: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--htk-primary: #dc2626;
+	--htk-primary-hover: #b91c1c;
+	--htk-primary-glow: rgba(220, 38, 38, 0.45);
+	--htk-primary-light: rgba(220, 38, 38, 0.14);
+	--htk-bg-void: #09090b;
+	--htk-bg-card: #111116;
+	--htk-bg-surface: #171720;
+	--htk-bg-surface-hover: #20202c;
+	--htk-border: #22222d;
+	--htk-border-blood: rgba(220, 38, 38, 0.35);
+	--htk-text-white: #ffffff;
+	--htk-text-dim: #a1a1aa;
+	--htk-text-muted: #71717a;
+	--htk-radius: 8px;
+}
+
+/* =========================================================================
+ * 3. Base Canvas & Void Surfaces
+ * ========================================================================= */
+
+body.monsterinsights_page,
+body.monsterinsights_page #wpcontent,
+body.monsterinsights_page #wpbody,
+body.monsterinsights_page #wpbody-content,
+.monsterinsights_page,
+#monsterinsights-overview-report-app,
+#monsterinsights-custom-dashboard-app,
+#monsterinsights-settings-app {
+	background-color: var(--htk-bg-void) !important;
+	color: #f1f1f5 !important;
+	font-family: var(--htk-font-body);
+}
+
+/* Headings in Cinzel */
+body.monsterinsights_page h1,
+body.monsterinsights_page h2,
+body.monsterinsights_page h3,
+body.monsterinsights_page h4,
+body.monsterinsights_page h5,
+body.monsterinsights_page h6,
+.monsterinsights_page h1,
+.monsterinsights_page h2,
+.monsterinsights_page h3,
+.monsterinsights_page h4,
+.monsterinsights_page h5,
+.monsterinsights_page h6,
+.monsterinsights-header-title {
+	font-family: var(--htk-font-heading) !important;
+	color: var(--htk-text-white) !important;
+	letter-spacing: -0.01em;
+}
+
+/* =========================================================================
+ * 4. Header Bar & Brand Identity
+ * ========================================================================= */
+
+.monsterinsights-header,
+.monsterinsights-appbar,
+.monsterinsights-logo-area {
+	background: #0d0d12 !important;
+	border-bottom: 1px solid var(--htk-border-blood) !important;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(220, 38, 38, 0.1) !important;
+}
+
+.monsterinsights-logo-area img {
+	filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.45));
+	transition: filter 0.3s ease;
+}
+
+.monsterinsights-logo-area img:hover {
+	filter: drop-shadow(0 0 14px rgba(220, 38, 38, 0.75));
+}
+
+/* Custom Unlocked Status Pill */
+.heretek-unlocked-pill,
+.monsterinsights-badge-pro {
+	display: inline-flex !important;
+	align-items: center;
+	background: rgba(220, 38, 38, 0.15) !important;
+	color: #ef4444 !important;
+	border: 1px solid rgba(220, 38, 38, 0.4) !important;
+	border-radius: 4px !important;
+	padding: 3px 8px !important;
+	font-family: var(--htk-font-heading) !important;
+	font-size: 11px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.05em !important;
+	text-transform: uppercase !important;
+	box-shadow: 0 0 8px rgba(220, 38, 38, 0.25) !important;
+}
+
+/* =========================================================================
+ * 5. Report Cards, Metrics & Data Augur Panels
+ * ========================================================================= */
+
+.monsterinsights-report-panel,
+.monsterinsights-reports-wrap,
+.monsterinsights-overview-report,
+.monsterinsights-card,
+.monsterinsights-widget,
+.monsterinsights-settings-content {
+	background-color: var(--htk-bg-card) !important;
+	border: 1px solid var(--htk-border) !important;
+	border-radius: var(--htk-radius) !important;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.monsterinsights-report-panel:hover,
+.monsterinsights-card:hover {
+	border-color: var(--htk-border-blood) !important;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 12px rgba(220, 38, 38, 0.12) !important;
+}
+
+/* Big Metric Numbers */
+.monsterinsights-overview-stat-number,
+.monsterinsights-stat__value,
+.monsterinsights-metric-value {
+	font-family: var(--htk-font-heading) !important;
+	color: var(--htk-text-white) !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.02em !important;
+}
+
+.monsterinsights-overview-stat-label,
+.monsterinsights-stat__label {
+	color: var(--htk-text-dim) !important;
+	text-transform: uppercase !important;
+	font-size: 11px !important;
+	letter-spacing: 0.05em !important;
+}
+
+/* Tables & Lists */
+.monsterinsights_page table,
+.monsterinsights-report-table,
+.monsterinsights-table {
+	background: var(--htk-bg-card) !important;
+	color: #e4e4e7 !important;
+	border-color: var(--htk-border) !important;
+}
+
+.monsterinsights_page th,
+.monsterinsights-report-table th {
+	background: #16161f !important;
+	color: var(--htk-text-white) !important;
+	font-family: var(--htk-font-heading) !important;
+	border-bottom: 1px solid var(--htk-border-blood) !important;
+}
+
+.monsterinsights_page td,
+.monsterinsights-report-table td {
+	border-bottom: 1px solid var(--htk-border) !important;
+	color: #d4d4d8 !important;
+}
+
+/* =========================================================================
+ * 6. Buttons & Interactive Controls
+ * ========================================================================= */
+
+.monsterinsights_page .button-primary,
+.monsterinsights-button,
+.monsterinsights-btn-primary {
+	background: var(--htk-primary) !important;
+	border: 1px solid #b91c1c !important;
+	color: #ffffff !important;
+	border-radius: 4px !important;
+	font-family: var(--htk-font-heading) !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.02em !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 10px rgba(220, 38, 38, 0.3) !important;
+	transition: background 0.2s, box-shadow 0.2s, transform 0.15s !important;
+	cursor: pointer !important;
+}
+
+.monsterinsights_page .button-primary:hover,
+.monsterinsights-button:hover,
+.monsterinsights-btn-primary:hover {
+	background: var(--htk-primary-hover) !important;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(220, 38, 38, 0.6) !important;
+	transform: translateY(-1px);
+}
+
+.monsterinsights_page .button-secondary,
+.monsterinsights-btn-secondary {
+	background: #181822 !important;
+	border: 1px solid var(--htk-border) !important;
+	color: #e4e4e7 !important;
+	border-radius: 4px !important;
+}
+
+.monsterinsights_page .button-secondary:hover,
+.monsterinsights-btn-secondary:hover {
+	background: #222230 !important;
+	border-color: var(--htk-border-blood) !important;
+	color: #ffffff !important;
+}
+
+/* Active navigation tabs */
+.monsterinsights-tabs-nav .active,
+.monsterinsights-tab-active,
+.nav-tab-active {
+	background: var(--htk-primary) !important;
+	color: #ffffff !important;
+	border-color: var(--htk-primary) !important;
+}
+
+/* =========================================================================
+ * 7. Admin Bar Overrides
+ * ========================================================================= */
+
+#wpadminbar #wp-admin-bar-monsterinsights_reports_menu .ab-item,
+#wpadminbar #wp-admin-bar-monsterinsights_reports_menu .ab-label {
+	color: #e4e4e7 !important;
+}
+
+#wpadminbar #wp-admin-bar-monsterinsights_reports_menu:hover .ab-item {
+	color: #ffffff !important;
+	background: #1a1a24 !important;
+}
+
+#wpadminbar .monsterinsights-menu-notification-indicator {
+	background: var(--htk-primary) !important;
+	color: #ffffff !important;
+	font-weight: 700 !important;
+	box-shadow: 0 0 6px var(--htk-primary-glow) !important;
+}
+
+/* =========================================================================
+ * 8. Blood & Steel Custom Scrollbars
+ * ========================================================================= */
+
+body.monsterinsights_page ::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+body.monsterinsights_page ::-webkit-scrollbar-track {
+	background: #0a0a0d;
+	border-left: 1px solid #1f1f27;
+}
+
+body.monsterinsights_page ::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+	border-radius: 4px;
+	border: 1px solid rgba(220, 38, 38, 0.35);
+}
+
+body.monsterinsights_page ::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 50%, #b91c1c 100%);
+}
+
+/* =========================================================================
+ * 9. Upsell & Telemetry Disarmament (Hide remnants)
+ * ========================================================================= */
+
+.monsterinsights-upgrade-submenu,
+.monsterinsights-automated-submenu,
+.monsterinsights-upsell,
+.monsterinsights-wooedd-upsell-row,
+.monsterinsights-wooedd-upsell-left,
+.monsterinsights-wooedd-upsell-right,
+.mi-upsell-banner,
+.monsterinsights-notice-upsell,
+.monsterinsights-am-deactivation-survey-modal,
+[class*="upsell-banner"],
+[class*="upgrade-to-pro"] {
+	display: none !important;
+}

@@ -286,8 +286,8 @@ const _sfc_main = {
     const text_create_description = __("Site note categories help you keep track of related site notes so that you can see how particular types of events affect your website.", "google-analytics-for-wordpress");
     const text_no_categories = __("There aren’t any categories. Go ahead and create one!", "google-analytics-for-wordpress");
     const upsell = {
-      title: __("Upgrade to MonsterInsights Pro", "google-analytics-for-wordpress"),
-      subtitle: __("Create your own categories, add colors, and export your site notes with MonsterInsights Pro.", "google-analytics-for-wordpress"),
+      title: __("Upgrade to Heretek Analytics Unlocked", "google-analytics-for-wordpress"),
+      subtitle: __("Create your own categories, add colors, and export your site notes with Heretek Analytics Unlocked.", "google-analytics-for-wordpress"),
       unlock: __("Upgrade and Unlock", "google-analytics-for-wordpress"),
       view_all: __("View all Pro features", "google-analytics-for-wordpress"),
       features: [

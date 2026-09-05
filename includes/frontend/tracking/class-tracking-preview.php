@@ -73,9 +73,9 @@ class MonsterInsights_Tracking_Preview extends MonsterInsights_Tracking_Abstract
 	 *
 	 */
 	public function frontend_output() {
-		$output = '<!-- This site uses the Google Analytics by MonsterInsights plugin v ' . MONSTERINSIGHTS_VERSION . ' - https://www.monsterinsights.com/ -->';
-		$output .= '<!-- ' . esc_html__( "You are currently in a preview window. MonsterInsights doesn't track preview window traffic to avoid false visit reports.", 'google-analytics-for-wordpress' ) . ' -->';
-		$output .= '<!-- / Google Analytics by MonsterInsights -->';
+		$output = '<!-- This site uses the Heretek Analytics plugin v ' . MONSTERINSIGHTS_VERSION . ' - https://github.com/Heretek-AI/Heretek-Analytics -->';
+		$output .= '<!-- ' . esc_html__( "You are currently in a preview window. Heretek Analytics doesn't track preview window traffic to avoid false visit reports.", 'google-analytics-for-wordpress' ) . ' -->';
+		$output .= '<!-- / Heretek Analytics -->';
 
 		return $output;
 	}

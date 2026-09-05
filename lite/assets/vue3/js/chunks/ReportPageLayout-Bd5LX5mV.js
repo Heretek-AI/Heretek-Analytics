@@ -304,7 +304,7 @@ const _sfc_main$1 = {
       },
       "custom-events": {
         mainheading: __("Custom Events Report", "google-analytics-for-wordpress"),
-        title: __("Track MonsterInsights custom events and key events in Google Analytics.", "google-analytics-for-wordpress"),
+        title: __("Track Heretek Analytics custom events and key events in Google Analytics.", "google-analytics-for-wordpress"),
         features: [
           __("Sessions and Pageviews Over Time", "google-analytics-for-wordpress"),
           __("Event Count, Sessions, and Engagement", "google-analytics-for-wordpress"),
@@ -614,7 +614,7 @@ const _sfc_main = {
       const addon = props.requiredAddon || "required";
       const addonName = addon.charAt(0).toUpperCase() + addon.slice(1);
       return sprintf(
-        __("Please activate the MonsterInsights %s addon to view %s reports.", "google-analytics-for-wordpress"),
+        __("Please activate the Heretek Analytics %s addon to view %s reports.", "google-analytics-for-wordpress"),
         addonName,
         addonName.toLowerCase()
       );
@@ -662,9 +662,9 @@ const _sfc_main = {
         class: normalizeClass(["monsterinsights-report-page", { "monsterinsights-blur": unref(shouldBlur) }])
       }, [
         !unref(canViewReports) ? (openBlock(), createElementBlock("div", _hoisted_1, [
-          createBaseVNode("h3", null, toDisplayString(unref(__)("You don't have permission to view MonsterInsights reports.", "google-analytics-for-wordpress")), 1),
+          createBaseVNode("h3", null, toDisplayString(unref(__)("You don't have permission to view Heretek Analytics reports.", "google-analytics-for-wordpress")), 1),
           createBaseVNode("div", _hoisted_2, [
-            createBaseVNode("p", null, toDisplayString(unref(__)("Please check with your site administrator that your role is included in the MonsterInsights permissions settings.", "google-analytics-for-wordpress")), 1)
+            createBaseVNode("p", null, toDisplayString(unref(__)("Please check with your site administrator that your role is included in the Heretek Analytics permissions settings.", "google-analytics-for-wordpress")), 1)
           ])
         ])) : createCommentVNode("", true),
         unref(canViewReports) && !unref(isAuthenticated) ? (openBlock(), createBlock(AuthModal, {
