@@ -389,15 +389,7 @@ function monsterinsights_administrator_tracking_notice() {
 		<h3><?php esc_html_e( 'Tracking is Disabled for Administrators', 'google-analytics-for-wordpress' ); ?></h3>
 		<p>
 			<?php
-				$doc_url = 'https://monsterinsights.com/docs/tracking-disabled-administrators-editors';
-				$doc_url = add_query_arg(
-					array(
-						'utm_source'   => monsterinsights_is_pro_version() ? 'proplugin' : 'liteplugin',
-						'utm_medium'   => 'frontend-notice',
-						'utm_campaign' => 'admin-tracking-doc',
-					),
-					$doc_url
-				);
+				$doc_url = 'https://github.com/Heretek-AI/Heretek-Analytics#readme';
 				// Translators: %s is the link to the article where more details about tracking are listed.
 				printf( esc_html__( 'To keep stats accurate, we do not load Google Analytics scripts for admin users. %1$sLearn More &raquo;%2$s', 'google-analytics-for-wordpress' ), '<a href="' . esc_url( $doc_url ) . '" target="_blank">', '</a>' );
 			?>

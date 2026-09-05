@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <em>Direct Google Analytics 4 (GA4) Data API reporting, enhanced eCommerce, automated forms attribution, custom dimensions, PPC tracking, and EU Consent Mode v2 — with zero paywalls, zero telemetry, and zero phone-homes.</em>
+  <em>A 100% self-hosted Google Analytics 4 plugin for WordPress. Configure with a Measurement ID and a Google Cloud service account JSON; reports come straight from the GA4 Data API. Zero subscriptions, zero phone-homes, zero paywalls.</em>
 </p>
 
 <div align="center">
@@ -19,11 +19,10 @@
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D7.4-8892BF.svg)](https://php.net)
 [![WordPress](https://img.shields.io/badge/WordPress-%3E%3D5.6-21759B.svg)](https://wordpress.org)
 [![Telemetry](https://img.shields.io/badge/Telemetry-Zero%20Phone--Home-brightgreen.svg)](#-zero-telemetry-manifesto)
-[![Abilities](https://img.shields.io/badge/Abilities-Pro%2FAgency%20Unlocked-dc2626.svg)](#-unlocked-telemetry-capabilities)
 [![GitHub Issues](https://img.shields.io/github/issues/Heretek-AI/Heretek-Analytics)](https://github.com/Heretek-AI/Heretek-Analytics/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/Heretek-AI/Heretek-Analytics?style=social)](https://github.com/Heretek-AI/Heretek-Analytics)
 
-**[Quick Start](#-quick-start) · [Unlocked Capabilities](#-unlocked-telemetry-capabilities) · [Local REST Gateway](#-autonomous-local-rest-gateway) · [Theme: Blood & Steel](#-the-blood--steel-theme) · [GitHub Updater](#-native-in-dashboard-github-updates) · [Contributing](#-contributing)**
+**[Quick Start](#-quick-start) · [Capabilities](#-capabilities) · [GA4 Data API Gateway](#-ga4-data-api-gateway) · [Theme: Blood & Steel](#-the-blood--steel-theme) · [GitHub Updater](#-native-in-dashboard-github-updates) · [Contributing](#-contributing)**
 
 </div>
 
@@ -36,44 +35,39 @@
 Upstream commercial analytics distributions artificially cordon vital enterprise capabilities — eCommerce funnels, form submission tracking, custom dimensions, PPC pixel tracking, and raw reporting data — behind expensive annual paywalls (up to $799/year). Worse, they relay your site's proprietary visitor statistics through third-party cloud proxy servers and bundle unsolicited marketing rotators, deactivation surveys, and tracking telemetry.
 
 **Heretek Analytics liberates the Machine Spirit:**
-- 🔓 **Permanent Pro & Agency Tier Unlock**: Every report, module, and dashboard capability is available immediately upon activation. Zero subscription keys or license verifications required.
-- 🛡️ **Zero Telemetry Manifesto**: All upstream phone-home beacons, Customer360 usage trackers, third-party notification feeds, and upsell banners have been purged.
-- ⚡ **Autonomous Local REST Gateway**: Dashboard Vue 3 reports communicate directly with your local WordPress REST API and Google's GA4 Data API rather than cloud relays.
-- 🩸 **Blood & Steel Aesthetic**: Complete interface overhaul styled in the dark, venerable cyber-theurgy aesthetic of the Adeptus Mechanicus — Obsidian void surfaces, Cinzel gothic tech typography, glowing crimson telemetry metrics, and Mechanicus skull-cog iconography.
+- 🔓 **Stand-alone, no subscription, no license key, no paywall** — the entire feature surface is shipped in the plugin and never gated behind a third-party API call.
+- 🛡️ **Zero Telemetry Manifesto**: All upstream phone-home beacons, Customer360 usage trackers, third-party notification feeds, upsell banners, hosted "Connect" portals, and deactivation-survey relays have been purged.
+- ⚡ **Direct GA4 Data API Gateway**: The admin Reports dashboard calls `analyticsdata.googleapis.com` directly using a Google Cloud service account JSON key you supply — no relays, no SaaS proxies.
+- 🩸 **Blood & Steel Aesthetic**: Pure-PHP admin pages styled in the dark cyber-theurgy aesthetic of the Adeptus Mechanicus — Obsidian void surfaces, Cinzel gothic tech typography, glowing crimson telemetry readouts.
 - 🔄 **Native In-Dashboard GitHub Releases Updater**: Automated release detection and one-click upgrades directly from [`Heretek-AI/Heretek-Analytics/releases`](https://github.com/Heretek-AI/Heretek-Analytics/releases).
 
 ---
 
-## ⚡ Unlocked Telemetry Capabilities
+## ⚙️ Capabilities
 
-| Telemetry Subsystem | Upstream Lite | Upstream Agency ($799/yr) | Heretek Analytics (Free & Unrestricted) |
-|:---|:---:|:---:|:---:|
-| **Core GA4 Tracking (gtag.js)** | ✅ | ✅ | ✅ **Full Compatibility** |
-| **Augur Reports Dashboard (Vue 3)** | ❌ (Truncated) | ✅ | ✅ **Full Access Unlocked** |
-| **Enhanced eCommerce (WooCommerce & EDD)** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Automated Forms Attribution (8+ Engines)** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Custom Dimensions (9 Contextual Keys)** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **PPC & Ad Attribution (Google, Meta, CAPI)** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Media & Video Tracking (YouTube, Vimeo, HTML5)** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **EU Consent Mode v2 & Privacy Guard** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **User Journey & Real-Time Funnels** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Site Notes & Chronological Telemetry** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Popular Posts & Products Widgets** | ❌ (Basic) | ✅ | ✅ **Full Access Unlocked** |
-| **Report Exports & PDF Summaries** | ❌ Paywalled | ✅ | ✅ **Built-in & Unlocked** |
-| **Telemetry & Spyware Free** | ❌ Phone-home | ❌ Phone-home | ✅ **100% Private (Zero Telemetry)** |
-| **Autonomous Local REST Gateway** | ❌ Cloud relay | ❌ Cloud relay | ✅ **Local WordPress REST Endpoint** |
-| **Cost** | Free (Crippled) | **$799 / year** | **$0 (GPLv3 Open Source Forever)** |
+| Subsystem | Heretek Analytics |
+|:---|:---:|
+| **Core GA4 tracking (gtag.js)** | ✅ Auto page-view, scroll, download, affiliate-link, form, AMP |
+| **In-admin Reports dashboard** | ✅ Pure-PHP, server-rendered KPI tiles + charts + tables |
+| **Direct GA4 Data API reporting** | ✅ Real data via service-account JWT — no random-number stub |
+| **Google Consent Mode v2** | ✅ EEA compliance helpers in `includes/admin/eea-compliance.php` |
+| **Server-side GA4 Measurement Protocol** | ✅ `MonsterInsights_Measurement_Protocol_V4` |
+| **Per-page tracking exclusion** | ✅ Editor sidebar metabox |
+| **Native GitHub release updater** | ✅ Automatic, no license keys |
+| **Settings export** | ✅ JSON download from the Tools page |
+| **Telemetry / phone-home / SaaS relay** | ❌ None |
+| **License key / subscription / paywall** | ❌ None |
+| **Cost** | **$0 forever (GPLv3)** |
 
 ---
 
 ## 🩸 The Blood & Steel Theme
 
-Heretek Analytics casts aside generic SaaS styling in favor of the sacred **Blood & Steel** design language pioneered in [Heretek Control Core](https://github.com/Heretek-AI/heretek-control-core):
+Heretek Analytics renders its admin pages in a dark, gothic-tech aesthetic:
 
 - **Void Surfaces**: Obsidian canvas (`#09090b`), tech-slab cards (`#111116`), deep carbon borders (`#27272a`), and crimson glows.
-- **Sacred Typography**: **Cinzel Bold** headings for ancient command hierarchy paired with **Geist** geometric monospace/sans-serif for precise numeric readouts.
-- **Mechanicus Iconography**: The sacred split skull-and-cog of Mars adorning the WordPress sidebar, admin bar, app headers, and loading cogitators.
-- **Suppression of Upstream Clutter**: Complete eradication of commercial upsell cards, fake lock badges, and promotional notification rotators.
+- **Sacred Typography**: **Cinzel Bold** headings for hierarchy paired with **Geist** for numeric readouts.
+- **Suppression of Upstream Clutter**: No commercial upsell cards, no fake lock badges, no promotional notification rotators. The Settings page is a single form. The Reports page is KPI tiles + two tables + a daily chart.
 
 ---
 
@@ -96,10 +90,23 @@ wp plugin activate heretek-analytics
 
 ### 2. Configuration
 
-1. In your WordPress admin sidebar, locate the sacred cog icon and click **Heretek Analytics** → **Settings**.
-2. **Measurement ID**: Provide your Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`).
-3. **Google Consent Mode v2**: Configure automated consent defaults (`analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`) under **EEA Compliance**.
-4. **Autonomous Reporting**: Under **Reporting**, configure direct Google Cloud GA4 Data API credentials to power the Vue 3 dashboard charts locally.
+1. In your WordPress admin sidebar, locate the cog icon and click **Heretek Analytics** → **Settings**.
+2. Fill in three fields and click **Save Settings**:
+   - **GA4 Measurement ID** — the `G-XXXXXXXXXX` string from your GA4 property.
+   - **GA4 Property ID** — the numeric ID (`Admin → Property settings → Property ID`).
+   - **Service Account JSON** — a Google Cloud service account key (see below).
+3. Click **Verify Credentials** to confirm the service account has access to the GA4 property.
+4. Once saved, visit **Reports** in the same sidebar to see real GA4 data.
+
+### 3. Create a Google Cloud service account (one-time, ~3 minutes)
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and pick (or create) a project.
+2. **APIs & Services → Library** → enable **Google Analytics Data API**.
+3. **IAM & Admin → Service Accounts** → **Create Service Account**, then **Keys → Add Key → Create new key → JSON**. Save the downloaded JSON file.
+4. Paste the **entire contents** of the JSON file into the **Service Account JSON** field on the Settings page.
+5. In [GA4](https://analytics.google.com/), open **Admin → Property access management** and add the service account email (it looks like `[email protected]`) as a **Viewer**.
+
+That's it — no WordPress license keys, no MonsterInsights account, no third-party relay.
 
 ---
 
@@ -113,25 +120,33 @@ Heretek Analytics includes an integrated GitHub Releases updater:
 
 ---
 
-## 🌐 Autonomous Local REST Gateway
+## 🌐 GA4 Data API Gateway
 
-Upstream forks demand that reporting data be sent through third-party servers. Heretek Analytics replaces this dependency with an in-process local REST gateway:
+Reporting data flows straight from Google — never through a third-party proxy:
 
 ```
-POST /wp-json/heretek-analytics/v1/reporting/api/v3/reporting/query
+POST /wp-json/heretek-analytics/v1/reporting/query
 ```
 
-The gateway parses incoming Vue 3 report queries, securely communicates with the official Google Analytics Data API, and returns formatted metric payloads directly to your browser session.
+The PHP gateway `includes/api/class-heretek-rest-reporting-gateway.php`:
+
+1. Mints a JWT signed with your service-account private key.
+2. Exchanges the JWT for an OAuth2 bearer token at `oauth2.googleapis.com/token` (cached for 50 minutes).
+3. Calls `analyticsdata.googleapis.com/v1beta/properties/{id}:runReport` with the bearer token.
+4. Returns a normalised rows array to the admin Reports page.
+
+The same gateway powers a `verify_credentials()` helper used by the **Verify Credentials** button on the Settings page.
 
 ---
 
 ## 🛡️ Zero Telemetry Manifesto
 
 Heretek Analytics operates with total respect for data sovereignty:
-- **No Phone-Homes**: No license heartbeat checks, pingbacks, or beacon reporting.
-- **No Third-Party Feeds**: The remote notification JSON feed and remote translations CDN are disabled.
-- **No Commercial Upsells**: Rotators for UserFeedback, OptinMonster, WPForms, and seasonal marketing promotions are purged.
-- **Privacy Guard**: Automatically strips PII query strings and sensitive request parameters before transmission to Google Analytics.
+- **No Phone-Homes**: No license heartbeat checks, pingbacks, hosted onboarding portal redirects, or SaaS beacons. The plugin never reaches `monsterinsights.com`, `exactmetrics.com`, `app.monsterinsights.com`, `api.monsterinsights.com`, `connect.monsterinsights.com`, `upgrade.monsterinsights.com`, `plugin-cdn.monsterinsights.com`, or `ai-api.monsterinsights.com`.
+- **No Third-Party Feeds**: The remote notification JSON feed and remote translations CDN are gone.
+- **No Commercial Upsells**: The "Connect to MonsterInsights" wizard, the rotating promo menu items (Earth Day, Halloween, …), the wpconsent install notice, and the WPForms / UserFeedback / OptinMonster cross-promos are all removed.
+- **No Vue app**: The admin UI is plain PHP, so there is no JS bundle phoning home.
+- **Privacy Guard**: Sensitive query parameters are stripped before transmission to Google Analytics.
 
 ---
 

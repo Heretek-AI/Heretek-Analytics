@@ -523,15 +523,10 @@ function monsterinsights_get_upgrade_link( $medium = '', $campaign = '', $url = 
 }
 
 function monsterinsights_ublock_notice() {
-	ob_start(); ?>
-	<div id="monsterinsights-ublock-origin-error" class="error inline" style="display:none;">
-		<?php
-		// Translators: Placeholders are for links to fix the issue.
-		printf( esc_html__( 'Heretek Analytics has detected that it\'s files are being blocked. This is usually caused by a adblock browser plugin (particularly uBlock Origin), or a conflicting WordPress theme or plugin. This issue only affects the admin side of Heretek Analytics. To solve this, ensure Heretek Analytics is whitelisted for your website URL in any adblock browser plugin you use. For step by step directions on how to do this, %1$sclick here%2$s. If this doesn\'t solve the issue (rare), send us a ticket %3$shere%2$s and we\'ll be happy to help diagnose the issue.', 'google-analytics-for-wordpress' ), '<a href="https://monsterinsights.com/docs/monsterinsights-asset-files-blocked/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">', '</a>', '<a href="https://monsterinsights.com/contact/" target="_blank" rel="noopener noreferrer" referrer="no-referrer">' );
-		?>
-	</div>
-	<?php
-	return ob_get_clean();
+	// Heretek Analytics admin pages are pure PHP and ship no JS bundles, so
+	// there is nothing for an ad-blocker to block. The upstream JS-error
+	// detector is kept as a no-op so legacy callers still work.
+	return '';
 }
 
 /**
@@ -654,28 +649,10 @@ add_action( 'admin_init', 'monsterinsights_maybe_add_wp_php_version_notification
  *
  */
 function monsterinsights_year_in_review_notification() {
-
-	// Check if dates are between Jan 1st 2024 & 14th Jan 2024.
-	if ( monsterinsights_date_is_between( '2024-01-01', '2024-01-14' ) ) {
-
-		$notification['id']      = 'monsterinsights_notification_year_in_review';
-		$notification['type']    = array( 'basic', 'lite', 'master', 'plus', 'pro' );
-		$notification['start']   = '2024-01-01';
-		$notification['end']     = '2024-01-14';
-		$notification['title']   = esc_html__( 'View 2024 Year in Review report!', 'google-analytics-for-wordpress' );
-		$notification['content'] = esc_html__( 'See how your website performed this year and find tips along the way to help grow even more in 2024!', 'google-analytics-for-wordpress' );
-		$notification['btns']    = array(
-			'learn_more' => array(
-				// No year-in-review route exists in the report app; send readers
-				// to the overview report rather than a hash nothing resolves.
-				'url'  => esc_url( admin_url( 'admin.php?page=monsterinsights_overview_report' ) ),
-				'text' => esc_html__( 'Learn More', 'google-analytics-for-wordpress' ),
-			),
-		);
-
-		// Add the notification.
-		MonsterInsights()->notifications->add( $notification );
-	}
+	// Heretek Analytics has no Notifications subsystem; this is a stub kept for
+	// backward compatibility. The upstream year-in-review notification has been
+	// retired.
+	return;
 }
 
 add_action( 'admin_init', 'monsterinsights_year_in_review_notification' );
@@ -730,18 +707,3 @@ function monsterinsights_yearinreview_dates() {
 		'show_report' => apply_filters( 'monsterinsights_yearinreview_show_report', $show_report ),
 	);
 }
-
-/**
- * Inlcude admin assets files.
- */
-require_once __DIR__ . '/admin-assets.php';
-
-/**
- * Include AI Charlie assets loader.
- */
-require_once __DIR__ . '/ai-charlie-assets.php';
-
-/**
- * Inlcude admin Charitable notice files.
- */
-require_once __DIR__ . '/class-monsterinsights-charitable-notice.php';

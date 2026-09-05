@@ -1,142 +1,206 @@
 <?php
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Callback to output the MonsterInsights settings page.
+ * Render the Heretek Analytics Settings page (pure PHP, no Vue).
  *
- * @return void
- * @since 7.4.0
- * @access public
+ * The page is a server-rendered form with three fields:
+ *   - GA4 Measurement ID   (`G-XXXXXXXXXX`)
+ *   - GA4 Property ID      (numeric, e.g. `123456789`)
+ *   - Google Cloud service account JSON key (for the GA4 Data API)
  *
+ * Save happens via admin-ajax POST to `monsterinsights_save_heretek_settings`.
+ * Verification of the credentials happens via `monsterinsights_verify_heretek_credentials`.
+ *
+ * @since 12.0.0
  */
 function monsterinsights_settings_page() {
-	echo monsterinsights_ublock_notice(); // phpcs:ignore
-	monsterinsights_settings_error_page( 'monsterinsights-vue-site-settings' );
-	monsterinsights_settings_inline_js();
-}
+	if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
+	}
 
-function monsterinsights_network_page() {
-	echo monsterinsights_ublock_notice(); // phpcs:ignore
-	monsterinsights_settings_error_page( 'monsterinsights-vue-network-settings' );
-	monsterinsights_settings_inline_js();
+	$auth    = MonsterInsights()->auth;
+	$v4      = $auth->get_manual_v4_id();
+	$prop_id = $auth->get_property_id();
+	$sa      = $auth->get_service_account_json();
+
+	$status = monsterinsights_get_settings_status( $v4, $prop_id, $sa );
+
+	$ajax_url    = admin_url( 'admin-ajax.php' );
+	$nonce_save  = wp_create_nonce( 'monsterinsights_save_heretek_settings' );
+	$nonce_check = wp_create_nonce( 'monsterinsights_verify_heretek_credentials' );
+	$reset_url   = admin_url( 'admin.php?page=monsterinsights_settings' );
+
+	include MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/templates/settings-form.php';
 }
 
 /**
- * Attempt to catch the js error preventing the Vue app from loading and displaying that message for better support.
+ * Multisite network-level settings page.
+ *
+ * For now, Heretek Analytics keeps network settings minimal — site admins
+ * configure their own GA4 ID and service account from each site's settings.
+ *
+ * @since 12.0.0
+ */
+function monsterinsights_network_page() {
+	if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
+	}
+	?>
+	<div class="wrap" style="font-family:'Geist', sans-serif;">
+		<h1><?php esc_html_e( 'Heretek Analytics — Network Settings', 'google-analytics-for-wordpress' ); ?></h1>
+		<p style="max-width:760px;color:#a1a1aa;">
+			<?php esc_html_e( 'Heretek Analytics is configured per site. Each subsite can enter its own GA4 Measurement ID, Property ID, and service account JSON from its own Heretek Analytics settings page. There are no network-wide credentials to set here.', 'google-analytics-for-wordpress' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * Compute the human-readable status line for the Settings page hero.
+ *
+ * @param string $v4      Measurement ID.
+ * @param string $prop_id Property ID.
+ * @param string $sa      Service account JSON.
+ * @return array{level:string,label:string,description:string}
+ */
+function monsterinsights_get_settings_status( $v4, $prop_id, $sa ) {
+	if ( empty( $v4 ) ) {
+		return array(
+			'level'       => 'unconfigured',
+			'label'       => __( 'Measurement ID missing', 'google-analytics-for-wordpress' ),
+			'description' => __( 'Tracking is paused. Save your GA4 Measurement ID to begin injecting the gtag.js snippet on the front-end.', 'google-analytics-for-wordpress' ),
+		);
+	}
+
+	if ( empty( $prop_id ) || empty( $sa ) ) {
+		return array(
+			'level'       => 'tracking-only',
+			'label'       => __( 'Front-end tracking only', 'google-analytics-for-wordpress' ),
+			'description' => __( 'gtag.js will fire on the front-end, but the in-dashboard Reports page will be disabled until a GA4 Property ID and service account JSON are configured.', 'google-analytics-for-wordpress' ),
+		);
+	}
+
+	return array(
+		'level'       => 'configured',
+		'label'       => __( 'Fully configured', 'google-analytics-for-wordpress' ),
+		'description' => __( 'Both front-end tracking and the Reports dashboard are powered by your own Google Cloud service account.', 'google-analytics-for-wordpress' ),
+	);
+}
+
+/**
+ * Echo inline JavaScript used by the Settings page.
+ *
+ * One small `wp_localize_script`-style inline script — no external bundle.
+ *
+ * @since 12.0.0
  */
 function monsterinsights_settings_inline_js() {
 	?>
 	<script type="text/javascript">
-		var ua = window.navigator.userAgent;
-		var msie = ua.indexOf('MSIE ');
-		if (msie > 0) {
-			var browser_error = document.getElementById('monsterinsights-error-browser');
-			var js_error = document.getElementById('monsterinsights-error-js');
-			js_error.style.display = 'none';
-			browser_error.style.display = 'block';
-		} else {
-			window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
-				/* Don't try to put error in container that no longer exists post-vue loading */
-				var message_container = document.getElementById('monsterinsights-nojs-error-message');
-				if (!message_container) {
-					return false;
-				}
-				var message = document.getElementById('monsterinsights-alert-message');
-				message.innerHTML = errorMsg;
-				message_container.style.display = 'block';
-				return false;
-			}
+	(function () {
+		var form = document.getElementById('heretek-settings-form');
+		if (!form) return;
+
+		var statusEl  = document.getElementById('heretek-settings-status');
+		var button    = document.getElementById('heretek-settings-save');
+		var verifyBtn = document.getElementById('heretek-settings-verify');
+		var feedback  = document.getElementById('heretek-settings-feedback');
+
+		function showFeedback(kind, msg) {
+			if (!feedback) return;
+			feedback.className = 'heretek-feedback heretek-feedback--' + kind;
+			feedback.textContent = msg;
+			feedback.style.display = 'block';
 		}
+
+		function post(action, payload) {
+			var body = new URLSearchParams();
+			body.append('action', action);
+			body.append('nonce', form.dataset.nonce);
+			Object.keys(payload || {}).forEach(function (k) {
+				body.append(k, payload[k]);
+			});
+			return fetch(form.dataset.ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: body.toString(),
+			}).then(function (r) { return r.json(); });
+		}
+
+		if (button) {
+			button.addEventListener('click', function (e) {
+				e.preventDefault();
+				button.disabled = true;
+				showFeedback('info', 'Saving…');
+				post('monsterinsights_save_heretek_settings', {
+					v4: form.v4.value,
+					property_id: form.property_id.value,
+					service_account_json: form.service_account_json.value,
+				}).then(function (resp) {
+					button.disabled = false;
+					if (resp && resp.success) {
+						showFeedback('success', resp.data && resp.data.message ? resp.data.message : 'Settings saved.');
+						if (statusEl && resp.data && resp.data.status) {
+							statusEl.dataset.level = resp.data.status.level;
+							statusEl.querySelector('.heretek-status__label').textContent       = resp.data.status.label;
+							statusEl.querySelector('.heretek-status__description').textContent = resp.data.status.description;
+						}
+					} else {
+						showFeedback('error', (resp && resp.data && resp.data.message) ? resp.data.message : 'Could not save settings.');
+					}
+				}).catch(function (err) {
+					button.disabled = false;
+					showFeedback('error', 'Network error: ' + err.message);
+				});
+			});
+		}
+
+		if (verifyBtn) {
+			verifyBtn.addEventListener('click', function (e) {
+				e.preventDefault();
+				verifyBtn.disabled = true;
+				showFeedback('info', 'Verifying credentials…');
+				post('monsterinsights_verify_heretek_credentials', {}).then(function (resp) {
+					verifyBtn.disabled = false;
+					if (resp && resp.success) {
+						showFeedback('success', resp.data && resp.data.message ? resp.data.message : 'Credentials verified.');
+					} else {
+						showFeedback('error', (resp && resp.data && resp.data.message) ? resp.data.message : 'Verification failed.');
+					}
+				}).catch(function (err) {
+					verifyBtn.disabled = false;
+					showFeedback('error', 'Network error: ' + err.message);
+				});
+			});
+		}
+
+		var resetBtn = document.getElementById('heretek-settings-reset');
+		if (resetBtn) {
+			resetBtn.addEventListener('click', function (e) {
+				if (!confirm('Clear all Heretek Analytics credentials? Front-end tracking will stop.')) {
+					e.preventDefault();
+				}
+			});
+		}
+	})();
 	</script>
 	<?php
 }
 
-
 /**
- * Error page HTML
- **/
+ * Compatibility shim — kept so any code (notably `admin.php`) still calling
+ * `monsterinsights_settings_error_page()` does not fatal. The Vue error page
+ * itself has been retired along with the JS bundle.
+ *
+ * @param string $id
+ * @param string $footer
+ * @param string $margin
+ */
 function monsterinsights_settings_error_page( $id = 'monsterinsights-vue-site-settings', $footer = '', $margin = '82px 0' ) {
-	$inline_logo_image = plugins_url( 'assets/images/logo.png', MONSTERINSIGHTS_PLUGIN_FILE );
-	?>
-	<style type="text/css">
-		#monsterinsights-settings-area {
-			visibility: hidden;
-			animation: loadMonsterInsightsSettingsNoJSView 0s 2s forwards;
-		}
-
-		@keyframes loadMonsterInsightsSettingsNoJSView {
-			to {
-				visibility: visible;
-			}
-		}
-	</style>
-	<!--[if IE]>
-	<style>
-		#monsterinsights-settings-area {
-			visibility: visible !important;
-		}
-	</style>
-	<![endif]-->
-	<div id="<?php echo esc_attr($id); ?>">
-		<div id="monsterinsights-settings-area" class="monsterinsights-settings-area mi-container"
-			 style="font-family:'Geist', 'Cinzel', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;margin: auto;width: 750px;max-width: 100%;">
-			<div id="monsterinsights-settings-error-loading-area">
-				<div class=""
-					 style="text-align: center; background-color: #111116; border: 1px solid #27272a; padding: 25px 50px 35px; color: #a1a1aa; border-radius: 8px; margin: <?php echo esc_attr( $margin ); ?>">
-					<div class="" style="border-bottom: 0;padding: 5px 20px 0;">
-						<img class="" src="<?php echo esc_url( $inline_logo_image ); ?>" alt="Heretek Analytics"
-							 style="max-width: 100%;width: 240px;padding: 20px 0 15px;">
-					</div>
-					<div id="monsterinsights-error-js">
-						<h3 class=""
-							style="font-family: 'Cinzel', serif; font-size: 20px; color: #f4f4f5; font-weight: 700; line-height: 1.4;"><?php esc_html_e( 'Cogitator Alert: JavaScript Stream Interrupted', 'google-analytics-for-wordpress' ); ?></h3>
-						<p class="info"
-						   style="line-height: 1.5;margin: 1em 0;font-size: 15px;color: #a1a1aa;padding: 5px 20px 10px;"><?php esc_html_e( 'There seems to be an issue running JavaScript in this sector. Heretek Analytics requires active JavaScript execution to render telemetry interfaces.', 'google-analytics-for-wordpress' ); ?></p>
-						<p class="info"
-						   style="line-height: 1.5;margin: 1em 0;font-size: 15px;color: #a1a1aa;padding: 5px 20px 20px;">
-							<?php
-							// Translators: Placeholders make the text bold.
-							printf( esc_html__( 'If you are using an %1$sad blocker%2$s, please disable or allowlist the current page to load Heretek Analytics correctly.', 'google-analytics-for-wordpress' ), '<strong style="color:#ef4444;">', '</strong>' );
-							?>
-						</p>
-						<div style="display: none" id="monsterinsights-nojs-error-message">
-							<div class="" style="border: 1px solid #ef4444;
-																border-left: 3px solid #ef4444;
-																background-color: #1c1917;
-																color: #ef4444;
-																font-size: 14px;
-																padding: 18px 18px 18px 21px;
-																font-weight: 300;
-																text-align: left;">
-								<strong style="font-weight: 500;" id="monsterinsights-alert-message"></strong>
-							</div>
-							<p class=""
-							   style="font-size: 14px;color: #71717a;padding-bottom: 15px;"><?php esc_html_e( 'Copy the error message above and submit an issue on the Heretek Analytics repository.', 'google-analytics-for-wordpress' ); ?></p>
-						</div>
-						<a href="https://github.com/Heretek-AI/Heretek-Analytics/issues" target="_blank"
-						   style="margin-left: auto;background-color: #dc2626;border: 1px solid #b91c1c;color: #fff;border-radius: 4px;font-weight: 600;padding: 12px 30px;font-size: 15px;margin-top: 10px;margin-bottom: 20px; text-decoration: none; display: inline-block;">
-							<?php esc_html_e( 'Open Support Dossier', 'google-analytics-for-wordpress' ); ?>
-						</a>
-					</div>
-					<div id="monsterinsights-error-browser" style="display: none">
-						<h3 class=""
-							style="font-family: 'Cinzel', serif; font-size: 20px;color: #f4f4f5;font-weight: 700;"><?php esc_html_e( 'Browser Protocol Obsolete', 'google-analytics-for-wordpress' ); ?></h3>
-						<p class="info"
-						   style="line-height: 1.5;margin: 1em 0;font-size: 15px;color: #a1a1aa;padding: 5px 20px 20px;"><?php esc_html_e( 'You are using a browser cipher that is no longer supported by Heretek Analytics. Please upgrade your browser to access the cogitator settings.', 'google-analytics-for-wordpress' ); ?></p>
-						<a href="https://github.com/Heretek-AI/Heretek-Analytics#readme" target="_blank"
-						   style="margin-left: auto;background-color: #dc2626;border: 1px solid #b91c1c;color: #fff;border-radius: 4px;font-weight: 600;padding: 12px 30px;font-size: 15px;margin-top: 10px;margin-bottom: 20px; text-decoration: none; display: inline-block;">
-							<?php esc_html_e( 'System Requirements', 'google-analytics-for-wordpress' ); ?>
-						</a>
-					</div>
-				</div>
-			</div>
-			<div style="text-align: center;">
-				<?php echo wp_kses_post( $footer ); ?>
-			</div>
-		</div>
-	</div>
-	<?php
+	// intentionally empty.
 }
