@@ -33,21 +33,22 @@ final class MonsterInsights_Auth {
 	}
 
 	public function is_manual() {
-		if ( empty( $this->profile['manual'] ) ) {
+		// Heretek Analytics stores the manually-entered GA4 Measurement ID at
+		// profile['manual_v4'] (see set_manual_v4_id()). The legacy
+		// profile['manual'] key is from the upstream MonsterInsights
+		// schema and was never populated here.
+		$profile = $this->get_analytics_profile();
+		if ( empty( $profile['manual_v4'] ) ) {
 			return false;
 		}
-
-		$manual_code = $this->profile['manual'];
-		return monsterinsights_is_valid_v4_id( $manual_code );
+		return (bool) monsterinsights_is_valid_v4_id( $profile['manual_v4'] );
 	}
 
 	public function is_network_manual( $type = false ) {
-		if ( empty( $this->network['manual'] ) ) {
-			return false;
+		if ( ! empty( $this->network['manual_v4'] ) ) {
+			return (bool) monsterinsights_is_valid_v4_id( $this->network['manual_v4'] );
 		}
-
-		$manual_code = $this->network['manual'];
-		return monsterinsights_is_valid_v4_id( $manual_code );
+		return false;
 	}
 
 	public function is_authed() {
