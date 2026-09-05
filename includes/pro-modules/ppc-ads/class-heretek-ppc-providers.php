@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/ppc/class-monsterinsights-ads-tracking-provider.php';
+
 /**
  * Google Ads Provider.
  */
