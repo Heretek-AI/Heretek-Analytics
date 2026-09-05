@@ -668,18 +668,5 @@ add_action( 'in_admin_footer', 'monsterinsights_in_admin_footer' );
  */
 require_once __DIR__ . '/eea-compliance.php';
 
-/**
- * Report filter CRUD ajax handler.
- */
-require_once __DIR__ . '/reports/filter-ajax.php';
-
-/**
- * Customer360 telemetry: last-admin-seen recorder.
- */
-require_once __DIR__ . '/class-monsterinsights-last-seen.php';
-
-/**
- * Customer360 telemetry: report-view recorder. Required here rather than from its
- * callers so the check-in payload builder cannot depend on bootstrap ordering.
- */
-require_once __DIR__ . '/class-monsterinsights-report-views.php';
+// Heretek Analytics: report-filter CRUD, last-admin-seen, and report-view
+// recorder classes were removed along with their SaaS/Customer360 telemetry.
