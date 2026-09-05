@@ -445,26 +445,42 @@ function monsterinsights_admin_setup_notices()
 		$notices = array();
 	}
 
-	// 6. Authenticate, not manual
-	$authed  = MonsterInsights()->auth->is_authed() || MonsterInsights()->auth->is_network_authed();
-	$url     = is_network_admin() ? network_admin_url('admin.php?page=monsterinsights_network') : admin_url('admin.php?page=monsterinsights_settings');
-	$tracking_code = monsterinsights_get_v4_id_to_output();
-	/* translators: placeholders add links to the settings panel. */
-	$manual_text = sprintf(esc_html__('Important: You are currently using manual GA4 Measurement ID output. We recommend %1$sconnecting your account%2$s so that you can access the full reporting area and take advantage of all Heretek Analytics features.', 'google-analytics-for-wordpress'), '<a href="' . $url . '">', '</a>');
-	$migrated    = monsterinsights_get_option('gadwp_migrated', 0);
-	if ($migrated > 0) {
-		// Heretek Analytics is fully self-hosted; the upstream "reauthenticate
-		// against MonsterInsights to see reports" prompt no longer applies.
-		// Quietly clear the legacy migration flag so this branch stops firing.
-		monsterinsights_update_option('gadwp_migrated', 0);
+	// Configuration state. Heretek Analytics is fully self-hosted, so the
+	// legacy OAuth "is_authed() / is_network_authed()" checks always return
+	// false — those methods only succeed for the upstream MonsterInsights
+	// "Connect" flow, which was removed in the stand-alone port. Instead
+	// compute the actual configuration state directly off MonsterInsights_Auth.
+	$auth            = MonsterInsights()->auth;
+	$tracking_code   = monsterinsights_get_v4_id_to_output();
+	$has_property    = (bool) $auth->get_property_id();
+	$has_sa          = (bool) $auth->get_service_account_json();
+	$is_configured   = (bool) $tracking_code && $has_property && $has_sa;
+	$is_manual_only  = (bool) $tracking_code && ( ! $has_property || ! $has_sa );
+
+	// Quietly clear the legacy GADWP migration flag — the upstream
+	// "reauthenticate against MonsterInsights to see reports" prompt no
+	// longer applies (the gateway now talks directly to Google).
+	$migrated = monsterinsights_get_option( 'gadwp_migrated', 0 );
+	if ( $migrated > 0 ) {
+		monsterinsights_update_option( 'gadwp_migrated', 0 );
 	}
 
-	if (empty($authed) && !isset($notices['monsterinsights_auth_not_manual']) && !empty($tracking_code)) {
-		echo '<div class="notice notice-info is-dismissible monsterinsights-notice" data-notice="monsterinsights_auth_not_manual">';
-		echo '<p>';
-		echo $manual_text; // phpcs:ignore
-		echo '</p>';
-		echo '</div>';
+	// 6. Measurement ID set, but Property ID / service account missing →
+	//    the in-admin Reports dashboard is disabled until the user finishes
+	//    the Settings form. Don't fire anything else when fully configured.
+	if ( $is_manual_only && ! isset( $notices['monsterinsights_manual_v4'] ) ) {
+		$settings_url = is_network_admin()
+			? network_admin_url( 'admin.php?page=monsterinsights_network' )
+			: admin_url( 'admin.php?page=monsterinsights_settings' );
+
+		printf(
+			'<div class="notice notice-info is-dismissible monsterinsights-notice" data-notice="monsterinsights_manual_v4"><p>%s</p></div>',
+			sprintf(
+				/* translators: %s is a link to the Heretek Analytics Settings page. */
+				esc_html__( 'A GA4 Measurement ID is configured, but the in-admin Reports dashboard is disabled until you also add a GA4 Property ID and a Google Cloud service account JSON key. Open %s to finish.', 'google-analytics-for-wordpress' ),
+				'<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Heretek Analytics → Settings', 'google-analytics-for-wordpress' ) . '</a>'
+			)
+		);
 
 		return;
 	}
