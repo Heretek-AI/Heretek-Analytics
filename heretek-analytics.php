@@ -404,6 +404,7 @@ final class MonsterInsights {
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/settings.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/tools.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/reports.php';
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/authors.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/addons.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/about.php';
 

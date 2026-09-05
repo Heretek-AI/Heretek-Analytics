@@ -48,7 +48,10 @@ Upstream commercial analytics distributions artificially cordon vital enterprise
 | Subsystem | Heretek Analytics |
 |:---|:---:|
 | **Core GA4 tracking (gtag.js)** | ✅ Auto page-view, scroll, download, affiliate-link, form, AMP |
+| **Author & author_id tracking** | ✅ Emitted as gtag config keys on singular views |
 | **In-admin Reports dashboard** | ✅ Pure-PHP, server-rendered KPI tiles + charts + tables |
+| **Date-range filter** | ✅ Two `<input type="date">` fields, GET round-trip, no JS |
+| **Authors sub-page** | ✅ Per-author ranking with CSV export |
 | **Direct GA4 Data API reporting** | ✅ Real data via service-account JWT — no random-number stub |
 | **Google Consent Mode v2** | ✅ EEA compliance helpers in `includes/admin/eea-compliance.php` |
 | **Server-side GA4 Measurement Protocol** | ✅ `MonsterInsights_Measurement_Protocol_V4` |
@@ -67,7 +70,32 @@ Heretek Analytics renders its admin pages in a dark, gothic-tech aesthetic:
 
 - **Void Surfaces**: Obsidian canvas (`#09090b`), tech-slab cards (`#111116`), deep carbon borders (`#27272a`), and crimson glows.
 - **Sacred Typography**: **Cinzel Bold** headings for hierarchy paired with **Geist** for numeric readouts.
-- **Suppression of Upstream Clutter**: No commercial upsell cards, no fake lock badges, no promotional notification rotators. The Settings page is a single form. The Reports page is KPI tiles + two tables + a daily chart.
+- **Suppression of Upstream Clutter**: No commercial upsell cards, no fake lock badges, no promotional notification rotators. The Settings page is a single form. The Reports page is KPI tiles + tables + a daily chart. A separate **Authors** sub-page ranks authors by sessions and page views with a CSV export.
+
+---
+
+## 📐 Author tracking & custom dimensions
+
+Heretek Analytics emits two gtag config keys on every singular view (post, page, custom post type):
+
+| gtag key | Source | Purpose |
+|---|---|---|
+| `author` | `get_the_author_meta( 'display_name', $author_id )` | Human-readable author name. |
+| `author_id` | `(int) $queried_object->post_author` | Numeric WordPress user ID — stable across renames. |
+
+To surface these in GA4 reports, register two **User-scoped** custom dimensions in **GA4 → Admin → Property → Custom definitions** with the exact API names `author` and `author_id`. Then visit **Heretek Analytics → Authors** (or the Top Authors panel on the Reports page) to see them populated.
+
+The PHP query spec is:
+
+```php
+array(
+    'id'         => 'authors',
+    'dimensions' => array( 'customUser:author_id' ),
+    'metrics'    => array( 'sessions', 'totalUsers', 'screenPageViews', 'engagedSessions' ),
+)
+```
+
+To switch the panel to display names instead of IDs, change `customUser:author_id` to `customUser:author` in `includes/admin/pages/authors.php` and `includes/admin/pages/reports.php`.
 
 ---
 

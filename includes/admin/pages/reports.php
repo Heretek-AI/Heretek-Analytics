@@ -48,6 +48,22 @@ function monsterinsights_reports_page() {
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 
+	// Date-range filter: read &start / &end from $_GET and validate as ISO
+	// dates. resolve_date() also accepts relative markers ("-30days",
+	// "today"); we let those through unchanged so the URL still works
+	// when the filter is cleared. Anything else falls back to defaults.
+	$raw_start = isset( $_GET['start'] ) ? sanitize_text_field( wp_unslash( $_GET['start'] ) ) : '-30days';
+	$raw_end   = isset( $_GET['end'] )   ? sanitize_text_field( wp_unslash( $_GET['end'] ) )   : 'today';
+
+	$start_date = $gateway->resolve_date( $raw_start, strtotime( '-30 days' ) );
+	$end_date   = $gateway->resolve_date( $raw_end, time() );
+
+	// What we put in the date <input value=""> attributes. ISO is always
+	// what the browser expects for <input type="date">, regardless of the
+	// raw query string.
+	$start_input = (string) $start_date;
+	$end_input   = (string) $end_date;
+
 	$reports = array();
 	$error   = '';
 	$missing = '';
@@ -77,9 +93,19 @@ function monsterinsights_reports_page() {
 					'metrics'    => array( 'sessions' ),
 					'limit'      => 10,
 				),
+				array(
+					'id'         => 'top_authors',
+					// customUser:<name> is the GA4 Data API syntax for a
+					// User-scoped custom dimension. The site admin must
+					// register the dimension with this exact API name in
+					// their GA4 property for the panel to populate.
+					'dimensions' => array( 'customUser:author_id' ),
+					'metrics'    => array( 'sessions', 'screenPageViews' ),
+					'limit'      => 10,
+				),
 			),
-			'-30days',
-			'today'
+			$start_date,
+			$end_date
 		);
 
 		// If any panel errored, surface a single-line message at the top.
