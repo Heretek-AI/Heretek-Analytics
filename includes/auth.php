@@ -329,4 +329,67 @@ final class MonsterInsights_Auth {
 
 		return '';
 	}
+
+	/**
+	 * Get the stored Google Cloud service account JSON key (used for GA4 Data API server-side auth).
+	 *
+	 * @return string Raw service account JSON, or empty string if not configured.
+	 */
+	public function get_service_account_json() {
+		$profile = $this->get_analytics_profile();
+		return ! empty( $profile['service_account_json'] ) ? $profile['service_account_json'] : '';
+	}
+
+	/**
+	 * Persist the Google Cloud service account JSON key.
+	 *
+	 * @param string $json Raw JSON contents.
+	 */
+	public function set_service_account_json( $json ) {
+		$json = is_string( $json ) ? trim( $json ) : '';
+		$data = $this->get_analytics_profile();
+		if ( ! is_array( $data ) ) {
+			$data = array();
+		}
+		if ( '' === $json ) {
+			unset( $data['service_account_json'] );
+		} else {
+			$data['service_account_json'] = $json;
+		}
+		$this->profile = $data;
+		$this->set_analytics_profile( $data );
+	}
+
+	/**
+	 * Get the stored GA4 numeric Property ID.
+	 *
+	 * @return string Numeric property id, or empty string if not configured.
+	 */
+	public function get_property_id() {
+		$profile = $this->get_analytics_profile();
+		if ( empty( $profile['property_id'] ) ) {
+			return '';
+		}
+		return (string) preg_replace( '/\D/', '', (string) $profile['property_id'] );
+	}
+
+	/**
+	 * Persist the GA4 numeric Property ID.
+	 *
+	 * @param string $id Numeric property id (e.g. "123456789").
+	 */
+	public function set_property_id( $id ) {
+		$clean = (string) preg_replace( '/\D/', '', (string) $id );
+		$data  = $this->get_analytics_profile();
+		if ( ! is_array( $data ) ) {
+			$data = array();
+		}
+		if ( '' === $clean ) {
+			unset( $data['property_id'] );
+		} else {
+			$data['property_id'] = $clean;
+		}
+		$this->profile = $data;
+		$this->set_analytics_profile( $data );
+	}
 }

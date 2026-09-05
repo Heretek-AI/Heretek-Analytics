@@ -250,24 +250,17 @@ class MonsterInsights_EEA_Compliance {
 	/**
 	 * Send checker api request.
 	 *
+	 * Heretek Analytics has no MonsterInsights SaaS endpoint to consult; the EEA
+	 * checker now returns a "checker offline" status so the admin UI can show
+	 * a clear, honest message instead of failing silently.
+	 *
 	 * @return WP_Error|array
 	 */
 	private function send_api_request() {
-		// Send request to API.
-		$api = new MonsterInsights_API_Request( 'analytics/eea-compliance-checker/', [], 'GET' );
-		$response = $api->request();
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		if ( isset( $response['data'] ) && ! empty( $response['data'] ) ) {
-			$data = array( 'ga_checker' => $response['data'] );
-			$data['last_checked'] = time();
-			monsterinsights_update_option( 'eea_compliance_checker', $data );
-		}
-
-		return $data;
+		return new WP_Error(
+			'heretek_eea_offline',
+			__( 'The MonsterInsights EEA-compliance checker endpoint has been retired in Heretek Analytics. Use your own judgment and the official Google Consent Mode v2 documentation instead.', 'google-analytics-for-wordpress' )
+		);
 	}
 }
 

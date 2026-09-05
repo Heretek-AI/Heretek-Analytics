@@ -109,15 +109,6 @@ final class MonsterInsights {
 	public $plugin_slug = 'heretek-analytics';
 
 	/**
-	 * Holds instance of MonsterInsights License class.
-	 *
-	 * @since 6.0.0
-	 * @access public
-	 * @var MonsterInsights_License $license Instance of License class.
-	 */
-	protected $license;
-
-	/**
 	 * Holds instance of MonsterInsights Admin Notice class.
 	 *
 	 * @since 6.0.0
@@ -127,33 +118,6 @@ final class MonsterInsights {
 	public $notices;
 
 	/**
-	 * Holds instance of MonsterInsights Reporting class.
-	 *
-	 * @since 6.0.0
-	 * @access public
-	 * @var MonsterInsights_Reporting $reporting Instance of Reporting class.
-	 */
-	public $reporting;
-
-	/**
-	 * Holds instance of MonsterInsights Notifications class.
-	 *
-	 * @since 7.11
-	 * @access public
-	 * @var MonsterInsights_Notifications $notifications Instance of Notifications class.
-	 */
-	public $notifications;
-
-	/**
-	 * Holds instance of MonsterInsights Notification Events
-	 *
-	 * @since 7.12.3
-	 * @access public
-	 * @var MonsterInsights_Notification_Event $notification_event Instance of MonsterInsights_Notification_Event class.
-	 */
-	public $notification_event;
-
-	/**
 	 * Holds instance of MonsterInsights Auth class.
 	 *
 	 * @since 7.0.0
@@ -161,15 +125,6 @@ final class MonsterInsights {
 	 * @var MonsterInsights_Auth $auth Instance of Auth class.
 	 */
 	protected $auth;
-
-	/**
-	 * Holds instance of MonsterInsights API Auth class.
-	 *
-	 * @since 6.0.0
-	 * @access public
-	 * @var MonsterInsights_Auth $api_auth Instance of APIAuth class.
-	 */
-	public $api_auth;
 
 	/**
 	 * Holds instance of MonsterInsights API Rest Routes class.
@@ -189,13 +144,6 @@ final class MonsterInsights {
 	 * @deprecated Since 8.3 with the removal of ga compatibility
 	 */
 	public $tracking_mode;
-
-	/**
-	 * Setup checklist class property.
-	 *
-	 * @var MonsterInsights_Setup_Checklist
-	 */
-	public $setup_checklist;
 
 	/**
 	 * Primary class constructor.
@@ -232,9 +180,6 @@ final class MonsterInsights {
 				return self::$instance;
 			}
 
-			// Load in Licensing
-			self::$instance->load_licensing();
-
 			// Load in Auth
 			self::$instance->load_auth();
 
@@ -249,16 +194,9 @@ final class MonsterInsights {
 
 			// Load admin only components.
 			if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
-				self::$instance->notices            = new MonsterInsights_Notice_Admin();
-				self::$instance->reporting          = new MonsterInsights_Reporting();
-				self::$instance->api_auth           = new MonsterInsights_API_Auth();
-				self::$instance->routes             = new MonsterInsights_Rest_Routes();
-				self::$instance->notifications      = new MonsterInsights_Notifications();
-				self::$instance->notification_event = new MonsterInsights_Notification_Event();
-				self::$instance->setup_checklist    = new MonsterInsights_Setup_Checklist();
+				self::$instance->notices = new MonsterInsights_Notice_Admin();
+				self::$instance->routes  = new MonsterInsights_Rest_Routes();
 			}
-
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'pro/includes/load.php';
 		}
 		return self::$instance;
 	}
@@ -313,16 +251,8 @@ final class MonsterInsights {
 			}
 
 			return self::$instance->$key;
-		} else if ( $key === 'license' ) {
-			if ( empty( self::$instance->license ) ) {
-				require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/licensing/class-heretek-license.php';
-				self::$instance->license = new MonsterInsights_License();
-			}
-			
-			return self::$instance->$key;
-		} else {
-			return self::$instance->$key;
 		}
+		return self::$instance->$key;
 	}
 
 	/**
@@ -433,21 +363,6 @@ final class MonsterInsights {
 
 
 	/**
-	 * Loads MonsterInsights License
-	 *
-	 * Loads license class used by MonsterInsights
-	 *
-	 * @return void
-	 * @since 7.0.0
-	 * @access public
-	 *
-	 */
-	public function load_licensing() {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/licensing/class-heretek-license.php';
-		self::$instance->license = new MonsterInsights_License();
-	}
-
-	/**
 	 * Loads MonsterInsights Auth
 	 *
 	 * Loads auth used by MonsterInsights
@@ -476,71 +391,35 @@ final class MonsterInsights {
 
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/capabilities.php';
 
+		// REST reporting gateway — registers WP REST routes on rest_api_init.
+		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+
 		if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
 
-			// Lite and Pro files
+			// Core admin files
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/ajax.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/admin.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/common.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/notice.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/licensing/autoupdate.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/review.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/setup-checklist.php';
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/eea-compliance.php';
 
 			// Pages
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/settings.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/tools.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/reports.php';
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/addons.php';
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/about.php';
 
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/api-auth.php';
-
-			// Reports
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/reports/abstract-report.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/reports/overview.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/reports/site-summary.php';
-
-			// Reporting Functionality
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/reporting.php';
-
-			// Routes used by Vue
+			// Admin-ajax + REST routes used by the new PHP admin pages.
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/routes.php';
-
-			// Load gutenberg editor functions
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/gutenberg/gutenberg.php';
-
-			// Emails
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/emails/class-emails.php';
-
-			// Notifications class.
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/notifications.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/notification-event.php';
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/notification-event-runner.php';
-			// Add notification manual events for lite version.
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/notifications/notification-events.php';
-
-			// Product Feed Cronjob
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/product-feed-cronjob.php';
 		}
 
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/exclude-page-metabox.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/frontend/verified-badge/Controller.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/site-notes/Controller.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api-request.php';
-
-		if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
-			// Late loading classes (self instantiating)
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/class-monsterinsights-usage-tracking.php';
-		}
-
-// Deactivation survey telemetry removed in Heretek Analytics
 
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/frontend/frontend.php';
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/frontend/class-amp-compatibility.php';
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/frontend/seedprod.php';
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/measurement-protocol-v4.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/feature-feedback/class-monsterInsights-feature-feedback.php';
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/class-monsterinsights-onboarding.php';
 	}
 
 	/**
@@ -612,96 +491,30 @@ register_activation_hook( __FILE__, 'monsterinsights_lite_activation_hook' );
 function monsterinsights_lite_uninstall_hook() {
 	wp_cache_flush();
 
-	// Note, if both MI Pro and Lite are active, this is an MI Pro instance
-	// Therefore MI Lite can only use functions of the instance common to
-	// both plugins. If it needs to be pro specific, then include a file that
-	// has that method.
 	$instance = MonsterInsights();
 
 	$instance->define_globals();
 	$instance->load_settings();
 
-	// If uninstalling via wp-cli load admin-specific files only here.
+	// WP-CLI: nothing admin-only to load anymore.
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		define( 'WP_ADMIN', true );
-		$instance->require_files();
 		$instance->load_auth();
-		$instance->notices   = new MonsterInsights_Notice_Admin();
-		$instance->reporting = new MonsterInsights_Reporting();
-		$instance->api_auth  = new MonsterInsights_API_Auth();
-	}
-
-	// Don't delete any data if the PRO version is already active.
-	if ( monsterinsights_is_pro_version() ) {
-		return;
 	}
 
 	require_once 'includes/admin/uninstall.php';
 
+	// Drop all Heretek Analytics options on every site (multisite-aware).
 	if ( is_multisite() ) {
 		$site_list = get_sites();
 		foreach ( (array) $site_list as $site ) {
 			switch_to_blog( $site->blog_id );
-
-			// Deauthenticate.
-			$instance->api_auth->delete_auth();
-
-			// Delete report cache.
-			$instance->reporting->delete_aggregate_data();
-
-			// Delete options.
-			$instance->api_auth->uninstall_auth();
-
+			monsterinsights_uninstall_remove_options();
 			restore_current_blog();
 		}
-		// Delete network auth using a custom function as some variables are not initiated.
-		$instance->api_auth->uninstall_network_auth();
-
-		// Delete network data.
-		$instance->reporting->delete_aggregate_data( 'network' );
 	} else {
-		// Delete auth.
-		$instance->api_auth->delete_auth();
-
-		// Delete report cache.
-		$instance->reporting->delete_aggregate_data();
-
-		// Delete options.
-		$instance->api_auth->uninstall_auth();
+		monsterinsights_uninstall_remove_options();
 	}
-
-	// Clear notification cron schedules.
-	$schedules = wp_get_schedules();
-
-	if ( is_array( $schedules ) && ! empty( $schedules ) ) {
-		foreach ( $schedules as $key => $value ) {
-			if ( 0 === strpos( $key, 'monsterinsights_notification_' ) ) {
-				$cron_hook = implode( '_', explode( '_', $key, -2 ) ) . '_cron';
-				wp_clear_scheduled_hook( $cron_hook );
-			}
-		}
-	}
-
-	// Delete the notifications data.
-	$instance->notifications->delete_notifications_data();
-
-	// Popular posts.
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/popular-posts/class-popular-posts-themes.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/popular-posts/class-popular-posts.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/popular-posts/class-popular-posts-helper.php';
-	// Lite popular posts specific.
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'lite/includes/popular-posts/class-popular-posts-inline.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'lite/includes/popular-posts/class-popular-posts-cache.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'lite/includes/popular-posts/class-popular-posts-widget.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'lite/includes/popular-posts/class-popular-posts-widget-sidebar.php';
-	require_once MONSTERINSIGHTS_PLUGIN_DIR . 'lite/includes/popular-posts/class-popular-posts-ajax.php';
-
-	// Delete Popular Posts data.
-	MonsterInsights_Popular_Posts_Inline()->get_cache()->delete_data();
-	MonsterInsights_Popular_Posts_Widget()->get_cache()->delete_data();
-
-	// Delete other options.
-	monsterinsights_uninstall_remove_options();
 }
 
 register_uninstall_hook( __FILE__, 'monsterinsights_lite_uninstall_hook' );
@@ -850,8 +663,14 @@ function monsterinsights_lite_deactivation_hook() {
 	wp_clear_scheduled_hook( 'monsterinsights_email_summaries_cron' );
 	wp_clear_scheduled_hook( 'monsterinsights_charitable_notice_cron' );
 
-	// Unschedule cache cleanup
-	monsterinsights_unschedule_cache_cleanup();
+	// Clear any GA4 access-token transients we minted.
+	$transients_like = function ( $prefix ) {
+		global $wpdb;
+		$like = $wpdb->esc_like( '_transient_' . $prefix ) . '%';
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like( '_transient_timeout_' . $prefix ) . '%' ) );
+	};
+	$transients_like( 'heretek_ga4_sa_token_' );
 
 	// Hook to trigger on deactivation.
 	do_action( 'monsterinsights_plugin_deactivated' );

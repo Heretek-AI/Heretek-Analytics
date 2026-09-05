@@ -31,6 +31,10 @@ class MonsterInsights_Rest_Routes {
 			'update_measurement_protocol_secret'
 		) );
 
+		// Heretek Analytics native (non-Vue) AJAX handlers.
+		add_action( 'wp_ajax_monsterinsights_save_heretek_settings', array( $this, 'save_heretek_settings' ) );
+		add_action( 'wp_ajax_monsterinsights_verify_heretek_credentials', array( $this, 'verify_heretek_credentials' ) );
+
 		add_action( 'wp_ajax_monsterinsights_vue_get_report_data', array( $this, 'get_report_data' ) );
 		add_action( 'wp_ajax_monsterinsights_vue_install_plugin', array( $this, 'install_plugin' ) );
 		add_action( 'wp_ajax_monsterinsights_vue_notice_status', array( $this, 'get_notice_status' ) );
@@ -1074,26 +1078,8 @@ class MonsterInsights_Rest_Routes {
 			$auth->set_measurement_protocol_secret( $value );
 		}
 
-		// Send API request to Relay
-		// TODO: Remove when token automation API is ready
-		$api = new MonsterInsights_API_Request( 'auth/mp-token/', 'POST' );
-		$api->set_additional_data( array(
-			'mp_token' => $value,
-		) );
-
-		// Even if there's an error from Relay, we can still return a successful json
-		// payload because we can try again with Relay token push in the future
-		$data   = array();
-		$result = $api->request();
-		if ( is_wp_error( $result ) ) {
-			// Just need to output the error in the response for debugging purpose
-			$data['error'] = array(
-				'message' => $result->get_error_message(),
-				'code'    => $result->get_error_code(),
-			);
-		}
-
-		wp_send_json_success( $data );
+		// Heretek Analytics stores the MP secret locally; no Relay push.
+		wp_send_json_success( array() );
 	}
 
 	/**
@@ -2209,5 +2195,111 @@ class MonsterInsights_Rest_Routes {
 		update_option( 'monsterinsights_last_visited_report_date', time() );
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Save the Heretek Analytics native settings (Measurement ID, Property ID, service account JSON).
+	 *
+	 * @since 12.0.0
+	 */
+	public function save_heretek_settings() {
+		check_ajax_referer( 'monsterinsights_save_heretek_settings', 'nonce' );
+
+		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		}
+
+		$auth = MonsterInsights()->auth;
+
+		// Measurement ID.
+		$raw_v4 = isset( $_POST['v4'] ) ? sanitize_text_field( wp_unslash( $_POST['v4'] ) ) : '';
+		$raw_v4 = trim( $raw_v4 );
+		$valid_v4 = monsterinsights_is_valid_v4_id( $raw_v4 );
+
+		if ( '' === $raw_v4 ) {
+			$auth->delete_manual_v4_id();
+		} elseif ( empty( $valid_v4 ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'Measurement ID must match the pattern G-XXXXXXXX.', 'google-analytics-for-wordpress' ),
+			) );
+		} else {
+			$auth->set_manual_v4_id( $valid_v4 );
+		}
+
+		// Property ID.
+		$raw_pid = isset( $_POST['property_id'] ) ? sanitize_text_field( wp_unslash( $_POST['property_id'] ) ) : '';
+		$raw_pid = trim( $raw_pid );
+		if ( '' === $raw_pid ) {
+			$auth->set_property_id( '' );
+		} elseif ( ! ctype_digit( $raw_pid ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'GA4 Property ID must be numeric (e.g. 123456789).', 'google-analytics-for-wordpress' ),
+			) );
+		} else {
+			$auth->set_property_id( $raw_pid );
+		}
+
+		// Service account JSON.
+		$raw_sa = isset( $_POST['service_account_json'] ) ? wp_unslash( $_POST['service_account_json'] ) : '';
+		if ( is_string( $raw_sa ) ) {
+			$raw_sa = trim( $raw_sa );
+		} else {
+			$raw_sa = '';
+		}
+		if ( '' === $raw_sa ) {
+			$auth->set_service_account_json( '' );
+		} else {
+			$decoded = json_decode( $raw_sa, true );
+			if ( ! is_array( $decoded ) || empty( $decoded['client_email'] ) || empty( $decoded['private_key'] ) ) {
+				wp_send_json_error( array(
+					'message' => __( 'Service account JSON is missing client_email or private_key.', 'google-analytics-for-wordpress' ),
+				) );
+			}
+			$auth->set_service_account_json( $raw_sa );
+		}
+
+		$status = monsterinsights_get_settings_status(
+			$auth->get_manual_v4_id(),
+			$auth->get_property_id(),
+			$auth->get_service_account_json()
+		);
+
+		wp_send_json_success( array(
+			'message' => __( 'Settings saved.', 'google-analytics-for-wordpress' ),
+			'status'  => $status,
+		) );
+	}
+
+	/**
+	 * Verify the stored credentials by minting a token and pinging the GA4 Data API metadata endpoint.
+	 *
+	 * @since 12.0.0
+	 */
+	public function verify_heretek_credentials() {
+		check_ajax_referer( 'monsterinsights_verify_heretek_credentials', 'nonce' );
+
+		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		}
+
+		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		}
+
+		$gateway = new Heretek_Rest_Reporting_Gateway();
+		$result  = $gateway->verify_credentials();
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		$pid = MonsterInsights()->auth->get_property_id();
+		wp_send_json_success( array(
+			'message' => sprintf(
+				/* translators: %s is the GA4 property id. */
+				__( 'Connected to GA4 property %s.', 'google-analytics-for-wordpress' ),
+				$pid
+			),
+		) );
 	}
 }

@@ -1,239 +1,62 @@
 <?php
 /**
- * Addons class.
+ * Heretek Analytics add-ons page.
  *
- * @since 6.0.0
+ * The upstream MonsterInsights distribution used this screen to sell paid
+ * add-on plugins via the MonsterInsights SaaS. Heretek Analytics is fully
+ * self-hosted and ships with no paid add-ons, so this page now just shows a
+ * short notice pointing to the in-dashboard Tools and Settings pages.
  *
- * @package MonsterInsights
- * @author  Chris Christoff
+ * @since 12.0.0
  */
 
-// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
 /**
- * Callback to output the MonsterInsights addons page.
+ * Render the Add-ons page (no SaaS, no upsell).
  *
- * @since 6.0.0
+ * @return void
  */
 function monsterinsights_addons_page() {
-	echo monsterinsights_ublock_notice(); // phpcs:ignore
-	monsterinsights_settings_error_page( 'monsterinsights-addons' );
-	monsterinsights_settings_inline_js();
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
+	}
+	?>
+	<style>
+	.heretek-addons-wrap { max-width:880px; margin:24px auto 80px; padding:0 20px; font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#e4e4e7; }
+	.heretek-addons-wrap h1 { font-family:'Cinzel',serif; font-size:26px; font-weight:700; letter-spacing:0.04em; color:#f4f4f5; margin:0 0 6px; }
+	.heretek-addons-wrap .lede { color:#a1a1aa; font-size:14px; margin:0 0 22px; line-height:1.55; }
+	.heretek-card { background:#111116; border:1px solid #27272a; border-radius:8px; padding:22px 26px; }
+	.heretek-card p { color:#a1a1aa; font-size:13px; line-height:1.55; margin:0 0 12px; }
+	.heretek-card a { color:#fca5a5; }
+	</style>
+
+	<div class="heretek-addons-wrap">
+		<h1><?php esc_html_e( 'Heretek Analytics — Add-ons', 'google-analytics-for-wordpress' ); ?></h1>
+		<p class="lede"><?php esc_html_e( 'There are no paid add-ons.', 'google-analytics-for-wordpress' ); ?></p>
+
+		<div class="heretek-card">
+			<p>
+				<?php esc_html_e( 'Heretek Analytics is fully self-hosted and unlocked. Every capability that the upstream MonsterInsights distribution put behind a paywall is shipped in this plugin or stripped entirely as obsolete.', 'google-analytics-for-wordpress' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( 'Configure the plugin from the', 'google-analytics-for-wordpress' ); ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_settings' ) ); ?>"><?php esc_html_e( 'Settings page', 'google-analytics-for-wordpress' ); ?></a>,
+				<?php esc_html_e( 'or export your configuration from the', 'google-analytics-for-wordpress' ); ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_tools' ) ); ?>"><?php esc_html_e( 'Tools page', 'google-analytics-for-wordpress' ); ?></a>.
+			</p>
+		</div>
+	</div>
+	<?php
 }
 
 /**
- * Retrieves addons from the stored transient or remote server.
+ * Compatibility shim.
  *
- * @return bool | array    false | Array of licensed and unlicensed Addons.
- * @since 6.0.0
- *
+ * @return bool Always false; Heretek Analytics has no add-ons.
  */
 function monsterinsights_get_addons() {
-
-	// Get license key and type.
-	$key  = '';
-	$type = 'lite';
-	if ( monsterinsights_is_pro_version() ) {
-		$key  = is_network_admin() ? MonsterInsights()->license->get_network_license_key() : MonsterInsights()->license->get_site_license_key();
-		$type = is_network_admin() ? MonsterInsights()->license->get_network_license_type() : MonsterInsights()->license->get_site_license_type();
-	}
-
-	// Get addons data from transient or perform API query if no transient.
-	if ( false === ( $addons = get_transient( '_monsterinsights_addons' ) ) ) {
-		$addons = monsterinsights_get_addons_data( $key );
-	}
-
-	// If no Addons exist, return false
-	if ( ! $addons ) {
-		return false;
-	}
-
-	// Iterate through Addons, to build two arrays:
-	// - Addons the user is licensed to use,
-	// - Addons the user isn't licensed to use.
-	$results = array(
-		'licensed'   => array(),
-		'unlicensed' => array(),
-	);
-	foreach ( (array) $addons as $i => $addon ) {
-
-		// Determine whether the user is licensed to use this Addon or not.
-		if (
-			empty( $type ) ||
-			( in_array( 'Pro', $addon->categories ) && ( $type != 'pro' && $type != 'master' ) ) ||
-			( in_array( 'Plus', $addon->categories ) && $type != 'plus' && $type != 'pro' && $type != 'master' ) ||
-			( in_array( 'Basic', $addon->categories ) && ( $type != 'basic' && $type != 'plus' && $type != 'pro' && $type != 'master' ) )
-		) {
-			// Unlicensed
-			$results['unlicensed'][] = $addon;
-			continue;
-		}
-
-		// Licensed
-		$results['licensed'][] = $addon;
-
-	}
-
-	// Return Addons, split by licensed and unlicensed.
-	return $results;
-
-}
-
-/**
- * Pings the remote server for addons data.
- *
- * @param string $key The user license key.
- *
- * @return  array               Array of addon data otherwise.
- * @since 6.0.0
- *
- */
-function monsterinsights_get_addons_data( $key ) {
-	return array(
-		(object) array(
-			'title'       => 'eCommerce',
-			'slug'        => 'monsterinsights-ecommerce',
-			'image'       => '',
-			'description' => 'Enhanced eCommerce analytics for WooCommerce and Easy Digital Downloads.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'Forms',
-			'slug'        => 'monsterinsights-forms',
-			'image'       => '',
-			'description' => 'Automated form impressions and submissions tracking for all popular form builders.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'Custom Dimensions',
-			'slug'        => 'monsterinsights-dimensions',
-			'image'       => '',
-			'description' => 'Track custom dimensions including authors, categories, tags, and user types.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'Media Tracking',
-			'slug'        => 'monsterinsights-media',
-			'image'       => '',
-			'description' => 'Track YouTube, Vimeo, and HTML5 video plays and completion rates.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'PPC & Ad Tracking',
-			'slug'        => 'monsterinsights-ads',
-			'image'       => '',
-			'description' => 'Track Google Ads, Meta Ads conversions and revenue attribution.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'EU Compliance & Consent Mode',
-			'slug'        => 'monsterinsights-eu-compliance',
-			'image'       => '',
-			'description' => 'Google Consent Mode v2 support and automated PII anonymization.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-		(object) array(
-			'title'       => 'Page Insights',
-			'slug'        => 'monsterinsights-page-insights',
-			'image'       => '',
-			'description' => 'In-depth page-level analytics and performance metrics.',
-			'categories'  => array( 'Pro', 'Agency' ),
-			'active'      => true,
-			'installed'   => true,
-		),
-	);
-}
-
-/**
- * Get all addons without a license, for lite users.
- *
- * @return array|bool|mixed|object
- */
-function monsterinsights_get_all_addons_data() {
-
-	$body = array(
-		'tgm-updater-action'     => 'get-all-addons-data',
-		'tgm-updater-key'        => '',
-		'tgm-updater-wp-version' => get_bloginfo( 'version' ),
-		'tgm-updater-referer'    => site_url(),
-		'tgm-updater-mi-version' => MONSTERINSIGHTS_VERSION,
-		'tgm-updater-is-pro'     => false,
-	);
-
-	return monsterinsights_perform_remote_request( 'verify-key', $body );
-}
-
-function monsterinsights_get_addon( $installed_plugins, $addons_type, $addon, $slug ) {
-	$active          = false;
-	$installed       = false;
-
-	$slug = apply_filters( 'monsterinsights_addon_slug', $slug );
-
-	$plugin_basename = monsterinsights_get_plugin_basename_from_slug( $slug );
-
-	if ( isset( $installed_plugins[ $plugin_basename ] ) ) {
-		$installed = true;
-
-		if ( is_multisite() && is_network_admin() ) {
-			$active = is_plugin_active_for_network( $plugin_basename );
-		} else {
-			$active = is_plugin_active( $plugin_basename );
-		}
-	}
-	if ( empty( $addon->url ) ) {
-		$addon->url = '';
-	}
-
-	$active_version = false;
-	if ( $active ) {
-		if ( ! empty( $installed_plugins[ $plugin_basename ]['Version'] ) ) {
-			$active_version = $installed_plugins[ $plugin_basename ]['Version'];
-		}
-	}
-
-	$addon->type           = $addons_type;
-	$addon->installed      = $installed;
-	$addon->active_version = $active_version;
-	$addon->active         = $active;
-	$addon->basename       = $plugin_basename;
-
-	return $addon;
-}
-
-/**
- * Retrieve the plugin basename from the plugin slug.
- *
- * @param string $slug The plugin slug.
- *
- * @return string      The plugin basename if found, else the plugin slug.
- * @since 6.0.0
- *
- */
-function monsterinsights_get_plugin_basename_from_slug( $slug ) {
-	$keys = array_keys( get_plugins() );
-
-	foreach ( $keys as $key ) {
-		if ( preg_match( '|^' . $slug . '|', $key ) ) {
-			return $key;
-		}
-	}
-
-	return $slug;
-
+	return false;
 }

@@ -443,8 +443,19 @@ function monsterinsights_is_dev_url( $url = '' ) {
 				$allowed_hosts = preg_split( '|,\s*|', WP_ACCESSIBLE_HOSTS );
 
 				if ( is_array( $allowed_hosts ) && ! empty( $allowed_hosts ) ) {
-					if ( ! in_array( '*.monsterinsights.com', $allowed_hosts, true ) || ! in_array( 'api.monsterinsights.com', $allowed_hosts, true ) ) {
-						return true;
+					// Heretek Analytics talks to Google's GA endpoints only.
+					$required_hosts = array(
+						'www.google-analytics.com',
+						'*.google-analytics.com',
+						'analyticsdata.googleapis.com',
+						'analyticsadmin.googleapis.com',
+						'oauth2.googleapis.com',
+						'www.googletagmanager.com',
+					);
+					foreach ( $required_hosts as $host ) {
+						if ( ! in_array( $host, $allowed_hosts, true ) ) {
+							return true;
+						}
 					}
 				}
 			}
@@ -1000,15 +1011,19 @@ function monsterinsights_get_country_list( $translated = false ) {
 }
 
 function monsterinsights_get_api_url() {
-	return apply_filters( 'monsterinsights_get_api_url', 'api.monsterinsights.com/v2/' );
+	// Heretek Analytics no longer talks to the MonsterInsights SaaS. The legacy
+	// filter is preserved so any custom code still calling this gets an empty
+	// string instead of a doomed hostname.
+	return apply_filters( 'monsterinsights_get_api_url', '' );
 }
 
 /**
- * Builds the site identifier used for authentication requests.
+ * Builds the site identifier used by the (now-removed) onboarding flow.
  *
- * Lives here (an always-loaded file) rather than the admin-only common.php so
- * that MonsterInsights_API_Auth::get_sitei() works when the onboarding URL is
- * built from the frontend admin bar.
+ * Kept as a stub returning an empty string so any third-party code still
+ * calling it does not fatal. Heretek Analytics no longer uses a hosted
+ * onboarding portal — users configure their GA4 ID and service account
+ * directly on the Settings page.
  *
  * @return string
  */
@@ -1028,45 +1043,23 @@ function monsterinsights_get_sitei() {
 /**
  * Defines the new dynamic onboarding URL.
  *
+ * Heretek Analytics no longer hands users off to a hosted onboarding portal;
+ * instead, this returns the local Settings page. The legacy filter is
+ * preserved so any custom code still calling this gets a sensible URL.
+ *
  * @since 9.5.0
  * @return string
  */
 function monsterinsights_get_onboarding_url() {
-	$base_url = apply_filters( 'monsterinsights_get_onboarding_url', 'https://connect.monsterinsights.com' );
+	$base_url = apply_filters( 'monsterinsights_get_onboarding_url', '' );
 
-	$auth       = MonsterInsights()->api_auth;
-
-	// The API Auth object is only instantiated in admin/cron contexts, but this
-	// helper is also called from the frontend admin bar. Unlike `auth`/`license`
-	// it isn't lazy-loaded via __get (it's a declared property), so load it on
-	// demand to avoid a fatal when accessed on the frontend.
-	if ( empty( $auth ) ) {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/api-auth.php';
-		$auth = MonsterInsights()->api_auth = new MonsterInsights_API_Auth();
+	if ( '' === $base_url ) {
+		return is_network_admin()
+			? network_admin_url( 'admin.php?page=monsterinsights_settings' )
+			: admin_url( 'admin.php?page=monsterinsights_settings' );
 	}
 
-	// Only a user who can install plugins can complete the wizard flow, and
-	// `validate_onboarding_request()` enforces the same rule on the way back.
-	// Callers include screens open to any report viewer, so carry the wizard
-	// credentials only for users who can actually launch it.
-	$can_launch_wizard = monsterinsights_can_install_plugins();
-
-	$is_network = is_network_admin();
-	$params = array(
-		'tt'                => $can_launch_wizard ? $auth->get_tt() : '',
-		'sitei'             => $can_launch_wizard ? $auth->get_sitei() : '',
-		'site_url'          => get_site_url(),
-		'onboarding_key'    => $can_launch_wizard ? monsterinsights_get_onboarding_key() : '',
-		'triggered_by'      => get_current_user_id(),
-		'rest_url'          => rest_url( 'monsterinsights/v1' ),
-		'return_url'        => $is_network ? network_admin_url( 'admin.php?page=monsterinsights_settings' ) : admin_url( 'admin.php?page=monsterinsights_settings' ),
-		'is_network'        => $is_network ? 1 : 0,
-		'can_install'       => $can_launch_wizard ? 1 : 0,
-	);
-
-	// Apply args filter for backwards compatibility.
-	$request_args = apply_filters( 'monsterinsights_auth_request_body', $params );
-	return add_query_arg( $request_args, $base_url );
+	return $base_url;
 }
 
 /**
