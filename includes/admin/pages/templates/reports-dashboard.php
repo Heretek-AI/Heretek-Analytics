@@ -366,16 +366,25 @@ $sum_metric = static function ( array $rows, int $idx ) {
 						<thead><tr><th><?php esc_html_e( 'Author', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Page Views', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
 						<tbody>
 							<?php foreach ( $top_authors['rows'] as $row ) :
-								$aid = ! empty( $row['d'][0] ) ? (int) $row['d'][0] : 0;
-								$user = isset( $author_lookup[ $aid ] ) ? $author_lookup[ $aid ] : null;
+								$raw_d   = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
+								$aid     = ( '' !== $raw_d && '(not set)' !== $raw_d && ctype_digit( $raw_d ) ) ? (int) $raw_d : 0;
+								$user    = ( $aid > 0 && isset( $author_lookup[ $aid ] ) ) ? $author_lookup[ $aid ] : null;
 								$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
 								$views    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
 								if ( $user ) {
 									$display = $user->display_name;
 									$sub     = $user->user_email;
 									$edit    = esc_url( get_edit_user_link( $user->ID ) );
+								} elseif ( $aid > 0 ) {
+									$display = sprintf( __( 'Author #%d (deleted)', 'google-analytics-for-wordpress' ), $aid );
+									$sub     = '';
+									$edit    = '';
+								} elseif ( '' === $raw_d || '(not set)' === $raw_d ) {
+									$display = __( '(not set)', 'google-analytics-for-wordpress' );
+									$sub     = '';
+									$edit    = '';
 								} else {
-									$display = sprintf( __( 'Author #%d', 'google-analytics-for-wordpress' ), $aid );
+									$display = sprintf( __( 'Unknown author (%s)', 'google-analytics-for-wordpress' ), $raw_d );
 									$sub     = '';
 									$edit    = '';
 								}
