@@ -221,6 +221,26 @@ final class MonsterInsights {
 			self::$instance       = new MonsterInsights();
 			self::$instance->file = __FILE__;
 
+			// HERETEK DIAGNOSTIC (temporary): capture the next fatal to wp-content/uploads/heretek-debug.log.
+			// Will be reverted before the v11.2.0 fix is committed.
+			register_shutdown_function( function () {
+				$err = error_get_last();
+				if ( $err && in_array( $err['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
+					$log = WP_CONTENT_DIR . '/uploads/heretek-debug.log';
+					$line = sprintf(
+						"[%s] %s: %s in %s:%d\n  POST: plugin=%s admin_page=%s\n",
+						gmdate( 'c' ),
+						'FATAL',
+						$err['message'],
+						$err['file'],
+						$err['line'],
+						isset( $_POST['plugin'] ) ? sanitize_text_field( wp_unslash( $_POST['plugin'] ) ) : '',
+						isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''
+					);
+					@file_put_contents( $log, $line, FILE_APPEND );
+				}
+			} );
+
 			// Define constants
 			self::$instance->define_globals();
 
