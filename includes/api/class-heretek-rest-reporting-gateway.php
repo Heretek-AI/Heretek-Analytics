@@ -20,7 +20,8 @@ class Heretek_Rest_Reporting_Gateway {
 	const REST_NAMESPACE = 'heretek-analytics/v1';
 	const OAUTH_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 	const GA4_DATA_API_BASE = 'https://analyticsdata.googleapis.com/v1beta';
-	const GA4_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
+	const GA4_ADMIN_API_BASE = 'https://analyticsadmin.googleapis.com/v1beta';
+	const GA4_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/analytics.edit';
 	const TOKEN_TRANSIENT_PREFIX = 'heretek_ga4_sa_token_';
 	const TOKEN_TTL_SECONDS = 50 * MINUTE_IN_SECONDS;
 	const CACHE_TRANSIENT_PREFIX = 'heretek_ga4_cache_';
@@ -73,6 +74,45 @@ class Heretek_Rest_Reporting_Gateway {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'handle_verify_query' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			)
+		);
+
+		// GA4 Custom Dimensions status endpoint
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/dimensions/status',
+			array(
+				array(
+					'methods'             => array( 'GET', 'POST' ),
+					'callback'            => array( $this, 'handle_dimensions_status_query' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			)
+		);
+
+		// GA4 Custom Dimensions auto-provisioning endpoint
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/dimensions/provision',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'handle_dimensions_provision_query' ),
+					'permission_callback' => array( $this, 'check_permission' ),
+				),
+			)
+		);
+
+		// Multi-taxonomy ranking endpoint (authors, characters, chapters, tags)
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/taxonomy/ranking',
+			array(
+				array(
+					'methods'             => array( 'GET', 'POST' ),
+					'callback'            => array( $this, 'handle_taxonomy_ranking_query' ),
 					'permission_callback' => array( $this, 'check_permission' ),
 				),
 			)
@@ -169,6 +209,55 @@ class Heretek_Rest_Reporting_Gateway {
 				__( 'Connected to GA4 property %s successfully.', 'google-analytics-for-wordpress' ),
 				$pid
 			),
+		), 200 );
+	}
+
+	/**
+	 * REST handler for checking custom dimension status via GA4 Admin API.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function handle_dimensions_status_query( WP_REST_Request $request ) {
+		$status = $this->get_dimensions_status();
+		return new WP_REST_Response( array(
+			'success' => empty( $status['error'] ),
+			'data'    => $status,
+		), 200 );
+	}
+
+	/**
+	 * REST handler for auto-provisioning custom dimensions via GA4 Admin API.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function handle_dimensions_provision_query( WP_REST_Request $request ) {
+		$res = $this->provision_standard_dimensions();
+		return new WP_REST_Response( array(
+			'success' => empty( $res['error'] ),
+			'data'    => $res,
+		), empty( $res['error'] ) ? 200 : 400 );
+	}
+
+	/**
+	 * REST handler for taxonomy rankings (authors, characters, chapters, tags).
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function handle_taxonomy_ranking_query( WP_REST_Request $request ) {
+		$params   = $request->get_params();
+		$taxonomy = ! empty( $params['taxonomy'] ) ? sanitize_text_field( $params['taxonomy'] ) : 'author';
+		$start    = ! empty( $params['start'] )    ? sanitize_text_field( $params['start'] )    : '-30days';
+		$end      = ! empty( $params['end'] )      ? sanitize_text_field( $params['end'] )      : 'today';
+		$limit    = ! empty( $params['limit'] )    ? min( max( 1, (int) $params['limit'] ), 100 ) : 50;
+		$force    = ! empty( $params['force_refresh'] ) && ( 'true' === (string) $params['force_refresh'] || 1 === (int) $params['force_refresh'] );
+
+		$data = $this->get_taxonomy_telemetry( $taxonomy, $start, $end, $limit, $force );
+		return new WP_REST_Response( array(
+			'success' => empty( $data['error'] ),
+			'data'    => $data,
 		), 200 );
 	}
 
@@ -427,6 +516,31 @@ class Heretek_Rest_Reporting_Gateway {
 			),
 		);
 
+		// Check if native GA4 author reporting returned real author IDs or only (not set) / empty
+		$has_valid_ga4_author = false;
+		if ( ! empty( $current_reports['top_authors']['rows'] ) && is_array( $current_reports['top_authors']['rows'] ) ) {
+			foreach ( $current_reports['top_authors']['rows'] as $arow ) {
+				$aid = isset( $arow['d'][0] ) ? (string) $arow['d'][0] : '';
+				if ( '' !== $aid && '(not set)' !== $aid && ctype_digit( $aid ) ) {
+					$has_valid_ga4_author = true;
+					break;
+				}
+			}
+		}
+
+		$is_hybrid_author = false;
+		if ( ! $has_valid_ga4_author ) {
+			// Activate Hybrid Attribution fallback using top pages + local WordPress posts
+			$hybrid_authors = $this->resolve_hybrid_attribution( $start_date, $end_date, 'author', 15 );
+			if ( ! empty( $hybrid_authors['rows'] ) ) {
+				$current_reports['top_authors'] = $hybrid_authors;
+				$is_hybrid_author               = true;
+			}
+		}
+
+		// Also populate top comic characters via hybrid attribution
+		$current_reports['top_characters'] = $this->resolve_hybrid_attribution( $start_date, $end_date, 'character', 15 );
+
 		// Resolve Author IDs with WordPress users
 		$author_ids = array();
 		$author_rows = isset( $current_reports['top_authors']['rows'] ) && is_array( $current_reports['top_authors']['rows'] )
@@ -467,19 +581,21 @@ class Heretek_Rest_Reporting_Gateway {
 		}
 
 		$payload = array(
-			'configured'     => true,
-			'property_id'    => $pid,
-			'measurement_id' => $v4,
-			'start_date'     => $start_date,
-			'end_date'       => $end_date,
-			'prev_start'     => $prev_start_date,
-			'prev_end'       => $prev_end_date,
-			'kpis'           => $kpis,
-			'reports'        => $current_reports,
-			'author_lookup'  => $author_lookup,
-			'error'          => $error,
-			'updated_at'     => current_time( 'mysql' ),
-			'from_cache'     => false,
+			'configured'       => true,
+			'property_id'      => $pid,
+			'measurement_id'   => $v4,
+			'start_date'       => $start_date,
+			'end_date'         => $end_date,
+			'prev_start'       => $prev_start_date,
+			'prev_end'         => $prev_end_date,
+			'kpis'             => $kpis,
+			'reports'          => $current_reports,
+			'author_lookup'    => $author_lookup,
+			'is_hybrid_author' => $is_hybrid_author,
+			'has_comic_easel'  => taxonomy_exists( 'characters' ),
+			'error'            => $error,
+			'updated_at'       => current_time( 'mysql' ),
+			'from_cache'       => false,
 		);
 
 		// Cache TTL decision: 3 mins if ending today, else 15 mins
@@ -825,7 +941,7 @@ class Heretek_Rest_Reporting_Gateway {
 			);
 		}
 
-		$cache_key = self::TOKEN_TRANSIENT_PREFIX . md5( $sa_json );
+		$cache_key = self::TOKEN_TRANSIENT_PREFIX . md5( $sa_json . '_' . self::GA4_SCOPE );
 		$cached    = get_transient( $cache_key );
 		if ( ! empty( $cached ) && is_string( $cached ) ) {
 			return $cached;
@@ -940,6 +1056,522 @@ class Heretek_Rest_Reporting_Gateway {
 				'timeZone'     => isset( $payload['metadata']['timeZone'] ) ? (string) $payload['metadata']['timeZone']   : 'UTC',
 			),
 		);
+	}
+
+	/**
+	 * Standard custom dimensions schema managed by Heretek Analytics.
+	 *
+	 * @return array
+	 */
+	public static function get_standard_dimensions_schema() {
+		return array(
+			'author_id' => array(
+				'parameterName' => 'author_id',
+				'displayName'   => 'Author ID',
+				'description'   => 'WordPress author numeric user ID',
+				'scope'         => 'EVENT',
+			),
+			'author' => array(
+				'parameterName' => 'author',
+				'displayName'   => 'Author Name',
+				'description'   => 'WordPress author display name',
+				'scope'         => 'EVENT',
+			),
+			'character' => array(
+				'parameterName' => 'character',
+				'displayName'   => 'Comic Character',
+				'description'   => 'Comic character name from Comic Easel',
+				'scope'         => 'EVENT',
+			),
+			'chapter' => array(
+				'parameterName' => 'chapter',
+				'displayName'   => 'Comic Chapter',
+				'description'   => 'Comic chapter name from Comic Easel',
+				'scope'         => 'EVENT',
+			),
+			'location' => array(
+				'parameterName' => 'location',
+				'displayName'   => 'Comic Location',
+				'description'   => 'Comic location name from Comic Easel',
+				'scope'         => 'EVENT',
+			),
+			'post_tag' => array(
+				'parameterName' => 'post_tag',
+				'displayName'   => 'Post Tag',
+				'description'   => 'WordPress post tag',
+				'scope'         => 'EVENT',
+			),
+			'category' => array(
+				'parameterName' => 'category',
+				'displayName'   => 'Post Category',
+				'description'   => 'WordPress post category',
+				'scope'         => 'EVENT',
+			),
+			'post_type' => array(
+				'parameterName' => 'post_type',
+				'displayName'   => 'Post Type',
+				'description'   => 'WordPress post type (comic, post, page)',
+				'scope'         => 'EVENT',
+			),
+		);
+	}
+
+	/**
+	 * Query Google Analytics Admin API to list all custom dimensions for the configured property.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function list_ga4_custom_dimensions() {
+		$auth = MonsterInsights()->auth;
+		$sa   = $auth->get_service_account_json();
+		$pid  = $auth->get_property_id();
+
+		if ( empty( $sa ) || empty( $pid ) ) {
+			return new WP_Error( 'heretek_no_credentials', 'GA4 service account JSON and Property ID must be configured in Settings.' );
+		}
+
+		$token = $this->get_access_token( $sa );
+		if ( is_wp_error( $token ) ) {
+			return $token;
+		}
+
+		$url  = sprintf( '%s/properties/%s/customDimensions', self::GA4_ADMIN_API_BASE, rawurlencode( $pid ) );
+		$resp = wp_remote_get(
+			$url,
+			array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $token,
+					'Content-Type'  => 'application/json',
+				),
+				'timeout' => 20,
+			)
+		);
+
+		if ( is_wp_error( $resp ) ) {
+			return $resp;
+		}
+
+		$code    = wp_remote_retrieve_response_code( $resp );
+		$payload = json_decode( wp_remote_retrieve_body( $resp ), true );
+
+		if ( $code >= 400 ) {
+			$msg = ! empty( $payload['error']['message'] ) ? $payload['error']['message'] : 'GA4 Admin API error (' . $code . ')';
+			return new WP_Error( 'heretek_admin_api_error', $msg, array( 'status' => $code, 'payload' => $payload ) );
+		}
+
+		return isset( $payload['customDimensions'] ) && is_array( $payload['customDimensions'] )
+			? $payload['customDimensions']
+			: array();
+	}
+
+	/**
+	 * Create a single custom dimension via the Google Analytics Admin API.
+	 *
+	 * @param array $dim_definition
+	 * @return array|WP_Error
+	 */
+	public function create_ga4_custom_dimension( array $dim_definition ) {
+		$auth = MonsterInsights()->auth;
+		$sa   = $auth->get_service_account_json();
+		$pid  = $auth->get_property_id();
+
+		if ( empty( $sa ) || empty( $pid ) ) {
+			return new WP_Error( 'heretek_no_credentials', 'GA4 credentials missing.' );
+		}
+
+		$token = $this->get_access_token( $sa );
+		if ( is_wp_error( $token ) ) {
+			return $token;
+		}
+
+		$body = array(
+			'parameterName' => sanitize_text_field( $dim_definition['parameterName'] ),
+			'displayName'   => sanitize_text_field( $dim_definition['displayName'] ),
+			'description'   => ! empty( $dim_definition['description'] ) ? sanitize_text_field( $dim_definition['description'] ) : '',
+			'scope'         => ! empty( $dim_definition['scope'] ) ? sanitize_text_field( $dim_definition['scope'] ) : 'EVENT',
+		);
+
+		$url  = sprintf( '%s/properties/%s/customDimensions', self::GA4_ADMIN_API_BASE, rawurlencode( $pid ) );
+		$resp = wp_remote_post(
+			$url,
+			array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $token,
+					'Content-Type'  => 'application/json',
+				),
+				'body'    => wp_json_encode( $body ),
+				'timeout' => 20,
+			)
+		);
+
+		if ( is_wp_error( $resp ) ) {
+			return $resp;
+		}
+
+		$code    = wp_remote_retrieve_response_code( $resp );
+		$payload = json_decode( wp_remote_retrieve_body( $resp ), true );
+
+		if ( $code >= 400 ) {
+			if ( 409 === $code || ( isset( $payload['error']['message'] ) && false !== stripos( $payload['error']['message'], 'already exists' ) ) ) {
+				return array( 'status' => 'already_exists', 'parameterName' => $body['parameterName'] );
+			}
+			$msg = ! empty( $payload['error']['message'] ) ? $payload['error']['message'] : 'Failed to create dimension (' . $code . ')';
+			return new WP_Error( 'heretek_admin_api_error', $msg, array( 'status' => $code ) );
+		}
+
+		return array( 'status' => 'created', 'dimension' => $payload );
+	}
+
+	/**
+	 * Get live status of all required dimensions in GA4.
+	 *
+	 * @return array
+	 */
+	public function get_dimensions_status() {
+		$schema   = self::get_standard_dimensions_schema();
+		$existing = $this->list_ga4_custom_dimensions();
+
+		if ( is_wp_error( $existing ) ) {
+			$error_data  = $existing->get_error_data();
+			$status_code = isset( $error_data['status'] ) ? $error_data['status'] : 500;
+			$instructions = '';
+			if ( 403 === $status_code ) {
+				$instructions = __( 'The Google Cloud Service Account lacks "Editor" permissions on your GA4 Property. In Google Analytics, go to Admin -> Property access management, select your service account, and change role from Viewer to Editor. Also ensure the "Google Analytics Admin API" is enabled in Google Cloud Console.', 'google-analytics-for-wordpress' );
+			} elseif ( 404 === $status_code ) {
+				$instructions = __( 'GA4 Property ID was not found or Google Analytics Admin API is not enabled in your Google Cloud Project.', 'google-analytics-for-wordpress' );
+			}
+
+			return array(
+				'can_admin'    => false,
+				'error'        => $existing->get_error_message(),
+				'status_code'  => $status_code,
+				'instructions' => $instructions,
+				'schema'       => $schema,
+				'dimensions'   => array(),
+			);
+		}
+
+		$existing_map = array();
+		foreach ( $existing as $ed ) {
+			if ( ! empty( $ed['parameterName'] ) ) {
+				$existing_map[ $ed['parameterName'] ] = $ed;
+			}
+		}
+
+		$dimensions_status = array();
+		$all_provisioned   = true;
+		foreach ( $schema as $key => $def ) {
+			$is_active = isset( $existing_map[ $def['parameterName'] ] );
+			if ( ! $is_active ) {
+				$all_provisioned = false;
+			}
+			$dimensions_status[ $key ] = array(
+				'parameterName' => $def['parameterName'],
+				'displayName'   => $def['displayName'],
+				'scope'         => $def['scope'],
+				'description'   => $def['description'],
+				'active'        => $is_active,
+				'ga4_resource'  => $is_active ? $existing_map[ $def['parameterName'] ]['name'] : null,
+			);
+		}
+
+		return array(
+			'can_admin'       => true,
+			'all_provisioned' => $all_provisioned,
+			'dimensions'      => $dimensions_status,
+			'raw_count'       => count( $existing ),
+			'error'           => '',
+		);
+	}
+
+	/**
+	 * Provision all missing standard custom dimensions.
+	 *
+	 * @return array
+	 */
+	public function provision_standard_dimensions() {
+		$schema = self::get_standard_dimensions_schema();
+		$status = $this->get_dimensions_status();
+
+		if ( ! empty( $status['error'] ) ) {
+			return $status;
+		}
+
+		$results = array(
+			'created'        => array(),
+			'already_exists' => array(),
+			'failed'         => array(),
+		);
+
+		foreach ( $schema as $key => $def ) {
+			if ( ! empty( $status['dimensions'][ $key ]['active'] ) ) {
+				$results['already_exists'][] = $key;
+				continue;
+			}
+
+			$res = $this->create_ga4_custom_dimension( $def );
+			if ( is_wp_error( $res ) ) {
+				$results['failed'][ $key ] = $res->get_error_message();
+			} else {
+				$results['created'][] = $key;
+			}
+		}
+
+		$updated_status                      = $this->get_dimensions_status();
+		$updated_status['provision_results'] = $results;
+		return $updated_status;
+	}
+
+	/**
+	 * Reconstruct author, character, chapter, or tag attribution by cross-referencing
+	 * GA4 top pages report with local WordPress posts and taxonomy terms.
+	 *
+	 * @param string $start_date
+	 * @param string $end_date
+	 * @param string $taxonomy   'author' | 'character' | 'chapter' | 'tag'
+	 * @param int    $limit
+	 * @return array
+	 */
+	public function resolve_hybrid_attribution( $start_date, $end_date, $taxonomy = 'author', $limit = 50 ) {
+		$top_pages_query = array(
+			'id'         => 'hybrid_source_pages',
+			'dimensions' => array( 'pagePath' ),
+			'metrics'    => array( 'sessions', 'screenPageViews', 'totalUsers', 'engagedSessions' ),
+			'limit'      => 100,
+		);
+
+		$ga4_pages = $this->run_ga4_report( $top_pages_query, $start_date, $end_date );
+		if ( is_wp_error( $ga4_pages ) || empty( $ga4_pages['rows'] ) ) {
+			return array(
+				'dimensionHeaders' => array( $taxonomy ),
+				'metricHeaders'    => array( 'sessions', 'screenPageViews', 'totalUsers', 'engagedSessions' ),
+				'rows'             => array(),
+				'rowCount'         => 0,
+				'hybrid'           => true,
+			);
+		}
+
+		global $wpdb;
+		$aggregated = array();
+
+		foreach ( $ga4_pages['rows'] as $row ) {
+			$path = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
+			if ( '' === $path || '/' === $path ) {
+				continue;
+			}
+
+			$clean_path = trim( parse_url( $path, PHP_URL_PATH ), '/' );
+			$parts      = explode( '/', $clean_path );
+			$slug       = end( $parts );
+			if ( empty( $slug ) ) {
+				continue;
+			}
+
+			$post_info = $wpdb->get_row( $wpdb->prepare(
+				"SELECT ID, post_author, post_type FROM {$wpdb->posts} WHERE post_name = %s AND post_status = 'publish' LIMIT 1",
+				$slug
+			) );
+
+			if ( ! $post_info ) {
+				continue;
+			}
+
+			$post_id    = (int) $post_info->ID;
+			$author_id  = (int) $post_info->post_author;
+			$m_sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
+			$m_views    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
+			$m_users    = isset( $row['m'][2]['value'] ) ? (int) $row['m'][2]['value'] : 0;
+			$m_engaged  = isset( $row['m'][3]['value'] ) ? (int) $row['m'][3]['value'] : 0;
+
+			if ( 'author' === $taxonomy ) {
+				$key = (string) $author_id;
+				if ( ! isset( $aggregated[ $key ] ) ) {
+					$aggregated[ $key ] = array(
+						'id'       => $key,
+						'sessions' => 0,
+						'views'    => 0,
+						'users'    => 0,
+						'engaged'  => 0,
+					);
+				}
+				$aggregated[ $key ]['sessions'] += $m_sessions;
+				$aggregated[ $key ]['views']    += $m_views;
+				$aggregated[ $key ]['users']    += $m_users;
+				$aggregated[ $key ]['engaged']  += $m_engaged;
+			} else {
+				$tax_name = 'character' === $taxonomy ? 'characters' : ( 'chapter' === $taxonomy ? 'chapters' : 'post_tag' );
+				if ( taxonomy_exists( $tax_name ) ) {
+					$terms = wp_get_object_terms( $post_id, $tax_name );
+					if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+						foreach ( $terms as $t ) {
+							$key = $t->name;
+							if ( ! isset( $aggregated[ $key ] ) ) {
+								$aggregated[ $key ] = array(
+									'id'       => $key,
+									'term_id'  => $t->term_id,
+									'name'     => $t->name,
+									'sessions' => 0,
+									'views'    => 0,
+									'users'    => 0,
+									'engaged'  => 0,
+								);
+							}
+							$aggregated[ $key ]['sessions'] += $m_sessions;
+							$aggregated[ $key ]['views']    += $m_views;
+							$aggregated[ $key ]['users']    += $m_users;
+							$aggregated[ $key ]['engaged']  += $m_engaged;
+						}
+					}
+				}
+			}
+		}
+
+		uasort( $aggregated, static function( $a, $b ) {
+			return $b['sessions'] - $a['sessions'];
+		} );
+
+		$aggregated = array_slice( $aggregated, 0, $limit, true );
+
+		$formatted_rows = array();
+		foreach ( $aggregated as $item ) {
+			$formatted_rows[] = array(
+				'd' => array( (string) $item['id'] ),
+				'm' => array(
+					array( 'value' => (string) $item['sessions'] ),
+					array( 'value' => (string) $item['views'] ),
+					array( 'value' => (string) $item['users'] ),
+					array( 'value' => (string) $item['engaged'] ),
+				),
+				'item_meta' => $item,
+			);
+		}
+
+		return array(
+			'dimensionHeaders' => array( $taxonomy ),
+			'metricHeaders'    => array( 'sessions', 'screenPageViews', 'totalUsers', 'engagedSessions' ),
+			'rows'             => $formatted_rows,
+			'rowCount'         => count( $formatted_rows ),
+			'hybrid'           => true,
+		);
+	}
+
+	/**
+	 * Compute multi-taxonomy telemetry ranking bundle (authors, characters, chapters, tags).
+	 *
+	 * @param string $taxonomy
+	 * @param string $start
+	 * @param string $end
+	 * @param int    $limit
+	 * @param bool   $force_refresh
+	 * @return array
+	 */
+	public function get_taxonomy_telemetry( $taxonomy = 'author', $start = '-30days', $end = 'today', $limit = 50, $force_refresh = false ) {
+		$start_date = $this->resolve_date( $start, strtotime( '-30 days' ) );
+		$end_date   = $this->resolve_date( $end, time() );
+		$pid        = MonsterInsights()->auth->get_property_id();
+
+		$cache_key = self::CACHE_TRANSIENT_PREFIX . 'tax_' . md5( $pid . '_' . $taxonomy . '_' . $start_date . '_' . $end_date . '_' . $limit );
+		if ( ! $force_refresh ) {
+			$cached = get_transient( $cache_key );
+			if ( ! empty( $cached ) && is_array( $cached ) ) {
+				$cached['from_cache'] = true;
+				return $cached;
+			}
+		}
+
+		$param_map = array(
+			'author'    => 'author_id',
+			'character' => 'character',
+			'chapter'   => 'chapter',
+			'tag'       => 'post_tag',
+		);
+		$param_name = isset( $param_map[ $taxonomy ] ) ? $param_map[ $taxonomy ] : 'author_id';
+
+		$native_res = $this->run_ga4_report(
+			array(
+				'id'         => 'taxonomy_rank',
+				'dimensions' => array( 'customEvent:' . $param_name ),
+				'metrics'    => array( 'sessions', 'screenPageViews', 'totalUsers', 'engagedSessions' ),
+				'limit'      => $limit,
+			),
+			$start_date,
+			$end_date
+		);
+
+		if ( is_wp_error( $native_res ) && 'author' === $taxonomy ) {
+			$native_res = $this->run_ga4_report(
+				array(
+					'id'         => 'taxonomy_rank',
+					'dimensions' => array( 'customUser:author_id' ),
+					'metrics'    => array( 'sessions', 'screenPageViews', 'totalUsers', 'engagedSessions' ),
+					'limit'      => $limit,
+				),
+				$start_date,
+				$end_date
+			);
+		}
+
+		$has_valid_native = false;
+		if ( ! is_wp_error( $native_res ) && ! empty( $native_res['rows'] ) ) {
+			foreach ( $native_res['rows'] as $r ) {
+				$val = isset( $r['d'][0] ) ? (string) $r['d'][0] : '';
+				if ( '' !== $val && '(not set)' !== $val ) {
+					$has_valid_native = true;
+					break;
+				}
+			}
+		}
+
+		$is_hybrid = false;
+		if ( $has_valid_native ) {
+			$data = $native_res;
+		} else {
+			$data      = $this->resolve_hybrid_attribution( $start_date, $end_date, $taxonomy, $limit );
+			$is_hybrid = true;
+		}
+
+		$author_lookup = array();
+		if ( 'author' === $taxonomy && ! empty( $data['rows'] ) ) {
+			$aids = array();
+			foreach ( $data['rows'] as $r ) {
+				$aid = isset( $r['d'][0] ) ? (string) $r['d'][0] : '';
+				if ( '' !== $aid && '(not set)' !== $aid && ctype_digit( $aid ) ) {
+					$aids[] = (int) $aid;
+				}
+			}
+			if ( ! empty( $aids ) ) {
+				$users = get_users( array(
+					'include' => array_values( array_unique( $aids ) ),
+					'fields'  => array( 'ID', 'display_name', 'user_email' ),
+				) );
+				foreach ( $users as $u ) {
+					$author_lookup[ (int) $u->ID ] = array(
+						'id'       => (int) $u->ID,
+						'name'     => $u->display_name,
+						'email'    => $u->user_email,
+						'avatar'   => get_avatar_url( $u->ID, array( 'size' => 48 ) ),
+						'edit_url' => get_edit_user_link( $u->ID ),
+					);
+				}
+			}
+		}
+
+		$payload = array(
+			'taxonomy'      => $taxonomy,
+			'start_date'    => $start_date,
+			'end_date'      => $end_date,
+			'rows'          => isset( $data['rows'] ) ? $data['rows'] : array(),
+			'rowCount'      => isset( $data['rowCount'] ) ? $data['rowCount'] : 0,
+			'author_lookup' => $author_lookup,
+			'is_hybrid'     => $is_hybrid,
+			'from_cache'    => false,
+			'updated_at'    => current_time( 'mysql' ),
+		);
+
+		$ttl = ( $end_date >= gmdate( 'Y-m-d' ) ) ? self::CACHE_TTL_TODAY : self::CACHE_TTL_DEFAULT;
+		set_transient( $cache_key, $payload, $ttl );
+
+		return $payload;
 	}
 }
 

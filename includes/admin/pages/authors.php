@@ -52,71 +52,20 @@ function monsterinsights_authors_parse_range( $gateway ) {
 }
 
 /**
- * Fetch + shape author rows + WP user lookup for a given date range.
+ * Fetch + shape telemetry rows + lookup for a given date range and taxonomy.
  *
- * @param array{range:array,limit:int} $args
- * @return array{rows:array,author_lookup:array,error:string}
+ * @param Heretek_Rest_Reporting_Gateway $gateway
+ * @param array                          $range
+ * @param int                            $limit
+ * @param string                         $taxonomy
+ * @return array
  */
-function monsterinsights_authors_load_data( $gateway, $range, $limit ) {
-	$rows          = array();
-	$author_lookup = array();
-	$error         = '';
-
-	$result = $gateway->run_reports(
-		array(
-			array(
-				'id'         => 'authors',
-				'dimensions' => array( 'customUser:author_id' ),
-				'metrics'    => array( 'sessions', 'totalUsers', 'screenPageViews', 'engagedSessions' ),
-				'limit'      => $limit,
-			),
-		),
-		$range['start_date'],
-		$range['end_date']
-	);
-
-	if ( is_array( $result ) && isset( $result['authors'] ) && is_array( $result['authors'] ) ) {
-		if ( ! empty( $result['authors']['error'] ) ) {
-			$error = $result['authors']['error'];
-		} else {
-			$rows = isset( $result['authors']['rows'] ) && is_array( $result['authors']['rows'] )
-				? $result['authors']['rows']
-				: array();
-		}
-	}
-
-	$author_ids = array();
-	foreach ( $rows as $row ) {
-		// GA4 returns "(not set)" as a literal string for missing user
-		// properties and "" when the dimension wasn't captured at all.
-		// Normalize to null so the template can render a clean "(not set)"
-		// label and the join above stays empty for those rows.
-		if ( ! empty( $row['d'][0] )
-			&& '(not set)' !== $row['d'][0]
-			&& ctype_digit( (string) $row['d'][0] )
-		) {
-			$author_ids[] = (int) $row['d'][0];
-		}
-	}
-	if ( ! empty( $author_ids ) ) {
-		$users = get_users( array(
-			'include' => array_values( array_unique( $author_ids ) ),
-			'fields'  => array( 'ID', 'display_name', 'user_email' ),
-		) );
-		foreach ( $users as $u ) {
-			$author_lookup[ (int) $u->ID ] = $u;
-		}
-	}
-
-	return array(
-		'rows'          => $rows,
-		'author_lookup' => $author_lookup,
-		'error'         => $error,
-	);
+function monsterinsights_authors_load_data( $gateway, $range, $limit, $taxonomy = 'author' ) {
+	return $gateway->get_taxonomy_telemetry( $taxonomy, $range['start_date'], $range['end_date'], $limit );
 }
 
 /**
- * Render the Authors sub-page (HTML).
+ * Render the Authors / Taxonomy sub-page (HTML).
  *
  * @return void
  */
@@ -143,6 +92,11 @@ function monsterinsights_authors_page() {
 
 	$range = monsterinsights_authors_parse_range( $gateway );
 
+	$current_taxonomy = isset( $_GET['tax'] ) ? sanitize_text_field( wp_unslash( $_GET['tax'] ) ) : 'author';
+	if ( ! in_array( $current_taxonomy, array( 'author', 'character', 'chapter', 'tag' ), true ) ) {
+		$current_taxonomy = 'author';
+	}
+
 	$missing = '';
 	if ( empty( $v4 ) ) {
 		$missing = __( 'A GA4 Measurement ID is required. Open the Settings page to paste one.', 'google-analytics-for-wordpress' );
@@ -153,25 +107,31 @@ function monsterinsights_authors_page() {
 	$data = array(
 		'rows'          => array(),
 		'author_lookup' => array(),
+		'is_hybrid'     => false,
 		'error'         => '',
 	);
+	$dimensions_status = array();
 	if ( ! $missing ) {
-		$data = monsterinsights_authors_load_data( $gateway, $range, 50 );
+		$data              = monsterinsights_authors_load_data( $gateway, $range, 50, $current_taxonomy );
+		$dimensions_status = $gateway->get_dimensions_status();
 	}
 
-	$start_input = (string) $range['start_date'];
-	$end_input   = (string) $range['end_date'];
-	$start_date  = $range['start_date'];
-	$end_date    = $range['end_date'];
-	$rows        = $data['rows'];
-	$author_lookup = $data['author_lookup'];
-	$error       = $data['error'];
+	$start_input   = (string) $range['start_date'];
+	$end_input     = (string) $range['end_date'];
+	$start_date    = $range['start_date'];
+	$end_date      = $range['end_date'];
+	$rows          = isset( $data['rows'] ) ? $data['rows'] : array();
+	$author_lookup = isset( $data['author_lookup'] ) ? $data['author_lookup'] : array();
+	$is_hybrid     = ! empty( $data['is_hybrid'] );
+	$error         = isset( $data['error'] ) ? $data['error'] : '';
+	$has_comics    = taxonomy_exists( 'characters' );
 
 	$settings_url = admin_url( 'admin.php?page=monsterinsights_settings' );
 	$export_url   = add_query_arg(
 		array(
 			'page'   => 'monsterinsights_authors',
 			'export' => 'csv',
+			'tax'    => $current_taxonomy,
 			'start'  => $start_input,
 			'end'    => $end_input,
 		),
@@ -182,13 +142,7 @@ function monsterinsights_authors_page() {
 }
 
 /**
- * Stream a CSV download of the per-author ranking for the given date range.
- *
- * The query is the same as the on-screen panel; only the limit is bumped to
- * 1000 so a typical site gets every active author in a single fetch. The
- * `Heretek_Rest_Reporting_Gateway` clamps the GA4 `limit` parameter at 50 per
- * call, so for sites with more than 50 active authors we issue additional
- * paginated calls and concatenate the rows.
+ * Stream a CSV download of the per-author or per-taxonomy ranking.
  *
  * @return void
  */
@@ -202,33 +156,57 @@ function monsterinsights_authors_export_csv() {
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 
+	$current_taxonomy = isset( $_GET['tax'] ) ? sanitize_text_field( wp_unslash( $_GET['tax'] ) ) : 'author';
+	if ( ! in_array( $current_taxonomy, array( 'author', 'character', 'chapter', 'tag' ), true ) ) {
+		$current_taxonomy = 'author';
+	}
+
 	$range = monsterinsights_authors_parse_range( $gateway );
-	$data  = monsterinsights_authors_load_data( $gateway, $range, 50 );
-	$rows  = $data['rows'];
-	$author_lookup = $data['author_lookup'];
+	$data  = monsterinsights_authors_load_data( $gateway, $range, 100, $current_taxonomy );
+	$rows  = isset( $data['rows'] ) ? $data['rows'] : array();
+	$author_lookup = isset( $data['author_lookup'] ) ? $data['author_lookup'] : array();
 
 	nocache_headers();
 	header( 'Content-Type: text/csv; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename=heretek-authors-' . gmdate( 'Y-m-d' ) . '.csv' );
+	header( 'Content-Disposition: attachment; filename=heretek-' . sanitize_key( $current_taxonomy ) . '-' . gmdate( 'Y-m-d' ) . '.csv' );
 
 	$out = fopen( 'php://output', 'w' );
-	fputcsv( $out, array( 'Author ID', 'Display Name', 'Email', 'Sessions', 'Users', 'Page Views', 'Engaged Sessions' ) );
-	foreach ( $rows as $row ) {
-		$aid      = ! empty( $row['d'][0] ) ? (int) $row['d'][0] : 0;
-		$user     = isset( $author_lookup[ $aid ] ) ? $author_lookup[ $aid ] : null;
-		$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
-		$users    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
-		$views    = isset( $row['m'][2]['value'] ) ? (int) $row['m'][2]['value'] : 0;
-		$engaged  = isset( $row['m'][3]['value'] ) ? (int) $row['m'][3]['value'] : 0;
-		fputcsv( $out, array(
-			$aid,
-			$user ? $user->display_name : '',
-			$user ? $user->user_email   : '',
-			$sessions,
-			$users,
-			$views,
-			$engaged,
-		) );
+	if ( 'author' === $current_taxonomy ) {
+		fputcsv( $out, array( 'Author ID', 'Display Name', 'Email', 'Sessions', 'Page Views', 'Unique Users', 'Engaged Sessions' ) );
+		foreach ( $rows as $row ) {
+			$aid      = ! empty( $row['d'][0] ) ? (int) $row['d'][0] : 0;
+			$user     = isset( $author_lookup[ $aid ] ) ? $author_lookup[ $aid ] : null;
+			$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
+			$views    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
+			$users    = isset( $row['m'][2]['value'] ) ? (int) $row['m'][2]['value'] : 0;
+			$engaged  = isset( $row['m'][3]['value'] ) ? (int) $row['m'][3]['value'] : 0;
+			fputcsv( $out, array(
+				$aid,
+				$user ? $user['name'] : ( '(not set)' === $row['d'][0] ? '(not set)' : 'Author #' . $aid ),
+				$user ? $user['email'] : '',
+				$sessions,
+				$views,
+				$users,
+				$engaged,
+			) );
+		}
+	} else {
+		$tax_label = ucfirst( $current_taxonomy );
+		fputcsv( $out, array( $tax_label . ' Name', 'Sessions', 'Page Views', 'Unique Users', 'Engaged Sessions' ) );
+		foreach ( $rows as $row ) {
+			$term_name = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
+			$sessions  = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
+			$views     = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
+			$users     = isset( $row['m'][2]['value'] ) ? (int) $row['m'][2]['value'] : 0;
+			$engaged   = isset( $row['m'][3]['value'] ) ? (int) $row['m'][3]['value'] : 0;
+			fputcsv( $out, array(
+				$term_name,
+				$sessions,
+				$views,
+				$users,
+				$engaged,
+			) );
+		}
 	}
 	fclose( $out );
 	exit;

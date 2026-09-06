@@ -3,7 +3,7 @@ Contributors: Heretek-AI
 Tags: analytics, google analytics, ga4, privacy, apexcharts
 Requires at least: 5.6.0
 Tested up to: 6.9
-Stable tag: 12.2.0
+Stable tag: 12.3.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -64,6 +64,14 @@ No. Heretek Analytics never contacts monsterinsights.com, exactmetrics.com, or a
 Heretek Analytics includes an integrated GitHub Releases updater. When a new version is tagged on GitHub (`Heretek-AI/Heretek-Analytics`), your WordPress admin will notify you under Dashboard -> Updates and allow one-click in-place upgrading.
 
 == Changelog ==
+
+= 12.3.0 =
+* Google Analytics Admin API Schema Forge: Service Account can now automatically query and provision GA4 custom dimensions directly via `analyticsadmin.googleapis.com` (`author_id`, `author`, `character`, `chapter`, `location`, `post_tag`, `category`, `post_type`).
+* Comic Easel & Extended Taxonomy Tracking: Frontend `gtag.js` now dynamically emits Comic Easel taxonomies (`characters`, `chapters`, `locations`) as well as tags, categories, and author metadata with dual-scope emission (both event parameters and user properties).
+* Instant Hybrid Attribution Engine: Resolves GA4 `(not set)` author and taxonomy gaps by mapping GA4 top page paths against WordPress post IDs and taxonomy terms for immediate historical attribution without waiting 24-48h for GA4 dimension populating.
+* Authors & Content Taxonomy Dashboard: Added multi-taxonomy navigation tabs (Authors, Comic Characters, Comic Chapters, Tags) with live Schema Forge auto-provisioning bar and custom CSV export.
+* Reports Cockpit Characters Leaderboard: Embedded reactive character performance leaderboard into the Authors & Content dashboard tab.
+* Schema Forge Status & Provisioning UI in Settings: Integrated live custom dimension registry health check and 1-click auto-provisioning in Google Cloud credentials card.
 
 = 12.2.0 =
 * Complete visual & architectural overhaul: Blood & Steel dark cyber-theurgy aesthetic with obsidian void surfaces (#07070a), tech-bracket corners, and pulsing telemetry beacons.

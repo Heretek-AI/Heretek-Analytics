@@ -496,11 +496,42 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 			</div>
 
 			<!-- Author Distribution Visualizer -->
-			<div class="htk-card htk-card-bracket">
+			<div class="htk-card htk-card-bracket" style="margin-bottom:22px;">
 				<div class="htk-panel-header">
 					<h3><?php esc_html_e( 'Author Traffic Distribution', 'google-analytics-for-wordpress' ); ?></h3>
 				</div>
 				<div id="htk-authors-chart" style="min-height:280px;"></div>
+			</div>
+
+			<!-- Comic Characters Leaderboard -->
+			<div class="htk-card htk-card-bracket" id="htk-card-characters" style="display:none;">
+				<div class="htk-panel-header">
+					<div>
+						<h2><?php esc_html_e( 'Top Comic Characters', 'google-analytics-for-wordpress' ); ?></h2>
+						<p style="font-size:12px;color:var(--htk-text-dim);margin:4px 0 0;">
+							<?php esc_html_e( 'Performance ranking across comic characters from Comic Easel taxonomies.', 'google-analytics-for-wordpress' ); ?>
+						</p>
+					</div>
+					<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-characters" data-format="csv">
+						<?php esc_html_e( 'Export Characters CSV', 'google-analytics-for-wordpress' ); ?>
+					</button>
+				</div>
+				<div class="htk-table-wrap">
+					<table class="htk-table" id="htk-table-characters">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Character', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Views', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Unique Users', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Engaged Sessions', 'google-analytics-for-wordpress' ); ?></th>
+							</tr>
+						</thead>
+						<tbody id="htk-tbody-characters">
+							<!-- Dynamic -->
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 		</section>

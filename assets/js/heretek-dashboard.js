@@ -378,7 +378,8 @@
 		renderTopSourcesTable(data.reports && data.reports.top_sources);
 		renderTopCountriesTable(data.reports && data.reports.top_countries);
 		renderTopCitiesTable(data.reports && data.reports.top_cities);
-		renderAuthorsLeaderboard(data.reports && data.reports.top_authors, data.author_lookup);
+		renderAuthorsLeaderboard(data.reports && data.reports.top_authors, data.author_lookup, data.is_hybrid_author);
+		renderCharactersLeaderboard(data.reports && data.reports.top_characters);
 		renderTechTables(data.reports);
 
 		// Update timestamp
@@ -901,6 +902,39 @@
 				state.charts['authorsChart'].render();
 			}
 		}
+	}
+
+	function renderCharactersLeaderboard(characters) {
+		const card = document.getElementById('htk-card-characters');
+		const tbody = document.getElementById('htk-tbody-characters');
+		if (!card || !tbody) return;
+
+		if (!characters || !characters.rows || characters.rows.length === 0) {
+			card.style.display = 'none';
+			return;
+		}
+
+		card.style.display = 'block';
+		let html = '';
+		characters.rows.forEach(function (r, i) {
+			const name = (r.d && r.d[0]) || '';
+			const sessions = Number(r.m && r.m[0] && r.m[0].value) || 0;
+			const views = Number(r.m && r.m[1] && r.m[1].value) || 0;
+			const users = Number(r.m && r.m[2] && r.m[2].value) || 0;
+			const engaged = Number(r.m && r.m[3] && r.m[3].value) || 0;
+
+			html += '<tr>';
+			html += '<td><div class="htk-author-cell">' +
+				'<span class="htk-rank-badge">' + (i + 1) + '</span>' +
+				'<div><span class="htk-author-meta-name" style="color:var(--htk-crimson);font-weight:600;">' + escapeHtml(name) + '</span></div>' +
+				'</div></td>';
+			html += '<td class="num">' + fmt.int(sessions) + '</td>';
+			html += '<td class="num">' + fmt.int(views) + '</td>';
+			html += '<td class="num">' + fmt.int(users) + '</td>';
+			html += '<td class="num">' + fmt.int(engaged) + '</td>';
+			html += '</tr>';
+		});
+		tbody.innerHTML = html;
 	}
 
 	function renderTechTables(reports) {

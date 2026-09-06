@@ -7,7 +7,7 @@
  * Author:              Heretek AI
  * Author URI:          https://github.com/Heretek-AI
  *
- * Version:             12.2.0
+ * Version:             12.3.0
  * Requires at least:   5.6.0
  * Requires PHP:        7.4
  *
@@ -80,7 +80,7 @@ final class MonsterInsights {
 	 * @access public
 	 * @var string $version Plugin version.
 	 */
-	public $version = '12.2.0';
+	public $version = '12.3.0';
 	/**
 	 * Plugin file.
 	 *

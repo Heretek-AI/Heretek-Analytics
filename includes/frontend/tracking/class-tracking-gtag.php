@@ -159,20 +159,66 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 			$options['wp_user_id'] = $value;
 		}
 
-		// Author tracking on singular views: emit `author_id` (numeric WP user
-		// ID) and `author` (display name) as gtag config keys so they can be
-		// picked up by GA4 Custom Dimensions registered with those exact API
-		// names. By wp_head priority 6 the main query is fully resolved so
-		// get_queried_object() returns the post being viewed.
+		// Author, taxonomy, and content tracking on singular views:
+		// Emits author_id, author, character, chapter, location, post_tag, category,
+		// and post_type as gtag config keys for GA4 Custom Dimensions.
 		if ( is_singular() ) {
 			$queried = get_queried_object();
-			if ( $queried && isset( $queried->post_author ) ) {
-				$author_id = (int) $queried->post_author;
-				if ( $author_id > 0 ) {
-					$options['author_id'] = (string) $author_id;
-					$display_name        = get_the_author_meta( 'display_name', $author_id );
-					if ( ! empty( $display_name ) ) {
-						$options['author'] = (string) $display_name;
+			if ( $queried && isset( $queried->ID ) ) {
+				$post_id = (int) $queried->ID;
+
+				// Post Type
+				if ( ! empty( $queried->post_type ) ) {
+					$options['post_type'] = (string) $queried->post_type;
+				}
+
+				// Author ID & Display Name
+				if ( isset( $queried->post_author ) ) {
+					$author_id = (int) $queried->post_author;
+					if ( $author_id > 0 ) {
+						$options['author_id'] = (string) $author_id;
+						$display_name         = get_the_author_meta( 'display_name', $author_id );
+						if ( ! empty( $display_name ) ) {
+							$options['author'] = (string) $display_name;
+						}
+					}
+				}
+
+				// Category
+				$cats = get_the_category( $post_id );
+				if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+					$options['category'] = (string) $cats[0]->name;
+				}
+
+				// Tags
+				$tags = get_the_tags( $post_id );
+				if ( ! empty( $tags ) && ! is_wp_error( $tags ) ) {
+					$tag_names = wp_list_pluck( $tags, 'name' );
+					$options['post_tag'] = (string) implode( ', ', array_slice( $tag_names, 0, 5 ) );
+				}
+
+				// Comic Easel Taxonomies: characters, chapters, locations
+				if ( taxonomy_exists( 'characters' ) ) {
+					$chars = get_the_terms( $post_id, 'characters' );
+					if ( ! empty( $chars ) && ! is_wp_error( $chars ) ) {
+						$char_names = wp_list_pluck( $chars, 'name' );
+						$options['character'] = (string) implode( ', ', array_slice( $char_names, 0, 5 ) );
+					}
+				}
+
+				if ( taxonomy_exists( 'chapters' ) ) {
+					$chaps = get_the_terms( $post_id, 'chapters' );
+					if ( ! empty( $chaps ) && ! is_wp_error( $chaps ) ) {
+						$chap_names = wp_list_pluck( $chaps, 'name' );
+						$options['chapter'] = (string) implode( ', ', array_slice( $chap_names, 0, 3 ) );
+					}
+				}
+
+				if ( taxonomy_exists( 'locations' ) ) {
+					$locs = get_the_terms( $post_id, 'locations' );
+					if ( ! empty( $locs ) && ! is_wp_error( $locs ) ) {
+						$loc_names = wp_list_pluck( $locs, 'name' );
+						$options['location'] = (string) implode( ', ', array_slice( $loc_names, 0, 3 ) );
 					}
 				}
 			}
@@ -361,6 +407,20 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 					}
 					<?php if (! empty( $v4_id )) { ?>
 					__gtagTracker('config', '<?php echo esc_js( $v4_id ); ?>', <?php echo $options_v4; // phpcs:ignore ?> );
+					<?php
+					$raw_user_props = array();
+					$parsed_opts = json_decode( $options_v4, true );
+					if ( is_array( $parsed_opts ) ) {
+						foreach ( array( 'author_id', 'author', 'character', 'post_type' ) as $prop_key ) {
+							if ( ! empty( $parsed_opts[ $prop_key ] ) ) {
+								$raw_user_props[ $prop_key ] = $parsed_opts[ $prop_key ];
+							}
+						}
+					}
+					if ( ! empty( $raw_user_props ) ) {
+					?>
+					__gtagTracker('set', 'user_properties', <?php echo wp_json_encode( $raw_user_props ); ?>);
+					<?php } ?>
 					<?php } ?>
 					<?php echo esc_js( $compat ); ?>
 					<?php if (apply_filters( 'monsterinsights_tracking_gtag_frontend_gatracker_compatibility', true )) { ?>

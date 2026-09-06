@@ -29,6 +29,15 @@ function monsterinsights_settings_page() {
 
 	$status = monsterinsights_get_settings_status( $v4, $prop_id, $sa );
 
+	$dimensions_status = array();
+	if ( ! empty( $prop_id ) && ! empty( $sa ) ) {
+		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		}
+		$gateway           = new Heretek_Rest_Reporting_Gateway();
+		$dimensions_status = $gateway->get_dimensions_status();
+	}
+
 	$ajax_url    = admin_url( 'admin-ajax.php' );
 	$nonce_save  = wp_create_nonce( 'monsterinsights_save_heretek_settings' );
 	$nonce_check = wp_create_nonce( 'monsterinsights_verify_heretek_credentials' );

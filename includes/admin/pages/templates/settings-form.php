@@ -109,11 +109,53 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 			<div style="background:var(--htk-void);border:1px solid var(--htk-border);border-radius:6px;padding:14px 18px;font-size:12px;color:var(--htk-text-dim);line-height:1.6;">
 				<strong><?php esc_html_e( '3-Minute Setup Instructions:', 'google-analytics-for-wordpress' ); ?></strong>
 				<ol style="margin:6px 0 0 16px;padding:0;">
-					<li><?php esc_html_e( 'In Google Cloud Console, create or pick a project and enable the "Google Analytics Data API".', 'google-analytics-for-wordpress' ); ?></li>
+					<li><?php esc_html_e( 'In Google Cloud Console, enable both the "Google Analytics Data API" and the "Google Analytics Admin API".', 'google-analytics-for-wordpress' ); ?></li>
 					<li><?php esc_html_e( 'Under IAM & Admin → Service Accounts, create a service account and download its JSON key.', 'google-analytics-for-wordpress' ); ?></li>
-					<li><?php esc_html_e( 'In GA4 Admin → Property access management, add the service account email as Viewer.', 'google-analytics-for-wordpress' ); ?></li>
+					<li><?php esc_html_e( 'In GA4 Admin → Property access management, add the service account email as Editor (Editor role is required to auto-provision custom dimensions for authors, characters, and tags).', 'google-analytics-for-wordpress' ); ?></li>
 				</ol>
 			</div>
+		</div>
+
+		<!-- GA4 Custom Dimensions & Schema Forge Card -->
+		<div class="htk-card htk-card-bracket" style="margin-bottom:24px;">
+			<div class="htk-panel-header">
+				<div>
+					<h2><?php esc_html_e( '4. GA4 Custom Dimensions & Schema Forge', 'google-analytics-for-wordpress' ); ?></h2>
+					<p style="font-size:12px;color:var(--htk-text-dim);margin:4px 0 0;">
+						<?php esc_html_e( 'Heretek Analytics automatically creates and monitors custom dimensions in your GA4 property for authors, comic characters, chapters, and tags.', 'google-analytics-for-wordpress' ); ?>
+					</p>
+				</div>
+				<?php if ( ! empty( $dimensions_status['can_admin'] ) && empty( $dimensions_status['all_provisioned'] ) ) : ?>
+					<button type="button" id="heretek-btn-provision" class="htk-btn htk-btn-primary" style="background:#dc2626;font-size:13px;">
+						⚡ <?php esc_html_e( 'Auto-Provision All Dimensions', 'google-analytics-for-wordpress' ); ?>
+					</button>
+				<?php endif; ?>
+			</div>
+
+			<?php if ( ! empty( $dimensions_status['dimensions'] ) ) : ?>
+				<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:10px;margin-top:10px;">
+					<?php foreach ( $dimensions_status['dimensions'] as $dkey => $dmeta ) : ?>
+						<div style="background:var(--htk-void);border:1px solid <?php echo ! empty( $dmeta['active'] ) ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'; ?>;border-radius:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+							<div>
+								<div style="font-weight:600;font-size:13px;color:var(--htk-text-white);"><?php echo esc_html( $dmeta['displayName'] ); ?></div>
+								<div style="font-family:var(--htk-font-mono);font-size:11px;color:var(--htk-text-muted);"><?php echo esc_html( $dmeta['parameterName'] ); ?> (<?php echo esc_html( $dmeta['scope'] ); ?>)</div>
+							</div>
+							<span style="font-size:16px;">
+								<?php echo ! empty( $dmeta['active'] ) ? '<span style="color:#10b981;" title="Active">✓</span>' : '<span style="color:#ef4444;" title="Unregistered">✗</span>'; ?>
+							</span>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php elseif ( ! empty( $dimensions_status['instructions'] ) ) : ?>
+				<div class="htk-alert" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fcd34d;font-size:12px;line-height:1.6;margin-top:8px;">
+					<strong><?php esc_html_e( 'Service Account Permission Notice:', 'google-analytics-for-wordpress' ); ?></strong><br>
+					<?php echo esc_html( $dimensions_status['instructions'] ); ?>
+				</div>
+			<?php else : ?>
+				<p style="font-size:13px;color:var(--htk-text-dim);margin-top:8px;">
+					<?php esc_html_e( 'Save valid GA4 credentials to test and provision custom dimensions.', 'google-analytics-for-wordpress' ); ?>
+				</p>
+			<?php endif; ?>
 		</div>
 
 		<!-- Action Buttons -->
@@ -132,6 +174,42 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 		<div id="heretek-settings-feedback" class="htk-alert" style="display:none;margin-top:16px;" role="status"></div>
 	</form>
 
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var provBtn = document.getElementById('heretek-btn-provision');
+		if (provBtn) {
+			provBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				provBtn.disabled = true;
+				provBtn.textContent = '⚡ Provisioning in GA4...';
+				fetch('<?php echo esc_url( rest_url( 'heretek-analytics/v1/dimensions/provision' ) ); ?>', {
+					method: 'POST',
+					headers: {
+						'X-WP-Nonce': '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>',
+						'Content-Type': 'application/json'
+					}
+				})
+				.then(function(res) { return res.json(); })
+				.then(function(d) {
+					if (d.success) {
+						alert('GA4 Schema Forge: Dimensions successfully created in Google Analytics!');
+						window.location.reload();
+					} else {
+						var err = (d.data && d.data.error) ? d.data.error : 'Auto-provisioning failed.';
+						alert('Notice: ' + err);
+						provBtn.disabled = false;
+						provBtn.textContent = '⚡ Auto-Provision All Dimensions';
+					}
+				})
+				.catch(function(e) {
+					alert('Connection error. Verify REST API.');
+					provBtn.disabled = false;
+					provBtn.textContent = '⚡ Auto-Provision All Dimensions';
+				});
+			});
+		}
+	});
+	</script>
 </div>
 
 <?php monsterinsights_settings_inline_js(); ?>
