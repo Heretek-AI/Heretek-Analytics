@@ -41,7 +41,7 @@ $fmt_int = static function ( $value ) {
 	return number_format( $value );
 };
 
-$icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
+$icon_url = HERETEK_ANALYTICS_PLUGIN_URL . 'assets/images/icon-sm.png';
 
 $tax_labels = array(
 	'author'    => __( 'Authors', 'google-analytics-for-wordpress' ),
@@ -62,7 +62,7 @@ $active_title = isset( $tax_labels[ $current_taxonomy ] ) ? $tax_labels[ $curren
 			<div class="htk-header-title">
 				<h1>
 					<?php echo esc_html( $active_title ); ?> <?php esc_html_e( 'Leaderboard', 'google-analytics-for-wordpress' ); ?>
-					<span class="htk-badge-ver"><?php echo esc_html( MONSTERINSIGHTS_VERSION ); ?></span>
+					<span class="htk-badge-ver"><?php echo esc_html( HERETEK_ANALYTICS_VERSION ); ?></span>
 				</h1>
 				<div class="htk-header-telemetry-meta">
 					<span><?php echo esc_html( $start_date ); ?> &rarr; <?php echo esc_html( $end_date ); ?></span>
@@ -80,15 +80,15 @@ $active_title = isset( $tax_labels[ $current_taxonomy ] ) ? $tax_labels[ $curren
 		<!-- Toolbar -->
 		<div class="htk-toolbar">
 			<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="display:flex;align-items:center;gap:8px;">
-				<input type="hidden" name="page" value="monsterinsights_authors" />
+				<input type="hidden" name="page" value="heretekanalytics_authors" />
 				<input type="hidden" name="tax" value="<?php echo esc_attr( $current_taxonomy ); ?>" />
 				<input type="date" name="start" class="htk-date-input" value="<?php echo esc_attr( $start_input ); ?>" required />
 				<span style="color:var(--htk-text-muted);">&rarr;</span>
 				<input type="date" name="end" class="htk-date-input" value="<?php echo esc_attr( $end_input ); ?>" required />
 				<button type="submit" class="htk-btn htk-btn-primary"><?php esc_html_e( 'Apply', 'google-analytics-for-wordpress' ); ?></button>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_authors&tax=' . $current_taxonomy ) ); ?>" class="htk-btn htk-btn-secondary"><?php esc_html_e( 'Reset', 'google-analytics-for-wordpress' ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_authors&tax=' . $current_taxonomy ) ); ?>" class="htk-btn htk-btn-secondary"><?php esc_html_e( 'Reset', 'google-analytics-for-wordpress' ); ?></a>
 			</form>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_reports' ) ); ?>" class="htk-btn htk-btn-secondary">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_reports' ) ); ?>" class="htk-btn htk-btn-secondary">
 				<?php esc_html_e( '&larr; Back to Master Augur', 'google-analytics-for-wordpress' ); ?>
 			</a>
 		</div>
@@ -96,18 +96,18 @@ $active_title = isset( $tax_labels[ $current_taxonomy ] ) ? $tax_labels[ $curren
 
 	<!-- Taxonomy Filter Tabs -->
 	<nav class="htk-nav-tabs" style="margin-bottom:20px;">
-		<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'monsterinsights_authors', 'tax' => 'author', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'author' === $current_taxonomy ? 'active' : ''; ?>">
+		<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'heretekanalytics_authors', 'tax' => 'author', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'author' === $current_taxonomy ? 'active' : ''; ?>">
 			<?php esc_html_e( '👤 Authors', 'google-analytics-for-wordpress' ); ?>
 		</a>
 		<?php if ( $has_comics ) : ?>
-			<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'monsterinsights_authors', 'tax' => 'character', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'character' === $current_taxonomy ? 'active' : ''; ?>">
+			<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'heretekanalytics_authors', 'tax' => 'character', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'character' === $current_taxonomy ? 'active' : ''; ?>">
 				<?php esc_html_e( '🎭 Comic Characters', 'google-analytics-for-wordpress' ); ?>
 			</a>
-			<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'monsterinsights_authors', 'tax' => 'chapter', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'chapter' === $current_taxonomy ? 'active' : ''; ?>">
+			<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'heretekanalytics_authors', 'tax' => 'chapter', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'chapter' === $current_taxonomy ? 'active' : ''; ?>">
 				<?php esc_html_e( '📖 Comic Chapters', 'google-analytics-for-wordpress' ); ?>
 			</a>
 		<?php endif; ?>
-		<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'monsterinsights_authors', 'tax' => 'tag', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'tag' === $current_taxonomy ? 'active' : ''; ?>">
+		<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'heretekanalytics_authors', 'tax' => 'tag', 'start' => $start_input, 'end' => $end_input ), admin_url( 'admin.php' ) ) ); ?>" class="htk-nav-tab <?php echo 'tag' === $current_taxonomy ? 'active' : ''; ?>">
 			<?php esc_html_e( '🏷️ Post Tags', 'google-analytics-for-wordpress' ); ?>
 		</a>
 	</nav>

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
+class Heretek_Analytics_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 	/**
 	 * Holds the name of the tracking type.
 	 *
@@ -297,8 +297,10 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 			?>
 			<script src="<?php echo esc_url( $src ); ?>" <?php echo $attr_string; // phpcs:ignore ?> <?php echo esc_attr( $gtag_async ); ?>></script>
 			<script<?php echo $attr_string; // phpcs:ignore ?>>
-				var mi_version = '<?php echo MONSTERINSIGHTS_VERSION; // phpcs:ignore ?>';
+				var htk_version = '<?php echo HERETEK_ANALYTICS_VERSION; ?>';
+				var mi_version = htk_version;
 				var mi_track_user = <?php echo $track_user ? 'true' : 'false'; ?>;
+				var htk_track_user = mi_track_user;
 				var mi_no_track_reason = <?php echo $reason ? "'" . esc_js( $reason ) . "'" : "''"; ?>;
 				<?php do_action( 'monsterinsights_tracking_gtag_frontend_output_after_mi_track_user' ); ?>
 				var MonsterInsightsDefaultLocations = <?php echo $this->get_default_locations(); // phpcs:ignore -- JSON ?>;
@@ -352,10 +354,11 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 				<?php } ?>
 				window.dataLayer = window.dataLayer || [];
 
-				window.MonsterInsightsDualTracker = {
+				window.HeretekAnalyticsDualTracker = {
 					helpers: {},
 					trackers: {},
 				};
+				window.MonsterInsightsDualTracker = window.HeretekAnalyticsDualTracker;
 				if (mi_track_user) {
 					function __gtagDataLayer() {
 						dataLayer.push(arguments);
@@ -373,7 +376,7 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 
 						if (type === 'event') {
 							<?php if ($v4_id) { ?>
-							parameters.send_to = monsterinsights_frontend.v4_id;
+							parameters.send_to = (typeof heretekanalytics_frontend !== 'undefined' && heretekanalytics_frontend.v4_id) ? heretekanalytics_frontend.v4_id : (typeof monsterinsights_frontend !== 'undefined' ? monsterinsights_frontend.v4_id : '<?php echo esc_js( $v4_id ); ?>');
 							var hookName = name;
 							if (typeof parameters['event_category'] !== 'undefined') {
 								hookName = parameters['event_category'] + ':' + name;
@@ -646,3 +649,6 @@ class MonsterInsights_Tracking_Gtag extends MonsterInsights_Tracking_Abstract {
 		return apply_filters( 'monsterinsights_is_utm_stripped_server', false );
 	}
 }
+
+class_alias( 'Heretek_Analytics_Tracking_Gtag', 'MonsterInsights_Tracking_Gtag' );
+

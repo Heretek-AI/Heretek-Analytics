@@ -8,8 +8,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
-	class MonsterInsights_MetaBox_ExcludePage {
+if ( ! class_exists( 'Heretek_Analytics_MetaBox_ExcludePage' ) ) {
+	class Heretek_Analytics_MetaBox_ExcludePage {
 
 		public function __construct() {
 			add_action( 'init', [ $this, 'register_meta' ] );
@@ -20,6 +20,7 @@ if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
 
 			add_action( 'load-post.php', [ $this, 'meta_box_init' ] );
 			add_action( 'load-post-new.php', [ $this, 'meta_box_init' ] );
+			add_action( 'save_post', [ $this, 'save_meta_box' ] );
 		}
 
 		private function is_gutenberg_editor() {
@@ -83,6 +84,18 @@ if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
 
 			register_post_meta(
 				'',
+				'_heretekanalytics_skip_tracking',
+				[
+					'auth_callback' => '__return_true',
+					'default'       => false,
+					'show_in_rest'  => true,
+					'single'        => true,
+					'type'          => 'boolean',
+				]
+			);
+
+			register_post_meta(
+				'',
 				'_monsterinsights_skip_tracking',
 				[
 					'auth_callback' => '__return_true',
@@ -96,8 +109,8 @@ if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
 
 		public function create_meta_box() {
 			add_meta_box(
-				'monsterinsights-metabox',
-				'MonsterInsights',
+				'heretekanalytics-metabox',
+				'Heretek Analytics',
 				[ $this, 'print_metabox_html' ],
 				null,
 				'side',
@@ -106,14 +119,18 @@ if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
 		}
 
 		public function print_metabox_html( $post ) {
-			$skipped = (bool) get_post_meta( $post->ID, '_monsterinsights_skip_tracking', true );
-			wp_nonce_field( 'monsterinsights_metabox', 'monsterinsights_metabox_nonce' );
+			$skipped = get_post_meta( $post->ID, '_heretekanalytics_skip_tracking', true );
+			if ( '' === $skipped ) {
+				$skipped = get_post_meta( $post->ID, '_monsterinsights_skip_tracking', true );
+			}
+			$skipped = (bool) $skipped;
+			wp_nonce_field( 'heretekanalytics_metabox', 'heretekanalytics_metabox_nonce' );
 			?>
-			<div class="monsterinsights-metabox" id="monsterinsights-metabox-skip-tracking">
+			<div class="heretekanalytics-metabox monsterinsights-metabox" id="heretekanalytics-metabox-skip-tracking">
 				<div class="monsterinsights-metabox-input-checkbox">
 					<label class="">
-						<input type="checkbox" name="_monsterinsights_skip_tracking"
-							   value="1" <?php checked( $skipped ); ?> <?php disabled( ! monsterinsights_is_pro_version() ); ?>>
+						<input type="checkbox" name="_heretekanalytics_skip_tracking"
+							   value="1" <?php checked( $skipped ); ?>>
 						<span
 							class="monsterinsights-metabox-input-checkbox-label"><?php esc_html_e('Exclude page from Google Analytics Tracking', 'google-analytics-for-wordpress' ); ?></span>
 					</label>
@@ -123,31 +140,39 @@ if ( ! class_exists( 'MonsterInsights_MetaBox_ExcludePage' ) ) {
 				</div>
 			</div>
 
-			<?php do_action( 'monsterinsights_after_exclude_metabox', $skipped, $post ); ?>
-
 			<?php
-			// Heretek Analytics has no Lite/Pro gating — per-page exclusion is
-			// always available. The upstream "This is a PRO feature" badge is
-			// intentionally not rendered.
-			?>
+			do_action( 'heretekanalytics_after_exclude_metabox', $skipped, $post );
+			do_action( 'monsterinsights_after_exclude_metabox', $skipped, $post );
+		}
 
-			<?php
+		public function save_meta_box( $post_id ) {
+			if ( ! isset( $_POST['heretekanalytics_metabox_nonce'] ) && ! isset( $_POST['monsterinsights_metabox_nonce'] ) ) {
+				return;
+			}
+			$nonce = isset( $_POST['heretekanalytics_metabox_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['heretekanalytics_metabox_nonce'] ) ) : sanitize_text_field( wp_unslash( $_POST['monsterinsights_metabox_nonce'] ) );
+			if ( ! wp_verify_nonce( $nonce, 'heretekanalytics_metabox' ) && ! wp_verify_nonce( $nonce, 'monsterinsights_metabox' ) ) {
+				return;
+			}
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+				return;
+			}
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				return;
+			}
+			$skipped = ! empty( $_POST['_heretekanalytics_skip_tracking'] ) || ! empty( $_POST['_monsterinsights_skip_tracking'] );
+			update_post_meta( $post_id, '_heretekanalytics_skip_tracking', $skipped );
+			update_post_meta( $post_id, '_monsterinsights_skip_tracking', $skipped );
 		}
 
 		public function load_metabox_styles() {
 			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+			$ver    = function_exists( 'heretekanalytics_get_asset_version' ) ? heretekanalytics_get_asset_version() : monsterinsights_get_asset_version();
 
-			wp_register_style( 'monsterinsights-admin-metabox-style', plugins_url( 'assets/css/admin-metabox' . $suffix . '.css', MONSTERINSIGHTS_PLUGIN_FILE ), array(), monsterinsights_get_asset_version() );
+			wp_register_style( 'monsterinsights-admin-metabox-style', plugins_url( 'assets/css/admin-metabox' . $suffix . '.css', HERETEK_ANALYTICS_PLUGIN_FILE ), array(), $ver );
 			wp_enqueue_style( 'monsterinsights-admin-metabox-style' );
-
-			if ( monsterinsights_is_pro_version() ) {
-				return;
-			}
-
-			wp_register_script( 'monsterinsights-admin-metabox-script', plugins_url( 'assets/js/admin-metabox' . $suffix . '.js', MONSTERINSIGHTS_PLUGIN_FILE ), array( 'jquery' ), monsterinsights_get_asset_version(), true );
-			wp_enqueue_script( 'monsterinsights-admin-metabox-script' );
 		}
 	}
 
-	new MonsterInsights_MetaBox_ExcludePage();
+	class_alias( 'Heretek_Analytics_MetaBox_ExcludePage', 'MonsterInsights_MetaBox_ExcludePage' );
+	new Heretek_Analytics_MetaBox_ExcludePage();
 }

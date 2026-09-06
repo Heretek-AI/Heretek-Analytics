@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $level    = isset( $status['level'] ) ? (string) $status['level'] : 'unconfigured';
-$icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
+$icon_url = HERETEK_ANALYTICS_PLUGIN_URL . 'assets/images/icon-sm.png';
 ?>
 
 <div class="htk-cockpit" style="max-width:980px;">
@@ -34,7 +34,7 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 			<div class="htk-header-title">
 				<h1>
 					<?php esc_html_e( 'Augur Configuration', 'google-analytics-for-wordpress' ); ?>
-					<span class="htk-badge-ver"><?php echo esc_html( MONSTERINSIGHTS_VERSION ); ?></span>
+					<span class="htk-badge-ver"><?php echo esc_html( HERETEK_ANALYTICS_VERSION ); ?></span>
 				</h1>
 				<div class="htk-header-telemetry-meta">
 					<span><?php esc_html_e( 'Direct server-to-server GA4 Data API authentication', 'google-analytics-for-wordpress' ); ?></span>
@@ -42,7 +42,7 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 			</div>
 		</div>
 		<div class="htk-toolbar">
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_reports' ) ); ?>" class="htk-btn htk-btn-primary">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_reports' ) ); ?>" class="htk-btn htk-btn-primary">
 				<?php esc_html_e( 'Launch Augur Cockpit &rarr;', 'google-analytics-for-wordpress' ); ?>
 			</a>
 		</div>
@@ -212,4 +212,10 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 	</script>
 </div>
 
-<?php monsterinsights_settings_inline_js(); ?>
+<?php
+if ( function_exists( 'heretekanalytics_settings_inline_js' ) ) {
+	heretekanalytics_settings_inline_js();
+} else {
+	monsterinsights_settings_inline_js();
+}
+?>

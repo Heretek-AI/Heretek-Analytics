@@ -146,7 +146,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return bool
 	 */
 	public function check_permission() {
-		return current_user_can( 'monsterinsights_view_dashboard' ) || current_user_can( 'manage_options' );
+		return current_user_can( 'heretekanalytics_view_dashboard' ) || current_user_can( 'monsterinsights_view_dashboard' ) || current_user_can( 'manage_options' );
 	}
 
 	/**
@@ -201,7 +201,7 @@ class Heretek_Rest_Reporting_Gateway {
 				'message' => $res->get_error_message(),
 			), 400 );
 		}
-		$pid = MonsterInsights()->auth->get_property_id();
+		$pid = HeretekAnalytics()->auth->get_property_id();
 		return new WP_REST_Response( array(
 			'success' => true,
 			'message' => sprintf(
@@ -301,7 +301,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array
 	 */
 	public function get_dashboard_telemetry( $start = '-30days', $end = 'today', $force_refresh = false ) {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$v4   = $auth->get_manual_v4_id();
 		$pid  = $auth->get_property_id();
 		$sa   = $auth->get_service_account_json();
@@ -612,7 +612,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array
 	 */
 	public function run_realtime_summary( $force_refresh = false ) {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$pid  = $auth->get_property_id();
 		$v4   = $auth->get_manual_v4_id();
 		$sa   = $auth->get_service_account_json();
@@ -720,10 +720,10 @@ class Heretek_Rest_Reporting_Gateway {
 	 */
 	public function verify_credentials( $sa_json = null, $property_id = null ) {
 		if ( null === $sa_json ) {
-			$sa_json = MonsterInsights()->auth->get_service_account_json();
+			$sa_json = HeretekAnalytics()->auth->get_service_account_json();
 		}
 		if ( null === $property_id ) {
-			$property_id = MonsterInsights()->auth->get_property_id();
+			$property_id = HeretekAnalytics()->auth->get_property_id();
 		}
 		if ( empty( $sa_json ) ) {
 			return new WP_Error( 'heretek_no_sa', 'Service account JSON is not configured.' );
@@ -783,7 +783,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array|WP_Error
 	 */
 	private function run_ga4_report( array $q, $start, $end ) {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$sa   = $auth->get_service_account_json();
 		$pid  = $auth->get_property_id();
 
@@ -860,7 +860,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array|WP_Error
 	 */
 	private function run_ga4_realtime_report( array $q ) {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$sa   = $auth->get_service_account_json();
 		$pid  = $auth->get_property_id();
 
@@ -1122,7 +1122,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array|WP_Error
 	 */
 	public function list_ga4_custom_dimensions() {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$sa   = $auth->get_service_account_json();
 		$pid  = $auth->get_property_id();
 
@@ -1171,7 +1171,7 @@ class Heretek_Rest_Reporting_Gateway {
 	 * @return array|WP_Error
 	 */
 	public function create_ga4_custom_dimension( array $dim_definition ) {
-		$auth = MonsterInsights()->auth;
+		$auth = HeretekAnalytics()->auth;
 		$sa   = $auth->get_service_account_json();
 		$pid  = $auth->get_property_id();
 
@@ -1468,7 +1468,7 @@ class Heretek_Rest_Reporting_Gateway {
 	public function get_taxonomy_telemetry( $taxonomy = 'author', $start = '-30days', $end = 'today', $limit = 50, $force_refresh = false ) {
 		$start_date = $this->resolve_date( $start, strtotime( '-30 days' ) );
 		$end_date   = $this->resolve_date( $end, time() );
-		$pid        = MonsterInsights()->auth->get_property_id();
+		$pid        = HeretekAnalytics()->auth->get_property_id();
 
 		$cache_key = self::CACHE_TRANSIENT_PREFIX . 'tax_' . md5( $pid . '_' . $taxonomy . '_' . $start_date . '_' . $end_date . '_' . $limit );
 		if ( ! $force_refresh ) {

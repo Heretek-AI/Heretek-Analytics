@@ -22,21 +22,28 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $classes
  * @return string
  */
-function monsterinsights_authors_page_body_class( $classes ) {
-	if ( ! empty( $_REQUEST['page'] ) && 'monsterinsights_authors' === $_REQUEST['page'] ) {
-		$classes .= ' monsterinsights-reporting-page ';
+function heretekanalytics_authors_page_body_class( $classes ) {
+	if ( ! empty( $_REQUEST['page'] ) && ( 'heretekanalytics_authors' === $_REQUEST['page'] || 'monsterinsights_authors' === $_REQUEST['page'] ) ) {
+		$classes .= ' heretekanalytics-reporting-page monsterinsights-reporting-page ';
 	}
 	return $classes;
 }
-add_filter( 'admin_body_class', 'monsterinsights_authors_page_body_class' );
+add_filter( 'admin_body_class', 'heretekanalytics_authors_page_body_class' );
+
+/**
+ * Backward compatibility alias for monsterinsights_authors_page_body_class.
+ */
+function monsterinsights_authors_page_body_class( $classes ) {
+	return heretekanalytics_authors_page_body_class( $classes );
+}
 
 /**
  * Parse a date-range pair from the request. Mirrors the logic in
- * `monsterinsights_reports_page()`.
+ * `heretekanalytics_reports_page()`.
  *
  * @return array{start:string,end:string,start_date:string,end_date:string}
  */
-function monsterinsights_authors_parse_range( $gateway ) {
+function heretekanalytics_authors_parse_range( $gateway ) {
 	$raw_start = isset( $_GET['start'] ) ? sanitize_text_field( wp_unslash( $_GET['start'] ) ) : '-30days';
 	$raw_end   = isset( $_GET['end'] )   ? sanitize_text_field( wp_unslash( $_GET['end'] ) )   : 'today';
 
@@ -52,6 +59,13 @@ function monsterinsights_authors_parse_range( $gateway ) {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_authors_parse_range.
+ */
+function monsterinsights_authors_parse_range( $gateway ) {
+	return heretekanalytics_authors_parse_range( $gateway );
+}
+
+/**
  * Fetch + shape telemetry rows + lookup for a given date range and taxonomy.
  *
  * @param Heretek_Rest_Reporting_Gateway $gateway
@@ -60,8 +74,15 @@ function monsterinsights_authors_parse_range( $gateway ) {
  * @param string                         $taxonomy
  * @return array
  */
-function monsterinsights_authors_load_data( $gateway, $range, $limit, $taxonomy = 'author' ) {
+function heretekanalytics_authors_load_data( $gateway, $range, $limit, $taxonomy = 'author' ) {
 	return $gateway->get_taxonomy_telemetry( $taxonomy, $range['start_date'], $range['end_date'], $limit );
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_authors_load_data.
+ */
+function monsterinsights_authors_load_data( $gateway, $range, $limit, $taxonomy = 'author' ) {
+	return heretekanalytics_authors_load_data( $gateway, $range, $limit, $taxonomy );
 }
 
 /**
@@ -69,28 +90,28 @@ function monsterinsights_authors_load_data( $gateway, $range, $limit, $taxonomy 
  *
  * @return void
  */
-function monsterinsights_authors_page() {
-	if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
+function heretekanalytics_authors_page() {
+	if ( ! current_user_can( 'heretekanalytics_view_dashboard' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
 
 	// Handle CSV export before any HTML output is sent.
 	if ( ! empty( $_GET['export'] ) && 'csv' === $_GET['export'] ) {
-		monsterinsights_authors_export_csv();
+		heretekanalytics_authors_export_csv();
 		exit;
 	}
 
 	if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 
-	$auth    = MonsterInsights()->auth;
+	$auth    = HeretekAnalytics()->auth;
 	$v4      = $auth->get_manual_v4_id();
 	$prop_id = $auth->get_property_id();
 	$has_sa  = (bool) $auth->get_service_account_json();
 
-	$range = monsterinsights_authors_parse_range( $gateway );
+	$range = heretekanalytics_authors_parse_range( $gateway );
 
 	$current_taxonomy = isset( $_GET['tax'] ) ? sanitize_text_field( wp_unslash( $_GET['tax'] ) ) : 'author';
 	if ( ! in_array( $current_taxonomy, array( 'author', 'character', 'chapter', 'tag' ), true ) ) {
@@ -112,7 +133,7 @@ function monsterinsights_authors_page() {
 	);
 	$dimensions_status = array();
 	if ( ! $missing ) {
-		$data              = monsterinsights_authors_load_data( $gateway, $range, 50, $current_taxonomy );
+		$data              = heretekanalytics_authors_load_data( $gateway, $range, 50, $current_taxonomy );
 		$dimensions_status = $gateway->get_dimensions_status();
 	}
 
@@ -126,10 +147,10 @@ function monsterinsights_authors_page() {
 	$error         = isset( $data['error'] ) ? $data['error'] : '';
 	$has_comics    = taxonomy_exists( 'characters' );
 
-	$settings_url = admin_url( 'admin.php?page=monsterinsights_settings' );
+	$settings_url = admin_url( 'admin.php?page=heretekanalytics_settings' );
 	$export_url   = add_query_arg(
 		array(
-			'page'   => 'monsterinsights_authors',
+			'page'   => 'heretekanalytics_authors',
 			'export' => 'csv',
 			'tax'    => $current_taxonomy,
 			'start'  => $start_input,
@@ -138,7 +159,16 @@ function monsterinsights_authors_page() {
 		admin_url( 'admin.php' )
 	);
 
-	include MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/templates/authors-dashboard.php';
+	include HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/admin/pages/templates/authors-dashboard.php';
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_authors_page.
+ *
+ * @return void
+ */
+function monsterinsights_authors_page() {
+	heretekanalytics_authors_page();
 }
 
 /**
@@ -146,13 +176,13 @@ function monsterinsights_authors_page() {
  *
  * @return void
  */
-function monsterinsights_authors_export_csv() {
-	if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
+function heretekanalytics_authors_export_csv() {
+	if ( ! current_user_can( 'heretekanalytics_view_dashboard' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
 
 	if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 
@@ -161,8 +191,8 @@ function monsterinsights_authors_export_csv() {
 		$current_taxonomy = 'author';
 	}
 
-	$range = monsterinsights_authors_parse_range( $gateway );
-	$data  = monsterinsights_authors_load_data( $gateway, $range, 100, $current_taxonomy );
+	$range = heretekanalytics_authors_parse_range( $gateway );
+	$data  = heretekanalytics_authors_load_data( $gateway, $range, 100, $current_taxonomy );
 	$rows  = isset( $data['rows'] ) ? $data['rows'] : array();
 	$author_lookup = isset( $data['author_lookup'] ) ? $data['author_lookup'] : array();
 
@@ -211,3 +241,13 @@ function monsterinsights_authors_export_csv() {
 	fclose( $out );
 	exit;
 }
+
+/**
+ * Backward compatibility alias for monsterinsights_authors_export_csv.
+ *
+ * @return void
+ */
+function monsterinsights_authors_export_csv() {
+	heretekanalytics_authors_export_csv();
+}
+

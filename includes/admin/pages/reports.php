@@ -21,31 +21,38 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $classes
  * @return string
  */
-function monsterinsights_reports_page_body_class( $classes ) {
-	if ( ! empty( $_REQUEST['page'] ) && 'monsterinsights_reports' === $_REQUEST['page'] ) {
-		$classes .= ' monsterinsights-reporting-page ';
+function heretekanalytics_reports_page_body_class( $classes ) {
+	if ( ! empty( $_REQUEST['page'] ) && ( 'heretekanalytics_reports' === $_REQUEST['page'] || 'monsterinsights_reports' === $_REQUEST['page'] ) ) {
+		$classes .= ' heretekanalytics-reporting-page monsterinsights-reporting-page ';
 	}
 	return $classes;
 }
-add_filter( 'admin_body_class', 'monsterinsights_reports_page_body_class' );
+add_filter( 'admin_body_class', 'heretekanalytics_reports_page_body_class' );
+
+/**
+ * Backward compatibility alias for monsterinsights_reports_page_body_class.
+ */
+function monsterinsights_reports_page_body_class( $classes ) {
+	return heretekanalytics_reports_page_body_class( $classes );
+}
 
 /**
  * Render the Augur Telemetry Cockpit.
  *
  * @return void
  */
-function monsterinsights_reports_page() {
-	if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
+function heretekanalytics_reports_page() {
+	if ( ! current_user_can( 'heretekanalytics_view_dashboard' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
 
-	$auth    = MonsterInsights()->auth;
+	$auth    = HeretekAnalytics()->auth;
 	$v4      = $auth->get_manual_v4_id();
 	$prop_id = $auth->get_property_id();
 	$has_sa  = (bool) $auth->get_service_account_json();
 
 	if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 
@@ -89,9 +96,18 @@ function monsterinsights_reports_page() {
 		)
 	);
 
-	$settings_url = admin_url( 'admin.php?page=monsterinsights_settings' );
+	$settings_url = admin_url( 'admin.php?page=heretekanalytics_settings' );
 
-	include MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/templates/reports-dashboard.php';
+	include HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/admin/pages/templates/reports-dashboard.php';
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_reports_page.
+ *
+ * @return void
+ */
+function monsterinsights_reports_page() {
+	heretekanalytics_reports_page();
 }
 
 /**
@@ -99,9 +115,18 @@ function monsterinsights_reports_page() {
  *
  * @return void
  */
-function monsterinsights_overview_report_page() {
-	if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
+function heretekanalytics_overview_report_page() {
+	if ( ! current_user_can( 'heretekanalytics_view_dashboard' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
-	monsterinsights_reports_page();
+	heretekanalytics_reports_page();
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_overview_report_page.
+ *
+ * @return void
+ */
+function monsterinsights_overview_report_page() {
+	heretekanalytics_overview_report_page();
 }

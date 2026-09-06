@@ -30,7 +30,7 @@ Unlike commercial distributions, Heretek Analytics does not phone home to a thir
 * **Smart Transient Quota Protection** — 15-minute historical, 3-minute today, and 30-second realtime caching with manual cache-busting sync.
 * **Core GA4 tracking (gtag.js)** — automatic page-view, scroll, download, affiliate-link, form-submission, author dimensions, and AMP tracking.
 * **Google Consent Mode v2** — EEA compliance helpers in `includes/admin/eea-compliance.php`.
-* **Server-side GA4 Measurement Protocol** — `MonsterInsights_Measurement_Protocol_V4`.
+* **Server-side GA4 Measurement Protocol** — `Heretek_Analytics_Measurement_Protocol_V4` (with `MonsterInsights_Measurement_Protocol_V4` backward alias).
 * **Native GitHub Releases updater** — automatic, no license keys.
 * **Settings export** — JSON download from the Tools page.
 

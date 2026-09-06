@@ -13,17 +13,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class MonsterInsights_Rest_Routes {
+class Heretek_Analytics_Rest_Routes {
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		// Native Heretek Analytics AJAX handlers
+		add_action( 'wp_ajax_heretekanalytics_save_settings', array( $this, 'save_heretek_settings' ) );
 		add_action( 'wp_ajax_monsterinsights_save_heretek_settings', array( $this, 'save_heretek_settings' ) );
+
+		add_action( 'wp_ajax_heretekanalytics_verify_credentials', array( $this, 'verify_heretek_credentials' ) );
 		add_action( 'wp_ajax_monsterinsights_verify_heretek_credentials', array( $this, 'verify_heretek_credentials' ) );
+
+		add_action( 'wp_ajax_heretekanalytics_get_dashboard_telemetry', array( $this, 'get_dashboard_telemetry' ) );
 		add_action( 'wp_ajax_monsterinsights_get_dashboard_telemetry', array( $this, 'get_dashboard_telemetry' ) );
+
+		add_action( 'wp_ajax_heretekanalytics_get_realtime_telemetry', array( $this, 'get_realtime_telemetry' ) );
 		add_action( 'wp_ajax_monsterinsights_get_realtime_telemetry', array( $this, 'get_realtime_telemetry' ) );
+
+		add_action( 'wp_ajax_heretekanalytics_handle_settings_import', array( $this, 'handle_settings_import' ) );
 		add_action( 'wp_ajax_monsterinsights_handle_settings_import', array( $this, 'handle_settings_import' ) );
 
 		// Clean up old third-party notices on Heretek pages
@@ -31,27 +40,48 @@ class MonsterInsights_Rest_Routes {
 	}
 
 	/**
+	 * Check permission for settings modification.
+	 *
+	 * @return bool
+	 */
+	private function can_save_settings() {
+		return current_user_can( 'heretekanalytics_save_settings' ) || current_user_can( 'monsterinsights_save_settings' ) || current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Check permission for dashboard viewing.
+	 *
+	 * @return bool
+	 */
+	private function can_view_dashboard() {
+		return current_user_can( 'heretekanalytics_view_dashboard' ) || current_user_can( 'monsterinsights_view_dashboard' ) || current_user_can( 'manage_options' );
+	}
+
+	/**
 	 * Save the Heretek Analytics native settings.
 	 */
 	public function save_heretek_settings() {
-		check_ajax_referer( 'monsterinsights_save_heretek_settings', 'nonce' );
-
-		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'heretekanalytics_save_settings' ) && ! wp_verify_nonce( $nonce, 'monsterinsights_save_heretek_settings' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'heretek-analytics' ) ) );
 		}
 
-		$auth = MonsterInsights()->auth;
+		if ( ! $this->can_save_settings() ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'heretek-analytics' ) ) );
+		}
+
+		$auth = HeretekAnalytics()->auth;
 
 		// Measurement ID
 		$raw_v4   = isset( $_POST['v4'] ) ? sanitize_text_field( wp_unslash( $_POST['v4'] ) ) : '';
 		$raw_v4   = trim( $raw_v4 );
-		$valid_v4 = monsterinsights_is_valid_v4_id( $raw_v4 );
+		$valid_v4 = heretekanalytics_is_valid_v4_id( $raw_v4 );
 
 		if ( '' === $raw_v4 ) {
 			$auth->delete_manual_v4_id();
 		} elseif ( empty( $valid_v4 ) ) {
 			wp_send_json_error( array(
-				'message' => __( 'Measurement ID must match the pattern G-XXXXXXXX.', 'google-analytics-for-wordpress' ),
+				'message' => __( 'Measurement ID must match the pattern G-XXXXXXXX.', 'heretek-analytics' ),
 			) );
 		} else {
 			$auth->set_manual_v4_id( $valid_v4 );
@@ -64,7 +94,7 @@ class MonsterInsights_Rest_Routes {
 			$auth->set_property_id( '' );
 		} elseif ( ! ctype_digit( $raw_pid ) ) {
 			wp_send_json_error( array(
-				'message' => __( 'GA4 Property ID must be numeric (e.g. 123456789).', 'google-analytics-for-wordpress' ),
+				'message' => __( 'GA4 Property ID must be numeric (e.g. 123456789).', 'heretek-analytics' ),
 			) );
 		} else {
 			$auth->set_property_id( $raw_pid );
@@ -84,7 +114,7 @@ class MonsterInsights_Rest_Routes {
 			$decoded = json_decode( $raw_sa, true );
 			if ( ! is_array( $decoded ) || empty( $decoded['client_email'] ) || empty( $decoded['private_key'] ) ) {
 				wp_send_json_error( array(
-					'message' => __( 'Service account JSON is missing client_email or private_key.', 'google-analytics-for-wordpress' ),
+					'message' => __( 'Service account JSON is missing client_email or private_key.', 'heretek-analytics' ),
 				) );
 			}
 			$auth->set_service_account_json( $raw_sa );
@@ -94,30 +124,31 @@ class MonsterInsights_Rest_Routes {
 		global $wpdb;
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_heretek_ga4_%' OR option_name LIKE '_transient_timeout_heretek_ga4_%'" );
 
-		$status = monsterinsights_get_settings_status(
-			$auth->get_manual_v4_id(),
-			$auth->get_property_id(),
-			$auth->get_service_account_json()
-		);
+		$status = function_exists( 'heretekanalytics_get_settings_status' )
+			? heretekanalytics_get_settings_status( $auth->get_manual_v4_id(), $auth->get_property_id(), $auth->get_service_account_json() )
+			: monsterinsights_get_settings_status( $auth->get_manual_v4_id(), $auth->get_property_id(), $auth->get_service_account_json() );
 
 		wp_send_json_success( array(
-			'message' => __( 'Settings saved and telemetry link synchronized.', 'google-analytics-for-wordpress' ),
+			'message' => __( 'Settings saved and telemetry link synchronized.', 'heretek-analytics' ),
 			'status'  => $status,
 		) );
 	}
 
 	/**
-	 * Verify the stored credentials by minting a token and calling GA4 metadata.
+	 * Verify stored credentials by minting a token and calling GA4 metadata.
 	 */
 	public function verify_heretek_credentials() {
-		check_ajax_referer( 'monsterinsights_verify_heretek_credentials', 'nonce' );
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'heretekanalytics_verify_credentials' ) && ! wp_verify_nonce( $nonce, 'monsterinsights_verify_heretek_credentials' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'heretek-analytics' ) ) );
+		}
 
-		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		if ( ! $this->can_save_settings() ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'heretek-analytics' ) ) );
 		}
 
 		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+			require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 		}
 
 		$gateway = new Heretek_Rest_Reporting_Gateway();
@@ -127,11 +158,11 @@ class MonsterInsights_Rest_Routes {
 			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
 		}
 
-		$pid = MonsterInsights()->auth->get_property_id();
+		$pid = HeretekAnalytics()->auth->get_property_id();
 		wp_send_json_success( array(
 			'message' => sprintf(
 				/* translators: %s is the GA4 property id. */
-				__( 'Machine Spirit awakened: Successfully connected to GA4 property %s.', 'google-analytics-for-wordpress' ),
+				__( 'Machine Spirit awakened: Successfully connected to GA4 property %s.', 'heretek-analytics' ),
 				$pid
 			),
 		) );
@@ -143,8 +174,8 @@ class MonsterInsights_Rest_Routes {
 	public function get_dashboard_telemetry() {
 		check_ajax_referer( 'heretek_dashboard_nonce', 'nonce' );
 
-		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		if ( ! $this->can_view_dashboard() ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'heretek-analytics' ) ) );
 		}
 
 		$start = isset( $_POST['start'] ) ? sanitize_text_field( wp_unslash( $_POST['start'] ) ) : '-30days';
@@ -152,7 +183,7 @@ class MonsterInsights_Rest_Routes {
 		$force = ! empty( $_POST['force_refresh'] ) && ( 'true' === (string) $_POST['force_refresh'] || 1 === (int) $_POST['force_refresh'] );
 
 		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+			require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 		}
 
 		$gateway = new Heretek_Rest_Reporting_Gateway();
@@ -171,14 +202,14 @@ class MonsterInsights_Rest_Routes {
 	public function get_realtime_telemetry() {
 		check_ajax_referer( 'heretek_dashboard_nonce', 'nonce' );
 
-		if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		if ( ! $this->can_view_dashboard() ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'heretek-analytics' ) ) );
 		}
 
 		$force = ! empty( $_POST['force_refresh'] ) && ( 'true' === (string) $_POST['force_refresh'] || 1 === (int) $_POST['force_refresh'] );
 
 		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+			require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 		}
 
 		$gateway = new Heretek_Rest_Reporting_Gateway();
@@ -197,39 +228,49 @@ class MonsterInsights_Rest_Routes {
 	public function handle_settings_import() {
 		check_ajax_referer( 'mi-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'google-analytics-for-wordpress' ) ) );
+		if ( ! $this->can_save_settings() ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'heretek-analytics' ) ) );
 		}
 
 		if ( empty( $_FILES['import_file']['tmp_name'] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Please upload a valid JSON export file.', 'google-analytics-for-wordpress' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Please upload a valid JSON export file.', 'heretek-analytics' ) ) );
 		}
 
-		$raw = file_get_contents( $_FILES['import_file']['tmp_name'] ); // phpcs:ignore
+		$raw  = file_get_contents( $_FILES['import_file']['tmp_name'] ); // phpcs:ignore
 		$json = json_decode( $raw, true );
 
 		if ( ! is_array( $json ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid JSON payload.', 'google-analytics-for-wordpress' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid JSON payload.', 'heretek-analytics' ) ) );
 		}
 
-		if ( isset( $json['monsterinsights_settings'] ) && is_array( $json['monsterinsights_settings'] ) ) {
-			update_option( 'monsterinsights_settings', $json['monsterinsights_settings'] );
-		}
-		if ( isset( $json['monsterinsights_site_profile'] ) && is_array( $json['monsterinsights_site_profile'] ) ) {
-			update_option( 'monsterinsights_site_profile', $json['monsterinsights_site_profile'] );
+		// Support both heretekanalytics and legacy monsterinsights keys
+		$settings = isset( $json['heretekanalytics_settings'] ) ? $json['heretekanalytics_settings'] : ( isset( $json['monsterinsights_settings'] ) ? $json['monsterinsights_settings'] : null );
+		if ( is_array( $settings ) ) {
+			update_option( 'heretekanalytics_settings', $settings );
+			update_option( 'monsterinsights_settings', $settings );
 		}
 
-		wp_send_json_success( array( 'message' => __( 'Settings imported successfully.', 'google-analytics-for-wordpress' ) ) );
+		$profile = isset( $json['heretekanalytics_site_profile'] ) ? $json['heretekanalytics_site_profile'] : ( isset( $json['monsterinsights_site_profile'] ) ? $json['monsterinsights_site_profile'] : null );
+		if ( is_array( $profile ) ) {
+			update_option( 'heretekanalytics_site_profile', $profile );
+			update_option( 'monsterinsights_site_profile', $profile );
+		}
+
+		wp_send_json_success( array( 'message' => __( 'Settings imported successfully.', 'heretek-analytics' ) ) );
 	}
 
 	/**
 	 * Suppress upstream promotional or warning notices on Heretek pages.
 	 */
 	public function hide_old_notices() {
-		if ( ! monsterinsights_is_own_admin_page() ) {
-			return;
+		if ( ! function_exists( 'heretekanalytics_is_own_admin_page' ) || ! heretekanalytics_is_own_admin_page() ) {
+			if ( ! function_exists( 'monsterinsights_is_own_admin_page' ) || ! monsterinsights_is_own_admin_page() ) {
+				return;
+			}
 		}
 
 		remove_all_actions( 'admin_notices' );
 	}
 }
+
+class_alias( 'Heretek_Analytics_Rest_Routes', 'MonsterInsights_Rest_Routes' );

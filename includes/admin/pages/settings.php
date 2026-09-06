@@ -17,33 +17,42 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 12.0.0
  */
-function monsterinsights_settings_page() {
-	if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+function heretekanalytics_settings_page() {
+	if ( ! current_user_can( 'heretekanalytics_save_settings' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
 
-	$auth    = MonsterInsights()->auth;
+	$auth    = HeretekAnalytics()->auth;
 	$v4      = $auth->get_manual_v4_id();
 	$prop_id = $auth->get_property_id();
 	$sa      = $auth->get_service_account_json();
 
-	$status = monsterinsights_get_settings_status( $v4, $prop_id, $sa );
+	$status = heretekanalytics_get_settings_status( $v4, $prop_id, $sa );
 
 	$dimensions_status = array();
 	if ( ! empty( $prop_id ) && ! empty( $sa ) ) {
 		if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+			require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 		}
 		$gateway           = new Heretek_Rest_Reporting_Gateway();
 		$dimensions_status = $gateway->get_dimensions_status();
 	}
 
 	$ajax_url    = admin_url( 'admin-ajax.php' );
-	$nonce_save  = wp_create_nonce( 'monsterinsights_save_heretek_settings' );
-	$nonce_check = wp_create_nonce( 'monsterinsights_verify_heretek_credentials' );
-	$reset_url   = admin_url( 'admin.php?page=monsterinsights_settings' );
+	$nonce_save  = wp_create_nonce( 'heretekanalytics_save_settings' );
+	$nonce_check = wp_create_nonce( 'heretekanalytics_verify_credentials' );
+	$reset_url   = admin_url( 'admin.php?page=heretekanalytics_settings' );
 
-	include MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/pages/templates/settings-form.php';
+	include HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/admin/pages/templates/settings-form.php';
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_settings_page.
+ *
+ * @return void
+ */
+function monsterinsights_settings_page() {
+	heretekanalytics_settings_page();
 }
 
 /**
@@ -54,8 +63,8 @@ function monsterinsights_settings_page() {
  *
  * @since 12.0.0
  */
-function monsterinsights_network_page() {
-	if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+function heretekanalytics_network_page() {
+	if ( ! current_user_can( 'heretekanalytics_save_settings' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
 	?>
@@ -69,6 +78,15 @@ function monsterinsights_network_page() {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_network_page.
+ *
+ * @return void
+ */
+function monsterinsights_network_page() {
+	heretekanalytics_network_page();
+}
+
+/**
  * Compute the human-readable status line for the Settings page hero.
  *
  * @param string $v4      Measurement ID.
@@ -76,7 +94,7 @@ function monsterinsights_network_page() {
  * @param string $sa      Service account JSON.
  * @return array{level:string,label:string,description:string}
  */
-function monsterinsights_get_settings_status( $v4, $prop_id, $sa ) {
+function heretekanalytics_get_settings_status( $v4, $prop_id, $sa ) {
 	if ( empty( $v4 ) ) {
 		return array(
 			'level'       => 'unconfigured',
@@ -101,13 +119,25 @@ function monsterinsights_get_settings_status( $v4, $prop_id, $sa ) {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_get_settings_status.
+ *
+ * @param string $v4
+ * @param string $prop_id
+ * @param string $sa
+ * @return array
+ */
+function monsterinsights_get_settings_status( $v4, $prop_id, $sa ) {
+	return heretekanalytics_get_settings_status( $v4, $prop_id, $sa );
+}
+
+/**
  * Echo inline JavaScript used by the Settings page.
  *
  * One small `wp_localize_script`-style inline script — no external bundle.
  *
  * @since 12.0.0
  */
-function monsterinsights_settings_inline_js() {
+function heretekanalytics_settings_inline_js() {
 	?>
 	<script type="text/javascript">
 	(function () {
@@ -146,7 +176,7 @@ function monsterinsights_settings_inline_js() {
 				e.preventDefault();
 				button.disabled = true;
 				showFeedback('info', 'Saving…');
-				post('monsterinsights_save_heretek_settings', {
+				post('heretekanalytics_save_settings', {
 					v4: form.v4.value,
 					property_id: form.property_id.value,
 					service_account_json: form.service_account_json.value,
@@ -174,7 +204,7 @@ function monsterinsights_settings_inline_js() {
 				e.preventDefault();
 				verifyBtn.disabled = true;
 				showFeedback('info', 'Verifying credentials…');
-				post('monsterinsights_verify_heretek_credentials', {}).then(function (resp) {
+				post('heretekanalytics_verify_credentials', {}).then(function (resp) {
 					verifyBtn.disabled = false;
 					if (resp && resp.success) {
 						showFeedback('success', resp.data && resp.data.message ? resp.data.message : 'Credentials verified.');
@@ -202,14 +232,33 @@ function monsterinsights_settings_inline_js() {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_settings_inline_js.
+ *
+ * @return void
+ */
+function monsterinsights_settings_inline_js() {
+	heretekanalytics_settings_inline_js();
+}
+
+/**
  * Compatibility shim — kept so any code (notably `admin.php`) still calling
- * `monsterinsights_settings_error_page()` does not fatal. The Vue error page
- * itself has been retired along with the JS bundle.
+ * `heretekanalytics_settings_error_page()` or `monsterinsights_settings_error_page()` does not fatal.
+ *
+ * @param string $id
+ * @param string $footer
+ * @param string $margin
+ */
+function heretekanalytics_settings_error_page( $id = 'monsterinsights-vue-site-settings', $footer = '', $margin = '82px 0' ) {
+	// intentionally empty.
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_settings_error_page.
  *
  * @param string $id
  * @param string $footer
  * @param string $margin
  */
 function monsterinsights_settings_error_page( $id = 'monsterinsights-vue-site-settings', $footer = '', $margin = '82px 0' ) {
-	// intentionally empty.
+	heretekanalytics_settings_error_page( $id, $footer, $margin );
 }

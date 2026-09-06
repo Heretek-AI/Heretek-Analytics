@@ -64,46 +64,59 @@ function monsterinsights_is_amp() {
 }
 
 /**
- * Print Monsterinsights frontend tracking script.
+ * Print Heretek Analytics frontend tracking script.
  *
  * @return void
  * @since 7.0.0
  * @access public
  */
-function monsterinsights_tracking_script() {
+function heretekanalytics_tracking_script() {
 	// Check if we're in AMP context - if so, don't output any scripts
 	if ( monsterinsights_is_amp() ) {
 		return;
 	}
 
-	if ( monsterinsights_skip_tracking() ) {
+	$skip = function_exists( 'heretekanalytics_skip_tracking' ) ? heretekanalytics_skip_tracking() : monsterinsights_skip_tracking();
+	if ( $skip ) {
 		return;
 	}
 
-	require_once plugin_dir_path( MONSTERINSIGHTS_PLUGIN_FILE ) . 'includes/frontend/class-tracking-abstract.php';
+	require_once plugin_dir_path( HERETEK_ANALYTICS_PLUGIN_FILE ) . 'includes/frontend/class-tracking-abstract.php';
 
-	$mode = is_preview() ? 'preview' : MonsterInsights()->get_tracking_mode();
+	$mode = is_preview() ? 'preview' : HeretekAnalytics()->get_tracking_mode();
 
+	do_action( 'heretekanalytics_tracking_before_' . $mode );
+	do_action( 'heretekanalytics_tracking_before', $mode );
 	do_action( 'monsterinsights_tracking_before_' . $mode );
 	do_action( 'monsterinsights_tracking_before', $mode );
 	if ( 'preview' === $mode ) {
-		require_once plugin_dir_path( MONSTERINSIGHTS_PLUGIN_FILE ) . 'includes/frontend/tracking/class-tracking-preview.php';
+		require_once plugin_dir_path( HERETEK_ANALYTICS_PLUGIN_FILE ) . 'includes/frontend/tracking/class-tracking-preview.php';
 		$tracking = new MonsterInsights_Tracking_Preview();
 		// Escaped in frontend_output function
 		echo $tracking->frontend_output(); // phpcs:ignore
 	} else {
-		require_once plugin_dir_path( MONSTERINSIGHTS_PLUGIN_FILE ) . 'includes/frontend/tracking/class-tracking-gtag.php';
-		$tracking = new MonsterInsights_Tracking_Gtag();
+		require_once plugin_dir_path( HERETEK_ANALYTICS_PLUGIN_FILE ) . 'includes/frontend/tracking/class-tracking-gtag.php';
+		$tracking = new Heretek_Analytics_Tracking_Gtag();
 		// Escaped in frontend_output function
 		echo $tracking->frontend_output(); // phpcs:ignore
 	}
 
+	do_action( 'heretekanalytics_tracking_after_' . $mode );
+	do_action( 'heretekanalytics_tracking_after', $mode );
 	do_action( 'monsterinsights_tracking_after_' . $mode );
 	do_action( 'monsterinsights_tracking_after', $mode );
 }
 
-add_action( 'wp_head', 'monsterinsights_tracking_script', 6 );
-// add_action( 'login_head', 'monsterinsights_tracking_script', 6 );
+add_action( 'wp_head', 'heretekanalytics_tracking_script', 6 );
+
+/**
+ * Backward compatibility alias for monsterinsights_tracking_script.
+ *
+ * @return void
+ */
+function monsterinsights_tracking_script() {
+	heretekanalytics_tracking_script();
+}
 
 /**
  * Get frontend tracking options.
@@ -112,26 +125,34 @@ add_action( 'wp_head', 'monsterinsights_tracking_script', 6 );
  * for the frontend_output() function to output. These are
  * generally dimensions and turned on GA features.
  *
- * @return array Array of the options to use.
+ * @return void
  * @since 6.0.0
  * @access public
  */
-function monsterinsights_events_tracking() {
-	if ( monsterinsights_skip_tracking() ) {
+function heretekanalytics_events_tracking() {
+	$skip = function_exists( 'heretekanalytics_skip_tracking' ) ? heretekanalytics_skip_tracking() : monsterinsights_skip_tracking();
+	if ( $skip ) {
 		return;
 	}
 
 	$track_user = monsterinsights_track_user();
 
 	if ( $track_user ) {
-		require_once plugin_dir_path( MONSTERINSIGHTS_PLUGIN_FILE ) . 'includes/frontend/events/class-gtag-events.php';
-		new MonsterInsights_Gtag_Events();
-	} else {
-		// User is in the disabled group or events mode is off
+		require_once plugin_dir_path( HERETEK_ANALYTICS_PLUGIN_FILE ) . 'includes/frontend/events/class-gtag-events.php';
+		new Heretek_Analytics_Gtag_Events();
 	}
 }
 
-add_action( 'template_redirect', 'monsterinsights_events_tracking', 9 );
+add_action( 'template_redirect', 'heretekanalytics_events_tracking', 9 );
+
+/**
+ * Backward compatibility alias for monsterinsights_events_tracking.
+ *
+ * @return void
+ */
+function monsterinsights_events_tracking() {
+	heretekanalytics_events_tracking();
+}
 
 /**
  * Add the UTM source parameters in the RSS feeds to track traffic.
@@ -172,44 +193,50 @@ add_filter( 'the_permalink_rss', 'monsterinsights_rss_link_tagger', 99 );
 /**
  * Load the tracking notice for logged in users.
  */
-function monsterinsights_administrator_tracking_notice() {
+/**
+ * Load the tracking notice for logged in users.
+ */
+function heretekanalytics_administrator_tracking_notice() {
 	// Don't do anything for guests.
 	if ( ! is_user_logged_in() ) {
 		return;
 	}
 
 	// Only show this to users who are not tracked.
-	if ( monsterinsights_track_user() ) {
+	$tracked = function_exists( 'heretekanalytics_track_user' ) ? heretekanalytics_track_user() : monsterinsights_track_user();
+	if ( $tracked ) {
 		return;
 	}
 
 	// Only show when tracking.
-	$tracking_tag = monsterinsights_get_v4_id();
+	$tracking_tag = function_exists( 'heretekanalytics_get_v4_id' ) ? heretekanalytics_get_v4_id() : monsterinsights_get_v4_id();
 	if ( empty( $tracking_tag ) ) {
 		return;
 	}
 
 	// Don't show if already dismissed.
-	if ( get_option( 'monsterinsights_frontend_tracking_notice_viewed', false ) ) {
+	if ( get_option( 'heretekanalytics_frontend_tracking_notice_viewed', false ) || get_option( 'monsterinsights_frontend_tracking_notice_viewed', false ) ) {
 		return;
 	}
 
 	// Automatically dismiss when loaded.
+	update_option( 'heretekanalytics_frontend_tracking_notice_viewed', 1 );
 	update_option( 'monsterinsights_frontend_tracking_notice_viewed', 1 );
 
+	$icon_url = HERETEK_ANALYTICS_PLUGIN_URL . 'assets/images/icon-sm.png';
 	?>
-<div class="monsterinsights-tracking-notice monsterinsights-tracking-notice-hide">
+<div class="heretekanalytics-tracking-notice monsterinsights-tracking-notice monsterinsights-tracking-notice-hide">
 	<div class="monsterinsights-tracking-notice-icon">
-		<img src="<?php echo esc_url( plugins_url( 'assets/images/mascot.png', MONSTERINSIGHTS_PLUGIN_FILE ) ); ?>"
-			width="40" alt="MonsterInsights Mascot" />
+		<img src="<?php echo esc_url( $icon_url ); ?>"
+			width="32" height="32" alt="Heretek Analytics Emblem" />
 	</div>
 	<div class="monsterinsights-tracking-notice-text">
-		<h3><?php esc_html_e( 'Tracking is Disabled for Administrators', 'google-analytics-for-wordpress' ); ?></h3>
+		<h3><?php esc_html_e( 'Heretek Analytics — Tracking Disabled for Administrators', 'google-analytics-for-wordpress' ); ?></h3>
 		<p>
 			<?php
 				$doc_url = 'https://github.com/Heretek-AI/Heretek-Analytics#readme';
 				// Translators: %s is the link to the article where more details about tracking are listed.
-				printf( esc_html__( 'To keep stats accurate, we do not load Google Analytics scripts for admin users. %1$sLearn More &raquo;%2$s', 'google-analytics-for-wordpress' ), '<a href="' . esc_url( $doc_url ) . '" target="_blank">', '</a>' );
+				printf( esc_html__( 'To keep stats accurate, Google Analytics scripts are not loaded for admin sessions. %1$sLearn More &raquo;%2$s', 'google-analytics-for-wordpress' ), '<a href="' . esc_url( $doc_url ) . '" target="_blank">', '</a>' );
 			?>
 		</p>
 	</div>
@@ -276,8 +303,8 @@ function monsterinsights_administrator_tracking_notice() {
 }
 
 .monsterinsights-tracking-notice-icon {
-	padding: 14px;
-	background-color: #f2f6ff;
+	padding: 10px;
+	background-color: #f4f4f5;
 	border-radius: 6px;
 	flex-grow: 0;
 	flex-shrink: 0;
@@ -322,8 +349,8 @@ if ('undefined' !== typeof jQuery) {
 				url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
 				method: 'POST',
 				data: {
-					action: 'monsterinsights_dismiss_tracking_notice',
-					nonce: '<?php echo esc_js( wp_create_nonce( 'monsterinsights-tracking-notice' ) ); ?>',
+					action: 'heretekanalytics_dismiss_tracking_notice',
+					nonce: '<?php echo esc_js( wp_create_nonce( 'heretekanalytics-tracking-notice' ) ); ?>',
 				}
 			});
 		});
@@ -333,26 +360,48 @@ if ('undefined' !== typeof jQuery) {
 <?php
 }
 
-add_action( 'wp_footer', 'monsterinsights_administrator_tracking_notice', 300 );
+add_action( 'wp_footer', 'heretekanalytics_administrator_tracking_notice', 300 );
+
+/**
+ * Backward compatibility alias for monsterinsights_administrator_tracking_notice.
+ */
+function monsterinsights_administrator_tracking_notice() {
+	heretekanalytics_administrator_tracking_notice();
+}
 
 /**
  * Ajax handler to hide the tracking notice.
  */
-function monsterinsights_dismiss_tracking_notice() {
+function heretekanalytics_dismiss_tracking_notice() {
 
-	check_ajax_referer( 'monsterinsights-tracking-notice', 'nonce' );
+	$nonce_valid = false;
+	if ( ! empty( $_POST['nonce'] ) ) {
+		$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
+		if ( wp_verify_nonce( $nonce, 'heretekanalytics-tracking-notice' ) || wp_verify_nonce( $nonce, 'monsterinsights-tracking-notice' ) ) {
+			$nonce_valid = true;
+		}
+	}
 
-	if ( ! current_user_can( 'monsterinsights_save_settings' ) ) {
+	if ( ! $nonce_valid || ! current_user_can( 'heretekanalytics_save_settings' ) ) {
 		wp_die();
 	}
 
+	update_option( 'heretekanalytics_frontend_tracking_notice_viewed', 1 );
 	update_option( 'monsterinsights_frontend_tracking_notice_viewed', 1 );
 
 	wp_die();
 
 }
 
-add_action( 'wp_ajax_monsterinsights_dismiss_tracking_notice', 'monsterinsights_dismiss_tracking_notice' );
+add_action( 'wp_ajax_heretekanalytics_dismiss_tracking_notice', 'heretekanalytics_dismiss_tracking_notice' );
+add_action( 'wp_ajax_monsterinsights_dismiss_tracking_notice', 'heretekanalytics_dismiss_tracking_notice' );
+
+/**
+ * Backward compatibility alias for monsterinsights_dismiss_tracking_notice.
+ */
+function monsterinsights_dismiss_tracking_notice() {
+	heretekanalytics_dismiss_tracking_notice();
+}
 
 /**
  * If the legacy shortcodes are not registered, make sure they don't output.

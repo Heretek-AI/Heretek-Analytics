@@ -23,88 +23,116 @@ if (!defined('ABSPATH')) {
  * @access public
  *
  */
-function monsterinsights_admin_menu()
+function heretekanalytics_admin_menu()
 {
-	$hook             = monsterinsights_get_menu_hook();
 	$menu_icon_inline = monsterinsights_get_inline_menu_icon();
+	$parent_slug      = 'heretekanalytics_reports';
 
-	$menu_notification_indicator = '';
-
-	$parent_slug          = 'monsterinsights_reports';
-	$hide_reports_submenu = false;
-
-	// If user disabled report view, and it is a lite user.
-	if ( $hook === 'monsterinsights_settings' ) {
-		$hide_reports_submenu = true;
-	}
-
-	add_menu_page(__('Heretek Analytics', 'google-analytics-for-wordpress'), __('Heretek Analytics', 'google-analytics-for-wordpress') . $menu_notification_indicator, 'monsterinsights_view_dashboard', $parent_slug, 'monsterinsights_reports_page', $menu_icon_inline, '100.00013467543');
-
-	if ( $hook === 'monsterinsights_reports' ) {
-		// Add Overview report page (PHP dashboard).
-		add_submenu_page(
-			$parent_slug,
-			__( 'Augur Reports:', 'google-analytics-for-wordpress' ),
-			__( 'Reports', 'google-analytics-for-wordpress' ),
-			'monsterinsights_view_dashboard',
-			'monsterinsights_overview_report',
-			'monsterinsights_overview_report_page'
-		);
-
-		// Register reports page with empty parent to keep it accessible but hidden from menu
-		add_submenu_page( '', __( 'General Reports:', 'google-analytics-for-wordpress' ), __( 'Reports', 'google-analytics-for-wordpress' ), 'monsterinsights_view_dashboard', 'monsterinsights_reports', 'monsterinsights_reports_page' );
-	}
-
-	// then settings page
-	add_submenu_page( $parent_slug, __( 'Heretek Analytics Settings', 'google-analytics-for-wordpress' ), __( 'Settings', 'google-analytics-for-wordpress' ), 'monsterinsights_save_settings', 'monsterinsights_settings', 'monsterinsights_settings_page' );
-
-	// Add dashboard submenu.
-	add_submenu_page( 'index.php', __( 'General Reports:', 'google-analytics-for-wordpress' ), __( 'Heretek Analytics', 'google-analytics-for-wordpress' ), 'monsterinsights_view_dashboard', 'admin.php?page=monsterinsights_reports' );
-
-	// Remove own auto-generated `Insights` submenu when Reports submenu is explicitly registered.
-	// Because the first submenu slug is not `monsterinsights_reports`, WordPress adds this item automatically.
-	if ( $hook === 'monsterinsights_reports' ) {
-		remove_submenu_page( 'monsterinsights_reports', 'monsterinsights_reports' );
-	}
-
-	// If the setup checklist is not dismissed, remove the own submenu of `Insights` main menu.
-	// This way the Checklist will be the first submenu which is an important thing for onboarding.
-	if ( $hide_reports_submenu && $hook !== 'monsterinsights_reports' ) {
-
-		// Check if the user has the capability to save settings and view dashboard.
-		// We should skip this for editors that have only view capability have only item in the submenu, removing that would break the menu.
-		if ( ! ( ! current_user_can( 'monsterinsights_save_settings' ) && current_user_can( 'monsterinsights_view_dashboard' ) ) ) {
-			// Remove own submenu of `Insights` main menu.
-			remove_submenu_page( 'monsterinsights_reports', 'monsterinsights_reports' );
-		}
-	}
-
-	$submenu_base = add_query_arg('page', 'monsterinsights_settings', admin_url('admin.php'));
-
-	// Tools — points at a real PHP page (tools.php).
-	add_submenu_page($parent_slug, __('Tools:', 'google-analytics-for-wordpress'), __('Tools', 'google-analytics-for-wordpress'), 'manage_options', 'monsterinsights_tools', 'monsterinsights_tools_page' );
-
-	// Authors — per-author ranking from the GA4 Data API.
-	add_submenu_page(
+	add_menu_page(
+		__('Heretek Analytics', 'heretek-analytics'),
+		__('Heretek Analytics', 'heretek-analytics'),
+		'heretekanalytics_view_dashboard',
 		$parent_slug,
-		__('Authors:', 'google-analytics-for-wordpress'),
-		__('Authors', 'google-analytics-for-wordpress'),
-		'monsterinsights_view_dashboard',
-		'monsterinsights_authors',
-		'monsterinsights_authors_page'
+		'heretekanalytics_reports_page',
+		$menu_icon_inline,
+		'100.00013467543'
 	);
 
-	// About Heretek AI — points at a real PHP page (about.php).
-	add_submenu_page($parent_slug, __('About Heretek AI:', 'google-analytics-for-wordpress'), __('About Heretek AI', 'google-analytics-for-wordpress'), 'manage_options', 'monsterinsights_about', 'monsterinsights_about_page' );
+	// Reports (Augur Cockpit)
+	add_submenu_page(
+		$parent_slug,
+		__( 'Augur Reports:', 'heretek-analytics' ),
+		__( 'Reports', 'heretek-analytics' ),
+		'heretekanalytics_view_dashboard',
+		'heretekanalytics_reports',
+		'heretekanalytics_reports_page'
+	);
+
+	// Authors & Content Taxonomy Telemetry
+	add_submenu_page(
+		$parent_slug,
+		__('Authors & Content:', 'heretek-analytics'),
+		__('Authors', 'heretek-analytics'),
+		'heretekanalytics_view_dashboard',
+		'heretekanalytics_authors',
+		'heretekanalytics_authors_page'
+	);
+
+	// Settings
+	add_submenu_page(
+		$parent_slug,
+		__( 'Heretek Analytics Settings', 'heretek-analytics' ),
+		__( 'Settings', 'heretek-analytics' ),
+		'heretekanalytics_save_settings',
+		'heretekanalytics_settings',
+		'heretekanalytics_settings_page'
+	);
+
+	// Tools
+	add_submenu_page(
+		$parent_slug,
+		__('Tools:', 'heretek-analytics'),
+		__('Tools', 'heretek-analytics'),
+		'manage_options',
+		'heretekanalytics_tools',
+		'heretekanalytics_tools_page'
+	);
+
+	// Addons
+	add_submenu_page(
+		$parent_slug,
+		__('Addons:', 'heretek-analytics'),
+		__('Addons', 'heretek-analytics'),
+		'manage_options',
+		'heretekanalytics_addons',
+		'heretekanalytics_addons_page'
+	);
+
+	// About Heretek AI
+	add_submenu_page(
+		$parent_slug,
+		__('About Heretek AI:', 'heretek-analytics'),
+		__('About Heretek AI', 'heretek-analytics'),
+		'manage_options',
+		'heretekanalytics_about',
+		'heretekanalytics_about_page'
+	);
+
+	// Hidden compatibility submenus for legacy monsterinsights_* slugs
+	add_submenu_page( '', 'Reports', 'Reports', 'heretekanalytics_view_dashboard', 'monsterinsights_reports', 'heretekanalytics_reports_page' );
+	add_submenu_page( '', 'Authors', 'Authors', 'heretekanalytics_view_dashboard', 'monsterinsights_authors', 'heretekanalytics_authors_page' );
+	add_submenu_page( '', 'Settings', 'Settings', 'heretekanalytics_save_settings', 'monsterinsights_settings', 'heretekanalytics_settings_page' );
+	add_submenu_page( '', 'Tools', 'Tools', 'manage_options', 'monsterinsights_tools', 'heretekanalytics_tools_page' );
+	add_submenu_page( '', 'Addons', 'Addons', 'manage_options', 'monsterinsights_addons', 'heretekanalytics_addons_page' );
+	add_submenu_page( '', 'About', 'About', 'manage_options', 'monsterinsights_about', 'heretekanalytics_about_page' );
 }
 
-add_action('admin_menu', 'monsterinsights_admin_menu');
+add_action('admin_menu', 'heretekanalytics_admin_menu');
 
-
+if ( ! function_exists( 'monsterinsights_admin_menu' ) ) {
+	function monsterinsights_admin_menu() {
+		// Handled by heretekanalytics_admin_menu
+	}
+}
 
 /**
- * Add this separately so all the Woo menu items are loaded and the position parameter works correctly.
+ * Transparent Legacy Admin URL Redirect Interceptor.
+ *
+ * Catches any request for ?page=monsterinsights_* and seamlessly redirects
+ * to ?page=heretekanalytics_* while preserving all query parameters.
  */
+function heretekanalytics_legacy_menu_redirect() {
+	if ( ! empty( $_GET['page'] ) && strpos( $_GET['page'], 'monsterinsights_' ) === 0 ) {
+		$legacy_page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
+		$new_page    = str_replace( 'monsterinsights_', 'heretekanalytics_', $legacy_page );
+		$args        = $_GET;
+		$args['page'] = $new_page;
+		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
+		exit;
+	}
+}
+add_action( 'admin_init', 'heretekanalytics_legacy_menu_redirect' );
+
 function monsterinsights_woocommerce_menu_item()
 {
 	// Heretek Analytics has no WooCommerce cross-promo submenu.
@@ -113,45 +141,28 @@ add_action('admin_menu', 'monsterinsights_woocommerce_menu_item', 11);
 
 function monsterinsights_get_menu_hook()
 {
-	$dashboards_disabled = monsterinsights_get_option('dashboards_disabled', false);
-	if ($dashboards_disabled || (current_user_can('monsterinsights_save_settings') && !current_user_can('monsterinsights_view_dashboard'))) {
-		return 'monsterinsights_settings';
-	} else {
-		return 'monsterinsights_reports';
-	}
+	return 'heretekanalytics_reports';
 }
 
 function monsterinsights_network_admin_menu()
 {
-	// Get the base class object.
-	$base = MonsterInsights();
+	$base = HeretekAnalytics();
 
-	// First, let's see if this is an MS network enabled plugin. If it is, we should load the license
-	// menu page and the updater on the network panel
 	if (!function_exists('is_plugin_active_for_network')) {
 		require_once(ABSPATH . '/wp-admin/includes/plugin.php');
 	}
 
-	$plugin = plugin_basename(MONSTERINSIGHTS_PLUGIN_FILE);
+	$plugin = plugin_basename(HERETEK_ANALYTICS_PLUGIN_FILE);
 	if (!is_plugin_active_for_network($plugin)) {
 		return;
 	}
 
-	$menu_notification_indicator = '';
-
 	$menu_icon_inline = monsterinsights_get_inline_menu_icon();
-	$hook             = 'monsterinsights_network';
-	$submenu_base     = add_query_arg('page', 'monsterinsights_network', network_admin_url('admin.php'));
-	add_menu_page(__('Network Augur:', 'google-analytics-for-wordpress'), __('Heretek Analytics', 'google-analytics-for-wordpress') . $menu_notification_indicator, 'monsterinsights_save_settings', 'monsterinsights_network', 'monsterinsights_network_page', $menu_icon_inline, '100.00013467543');
-
-	add_submenu_page($hook, __('Network Augur:', 'google-analytics-for-wordpress'), __('Network Settings', 'google-analytics-for-wordpress'), 'monsterinsights_save_settings', 'monsterinsights_network', 'monsterinsights_network_page');
-
-	add_submenu_page($hook, __('General Reports:', 'google-analytics-for-wordpress'), __('Reports', 'google-analytics-for-wordpress'), 'monsterinsights_view_dashboard', 'monsterinsights_reports', 'monsterinsights_reports_page');
-
-	$submenu_base = add_query_arg('page', 'monsterinsights_network', network_admin_url('admin.php'));
-
-	// Add About us page.
-	add_submenu_page($hook, __('About Heretek AI:', 'google-analytics-for-wordpress'), __('About Heretek AI', 'google-analytics-for-wordpress'), 'manage_options', $submenu_base . '#/about');
+	$hook             = 'heretekanalytics_network';
+	add_menu_page(__('Network Augur:', 'heretek-analytics'), __('Heretek Analytics', 'heretek-analytics'), 'heretekanalytics_save_settings', $hook, 'heretekanalytics_network_page', $menu_icon_inline, '100.00013467543');
+	add_submenu_page($hook, __('Network Augur:', 'heretek-analytics'), __('Network Settings', 'heretek-analytics'), 'heretekanalytics_save_settings', $hook, 'heretekanalytics_network_page');
+	add_submenu_page($hook, __('General Reports:', 'heretek-analytics'), __('Reports', 'heretek-analytics'), 'heretekanalytics_view_dashboard', 'heretekanalytics_reports', 'heretekanalytics_reports_page');
+	add_submenu_page($hook, __('About Heretek AI:', 'heretek-analytics'), __('About Heretek AI', 'heretek-analytics'), 'manage_options', 'heretekanalytics_about', 'heretekanalytics_about_page');
 }
 
 add_action('network_admin_menu', 'monsterinsights_network_admin_menu', 5);
@@ -166,11 +177,18 @@ add_action('network_admin_menu', 'monsterinsights_network_admin_menu', 5);
 function monsterinsights_add_admin_body_class($classes)
 {
 	$screen = function_exists('get_current_screen') ? get_current_screen() : false;
-	if (empty($screen) || empty($screen->id) || strpos($screen->id, 'monsterinsights') === false) {
+	if (empty($screen) || empty($screen->id)) {
 		return $classes;
 	}
 
-	return "$classes monsterinsights_page ";
+	if (strpos($screen->id, 'monsterinsights') !== false || strpos($screen->id, 'heretek') !== false) {
+		$classes .= ' heretekanalytics_page monsterinsights_page ';
+		if (strpos($screen->id, 'reports') !== false || strpos($screen->id, 'authors') !== false) {
+			$classes .= ' heretekanalytics-reporting-page monsterinsights-reporting-page ';
+		}
+	}
+
+	return $classes;
 }
 
 add_filter('admin_body_class', 'monsterinsights_add_admin_body_class', 10, 1);
@@ -186,7 +204,7 @@ function monsterinsights_add_admin_body_class_tools_page($classes)
 {
 	$screen = function_exists('get_current_screen') ? get_current_screen() : false;
 
-	if (empty($screen) || empty($screen->id) || strpos($screen->id, 'monsterinsights_tools') === false || 'insights_page_monsterinsights_tools' === $screen->id) {
+	if (empty($screen) || empty($screen->id) || (strpos($screen->id, 'tools') === false)) {
 		return $classes;
 	}
 
@@ -205,7 +223,7 @@ add_filter('admin_body_class', 'monsterinsights_add_admin_body_class_tools_page'
 function monsterinsights_add_admin_body_class_addons_page($classes)
 {
 	$screen = function_exists('get_current_screen') ? get_current_screen() : false;
-	if (empty($screen) || empty($screen->id) || strpos($screen->id, 'monsterinsights_addons') === false || 'insights_page_monsterinsights_addons' === $screen->id) {
+	if (empty($screen) || empty($screen->id) || (strpos($screen->id, 'addons') === false)) {
 		return $classes;
 	}
 
@@ -223,16 +241,16 @@ add_filter('admin_body_class', 'monsterinsights_add_admin_body_class_addons_page
  */
 function monsterinsights_add_action_links($links)
 {
-	$docs = '<a title="' . esc_attr__('Heretek Analytics Documentation', 'google-analytics-for-wordpress') . '" href="https://github.com/Heretek-AI/Heretek-Analytics#readme" target="_blank" rel="noopener">' . esc_html__('Documentation', 'google-analytics-for-wordpress') . '</a>';
+	$docs = '<a title="' . esc_attr__('Heretek Analytics Documentation', 'heretek-analytics') . '" href="https://github.com/Heretek-AI/Heretek-Analytics#readme" target="_blank" rel="noopener">' . esc_html__('Documentation', 'heretek-analytics') . '</a>';
 	array_unshift($links, $docs);
 
-	$support = '<a title="' . esc_attr__('Heretek AI Issues & Support', 'google-analytics-for-wordpress') . '" href="https://github.com/Heretek-AI/Heretek-Analytics/issues" target="_blank" rel="noopener">' . esc_html__('Support', 'google-analytics-for-wordpress') . '</a>';
+	$support = '<a title="' . esc_attr__('Heretek AI Issues & Support', 'heretek-analytics') . '" href="https://github.com/Heretek-AI/Heretek-Analytics/issues" target="_blank" rel="noopener">' . esc_html__('Support', 'heretek-analytics') . '</a>';
 	array_unshift($links, $support);
 
 	if (is_network_admin()) {
-		$settings_link = '<a href="' . esc_url(network_admin_url('admin.php?page=monsterinsights_network')) . '">' . esc_html__('Network Settings', 'google-analytics-for-wordpress') . '</a>';
+		$settings_link = '<a href="' . esc_url(network_admin_url('admin.php?page=heretekanalytics_network')) . '">' . esc_html__('Network Settings', 'heretek-analytics') . '</a>';
 	} else {
-		$settings_link = '<a href="' . esc_url(admin_url('admin.php?page=monsterinsights_settings')) . '">' . esc_html__('Settings', 'google-analytics-for-wordpress') . '</a>';
+		$settings_link = '<a href="' . esc_url(admin_url('admin.php?page=heretekanalytics_settings')) . '">' . esc_html__('Settings', 'heretek-analytics') . '</a>';
 	}
 
 	array_unshift($links, $settings_link);
@@ -240,8 +258,8 @@ function monsterinsights_add_action_links($links)
 	return $links;
 }
 
-add_filter('plugin_action_links_' . plugin_basename(MONSTERINSIGHTS_PLUGIN_FILE), 'monsterinsights_add_action_links');
-add_filter('network_admin_plugin_action_links_' . plugin_basename(MONSTERINSIGHTS_PLUGIN_FILE), 'monsterinsights_add_action_links');
+add_filter('plugin_action_links_' . plugin_basename(HERETEK_ANALYTICS_PLUGIN_FILE), 'monsterinsights_add_action_links');
+add_filter('network_admin_plugin_action_links_' . plugin_basename(HERETEK_ANALYTICS_PLUGIN_FILE), 'monsterinsights_add_action_links');
 
 /**
  * Loads a partial view for the Administration screen
@@ -366,12 +384,12 @@ function monsterinsights_admin_setup_notices()
 	// 1. Google Analytics not authenticated
 	if ( ! is_network_admin() && ! monsterinsights_get_v4_id() && ! defined( 'MONSTERINSIGHTS_DISABLE_TRACKING' ) && ! monsterinsights_is_own_admin_page() ) {
 
-		$submenu_base = is_network_admin() ? add_query_arg( 'page', 'monsterinsights_network', network_admin_url( 'admin.php' ) ) : add_query_arg( 'page', 'monsterinsights_settings', admin_url( 'admin.php' ) );
-		$title        = esc_html__( 'Please configure Heretek Analytics to begin tracking.', 'google-analytics-for-wordpress' );
-		$primary      = esc_html__( 'Open Settings', 'google-analytics-for-wordpress' );
-		$secondary    = esc_html__( 'Documentation', 'google-analytics-for-wordpress' );
+		$submenu_base = is_network_admin() ? add_query_arg( 'page', 'heretekanalytics_network', network_admin_url( 'admin.php' ) ) : add_query_arg( 'page', 'heretekanalytics_settings', admin_url( 'admin.php' ) );
+		$title        = esc_html__( 'Please configure Heretek Analytics to begin tracking.', 'heretek-analytics' );
+		$primary      = esc_html__( 'Open Settings', 'heretek-analytics' );
+		$secondary    = esc_html__( 'Documentation', 'heretek-analytics' );
 		$urltwo       = 'https://github.com/Heretek-AI/Heretek-Analytics#readme';
-		$message      = esc_html__( 'Heretek Analytics is fully self-hosted. Paste your Google Analytics 4 Measurement ID plus a Google Cloud service account JSON key on the Settings page to begin tracking.', 'google-analytics-for-wordpress' );
+		$message      = esc_html__( 'Heretek Analytics is fully self-hosted. Paste your Google Analytics 4 Measurement ID plus a Google Cloud service account JSON key on the Settings page to begin tracking.', 'heretek-analytics' );
 		echo '<div class="notice notice-info"><p style="font-weight:700">' . $title . '</p><p>' . $message . '</p><p><a href="' . esc_url($submenu_base) . '" class="button-primary">' . $primary . '</a>&nbsp;&nbsp;&nbsp;<a href="' . esc_url($urltwo) . '" target="_blank" rel="noopener" class="button-secondary">' . $secondary . '</a></p></div>';
 
 		return;
@@ -386,18 +404,18 @@ function monsterinsights_admin_setup_notices()
 		$compatible_php_version = apply_filters('monsterinsights_compatible_php_version', false);
 		$compatible_wp_version  = apply_filters('monsterinsights_compatible_wp_version', false);
 
-		$url = monsterinsights_get_url('global-notice', 'settings-page', 'https://www.monsterinsights.com/docs/update-php/');
+		$url = monsterinsights_get_url('global-notice', 'settings-page', 'https://github.com/Heretek-AI/Heretek-Analytics#readme');
 
 		$message = false;
 		if (version_compare(phpversion(), $compatible_php_version['required'], '<')) {
 			/* translators: placeholders add the PHP version, a link to the MonsterInsights blog and a line break. */
-			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress stopped supporting your PHP version in April, 2019.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'google-analytics-for-wordpress'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
+			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress stopped supporting your PHP version in April, 2019.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'heretek-analytics'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
 		} else if (version_compare(phpversion(), $compatible_php_version['warning'], '<')) {
 			/* translators: placeholders add the PHP version, a link to the MonsterInsights blog and a line break. */
-			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress stopped supporting your PHP version in November, 2019.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'google-analytics-for-wordpress'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
+			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress stopped supporting your PHP version in November, 2019.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'heretek-analytics'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
 		} else if (version_compare(phpversion(), $compatible_php_version['recommended'], '<')) {
 			/* translators: placeholders add the PHP version, a link to the MonsterInsights blog and a line break. */
-			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress is working towards discontinuing support for your PHP version.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'google-analytics-for-wordpress'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
+			$message = sprintf(esc_html__('Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress is working towards discontinuing support for your PHP version.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'heretek-analytics'), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>');
 		}
 
 		if ($message) {
@@ -414,30 +432,6 @@ function monsterinsights_admin_setup_notices()
 			]) . '</p></div>';
 			return;
 		}
-
-		// WordPress 4.9
-		/* else if ( version_compare( $wp_version, '5.0', '<' ) ) {
-			$url = monsterinsights_get_url( 'global-notice', 'settings-page', 'https://www.monsterinsights.com/docs/update-wordpress/' );
-			// translators: placeholders add a link to the wordpress.org repository.
-			$message = sprintf( esc_html__( 'Your site is running an outdated version of WordPress (%1$s).%4$sHeretek Analytics will stop supporting WordPress versions lower than 5.0 in 2021.%4$sUpdating WordPress takes just a few minutes and will also solve many bugs that exist in your WordPress install.%4$s%2$sLearn more about updating WordPress%3$s', 'google-analytics-for-wordpress' ), $wp_version, '<a href="' . $url . '" target="_blank">', '</a>', '<br>' );
-			echo '<div class="error"><p>'. $message.'</p></div>';
-			return;
-		} */
-		// PHP 5.4/5.5
-		// else if ( version_compare( phpversion(), '5.6', '<' ) ) {
-		//  $url = monsterinsights_get_url( 'global-notice', 'settings-page', 'https://www.monsterinsights.com/docs/update-php/' );
-		//  $message = sprintf( esc_html__( 'Your site is running an outdated, insecure version of PHP (%1$s), which could be putting your site at risk for being hacked.%4$sWordPress will stop supporting your PHP version in April, 2019.%4$sUpdating PHP only takes a few minutes and will make your website significantly faster and more secure.%4$s%2$sLearn more about updating PHP%3$s', 'google-analytics-for-wordpress' ), phpversion(), '<a href="' . $url . '" target="_blank">', '</a>', '<br>' );
-		//  echo '<div class="error"><p>'. $message.'</p></div>';
-		//  return;
-		// }
-		// // WordPress 4.6 - 4.8
-		// else if ( version_compare( $wp_version, '4.9', '<' ) ) {
-		//  $url = monsterinsights_get_url( 'global-notice', 'settings-page', 'https://www.monsterinsights.com/docs/update-wordpress/' );
-		//  $message = sprintf( esc_html__( 'Your site is running an outdated version of WordPress (%1$s).%4$sHeretek Analytics will stop supporting WordPress versions lower than 4.9 in October, 2019.%4$sUpdating WordPress takes just a few minutes and will also solve many bugs that exist in your WordPress install.%4$s%2$sLearn more about updating WordPress%3$s', 'google-analytics-for-wordpress' ), $wp_version, '<a href="' . $url . '" target="_blank">', '</a>', '<br>' );
-		//  echo '<div class="error"><p>'. $message.'</p></div>';
-		//  return;
-		// }
-
 	}
 
 	$notices = get_option('monsterinsights_notices');
@@ -445,69 +439,41 @@ function monsterinsights_admin_setup_notices()
 		$notices = array();
 	}
 
-	// Configuration state. Heretek Analytics is fully self-hosted, so the
-	// legacy OAuth "is_authed() / is_network_authed()" checks always return
-	// false — those methods only succeed for the upstream MonsterInsights
-	// "Connect" flow, which was removed in the stand-alone port. Instead
-	// compute the actual configuration state directly off MonsterInsights_Auth.
-	$auth            = MonsterInsights()->auth;
+	$auth            = HeretekAnalytics()->auth;
 	$tracking_code   = monsterinsights_get_v4_id_to_output();
 	$has_property    = (bool) $auth->get_property_id();
 	$has_sa          = (bool) $auth->get_service_account_json();
 	$is_configured   = (bool) $tracking_code && $has_property && $has_sa;
 	$is_manual_only  = (bool) $tracking_code && ( ! $has_property || ! $has_sa );
 
-	// Quietly clear the legacy GADWP migration flag — the upstream
-	// "reauthenticate against MonsterInsights to see reports" prompt no
-	// longer applies (the gateway now talks directly to Google).
 	$migrated = monsterinsights_get_option( 'gadwp_migrated', 0 );
 	if ( $migrated > 0 ) {
 		monsterinsights_update_option( 'gadwp_migrated', 0 );
 	}
 
-	// 6. Measurement ID set, but Property ID / service account missing →
-	//    the in-admin Reports dashboard is disabled until the user finishes
-	//    the Settings form. Don't fire anything else when fully configured.
+	// 6. Measurement ID set, but Property ID / service account missing
 	if ( $is_manual_only && ! isset( $notices['monsterinsights_manual_v4'] ) ) {
 		$settings_url = is_network_admin()
-			? network_admin_url( 'admin.php?page=monsterinsights_network' )
-			: admin_url( 'admin.php?page=monsterinsights_settings' );
+			? network_admin_url( 'admin.php?page=heretekanalytics_network' )
+			: admin_url( 'admin.php?page=heretekanalytics_settings' );
 
 		printf(
 			'<div class="notice notice-info is-dismissible monsterinsights-notice" data-notice="monsterinsights_manual_v4"><p>%s</p></div>',
 			sprintf(
 				/* translators: %s is a link to the Heretek Analytics Settings page. */
-				esc_html__( 'A GA4 Measurement ID is configured, but the in-admin Reports dashboard is disabled until you also add a GA4 Property ID and a Google Cloud service account JSON key. Open %s to finish.', 'google-analytics-for-wordpress' ),
-				'<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Heretek Analytics → Settings', 'google-analytics-for-wordpress' ) . '</a>'
+				esc_html__( 'A GA4 Measurement ID is configured, but the in-admin Reports dashboard is disabled until you also add a GA4 Property ID and a Google Cloud service account JSON key. Open %s to finish.', 'heretek-analytics' ),
+				'<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Heretek Analytics → Settings', 'heretek-analytics' ) . '</a>'
 			)
 		);
 
 		return;
 	}
 
-	// 7. Automatic updates not configured
-	// if ( ! is_network_admin() ) {
-	//     $updates   = monsterinsights_get_option( 'automatic_updates', false );
-	//     $url       = admin_url( 'admin.php?page=monsterinsights_settings' );
-
-	//     if ( empty( $updates) && ! isset( $notices['monsterinsights_automatic_updates' ] ) ) {
-	//         echo '<div class="notice notice-info is-dismissible monsterinsights-notice" data-notice="monsterinsights_automatic_updates">';
-	//             echo '<p>';
-	//             echo sprintf( esc_html__( 'Important: Please %1$sconfigure the Automatic Updates Settings%2$s in Heretek Analytics.', 'google-analytics-for-wordpress' ), '<a href="' . $url .'">', '</a>' );
-	//             echo '</p>';
-	//         echo '</div>';
-	//         return;
-	//     }
-	// }
-
-	// 8. WooCommerce / EDD Upsells purged for Heretek Analytics.
-
-
 	if (isset($notices['monsterinsights_cross_domains_extracted']) && false === $notices['monsterinsights_cross_domains_extracted']) {
-		$settings_url = is_network_admin() ? network_admin_url('admin.php?page=monsterinsights_network') : admin_url('admin.php?page=monsterinsights_settings');
+		$settings_url = is_network_admin() ? network_admin_url('admin.php?page=heretekanalytics_network') : admin_url('admin.php?page=heretekanalytics_settings');
 		$settings_url = $settings_url . '#/advanced';
 		/* translators: adds a link to the settings panel. */
-		$message = sprintf(esc_html__('Warning: Heretek Analytics found cross-domain settings in the custom code field and converted them to the new settings structure.  %1$sPlease click here to review and remove the code no longer needed.%2$s', 'google-analytics-for-wordpress'), '<a href="' . esc_url($settings_url) . '">', '</a>');
+		$message = sprintf(esc_html__('Warning: Heretek Analytics found cross-domain settings in the custom code field and converted them to the new settings structure.  %1$sPlease click here to review and remove the code no longer needed.%2$s', 'heretek-analytics'), '<a href="' . esc_url($settings_url) . '">', '</a>');
 		echo '<div class="notice notice-success is-dismissible monsterinsights-notice" data-notice="monsterinsights_cross_domains_extracted"><p>' . $message . '</p></div>'; // phpcs:ignore
 
 		return;
@@ -537,19 +503,24 @@ function monsterinsights_admin_menu_inline_styles()
 {
 ?>
 	<style>
+		#toplevel_page_heretekanalytics_reports .wp-menu-image img,
 		#toplevel_page_monsterinsights_reports .wp-menu-image img,
+		#toplevel_page_heretekanalytics_settings .wp-menu-image img,
 		#toplevel_page_monsterinsights_settings .wp-menu-image img,
+		#toplevel_page_heretekanalytics_network .wp-menu-image img,
 		#toplevel_page_monsterinsights_network .wp-menu-image img {
 			width: 18px;
 			height: auto;
 			padding-top: 7px;
 		}
 
+		#toplevel_page_heretekanalytics_reports .wp-submenu li a,
 		#toplevel_page_monsterinsights_reports .wp-submenu li a {
 			display: flex;
 			align-items: center;
 		}
 
+		#toplevel_page_heretekanalytics_reports .wp-submenu .monsterinsights-sidebar-icon,
 		#toplevel_page_monsterinsights_reports .wp-submenu .monsterinsights-sidebar-icon {
 			padding-right: 6px;
 		}
@@ -569,12 +540,12 @@ function monsterinsights_empty_measurement_protocol_token()
 	}
 
 	$page = is_network_admin()
-		? network_admin_url('admin.php?page=monsterinsights_network')
-		: admin_url('admin.php?page=monsterinsights_settings');
+		? network_admin_url('admin.php?page=heretekanalytics_network')
+		: admin_url('admin.php?page=heretekanalytics_settings');
 
 	$api_secret = is_network_admin()
-		? MonsterInsights()->auth->get_network_measurement_protocol_secret()
-		: MonsterInsights()->auth->get_measurement_protocol_secret();
+		? HeretekAnalytics()->auth->get_network_measurement_protocol_secret()
+		: HeretekAnalytics()->auth->get_measurement_protocol_secret();
 
 	$current_code = monsterinsights_get_v4_id_to_output();
 

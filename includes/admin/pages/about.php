@@ -19,11 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function monsterinsights_about_page() {
+function heretekanalytics_about_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
-	$icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
+	$icon_url = HERETEK_ANALYTICS_PLUGIN_URL . 'assets/images/icon-sm.png';
 	?>
 	<div class="htk-cockpit" style="max-width:980px;">
 
@@ -33,7 +33,7 @@ function monsterinsights_about_page() {
 				<div class="htk-header-title">
 					<h1>
 						Heretek Analytics
-						<span class="htk-badge-ver"><?php echo esc_html( MONSTERINSIGHTS_VERSION ); ?></span>
+						<span class="htk-badge-ver"><?php echo esc_html( HERETEK_ANALYTICS_VERSION ); ?></span>
 					</h1>
 					<div class="htk-header-telemetry-meta">
 						<span><?php esc_html_e( 'The Unrestricted GA4 Data Augur & Telemetry Cogitator for WordPress', 'google-analytics-for-wordpress' ); ?></span>
@@ -41,7 +41,7 @@ function monsterinsights_about_page() {
 				</div>
 			</div>
 			<div class="htk-toolbar">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_reports' ) ); ?>" class="htk-btn htk-btn-primary">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_reports' ) ); ?>" class="htk-btn htk-btn-primary">
 					<?php esc_html_e( 'Open Augur Cockpit &rarr;', 'google-analytics-for-wordpress' ); ?>
 				</a>
 			</div>
@@ -96,3 +96,13 @@ function monsterinsights_about_page() {
 	</div>
 	<?php
 }
+
+/**
+ * Backward compatibility alias for monsterinsights_about_page.
+ *
+ * @return void
+ */
+function monsterinsights_about_page() {
+	heretekanalytics_about_page();
+}
+

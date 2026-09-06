@@ -58,7 +58,7 @@ Upstream commercial analytics distributions artificially cordon vital enterprise
 | **Transient Quota Protection** | ✅ Smart 15-minute caching layer with instant "⚡ Sync Telemetry" |
 | **WordPress Dashboard Widget** | ✅ Executive telemetry summary on wp-admin/index.php |
 | **Google Consent Mode v2** | ✅ EEA compliance helpers in `includes/admin/eea-compliance.php` |
-| **Server-side GA4 Measurement Protocol** | ✅ `MonsterInsights_Measurement_Protocol_V4` |
+| **Server-side GA4 Measurement Protocol** | ✅ `Heretek_Analytics_Measurement_Protocol_V4` (aliased) |
 | **Per-page tracking exclusion** | ✅ Editor sidebar metabox |
 | **Native GitHub release updater** | ✅ Automatic, no license keys |
 | **Settings snapshot export** | ✅ JSON backup from the Tools page |

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-final class MonsterInsights_Auth {
+final class Heretek_Analytics_Auth {
 
 	private $profile = array();
 	private $network = array();
@@ -63,7 +63,16 @@ final class MonsterInsights_Auth {
 		if ( ! empty( $this->profile ) && ! $force ) {
 			return $this->profile;
 		} else {
-			$profile       = get_option( 'monsterinsights_site_profile', array() );
+			$profile = get_option( 'heretekanalytics_site_profile', null );
+			if ( empty( $profile ) || ! is_array( $profile ) ) {
+				$legacy = get_option( 'monsterinsights_site_profile', array() );
+				if ( ! empty( $legacy ) && is_array( $legacy ) ) {
+					update_option( 'heretekanalytics_site_profile', $legacy );
+					$profile = $legacy;
+				} else {
+					$profile = array();
+				}
+			}
 			$this->profile = $profile;
 
 			return $profile;
@@ -74,7 +83,16 @@ final class MonsterInsights_Auth {
 		if ( ! empty( $this->network ) && ! $force ) {
 			return $this->network;
 		} else {
-			$profile       = get_site_option( 'monsterinsights_network_profile', array() );
+			$profile = get_site_option( 'heretekanalytics_network_profile', null );
+			if ( empty( $profile ) || ! is_array( $profile ) ) {
+				$legacy = get_site_option( 'monsterinsights_network_profile', array() );
+				if ( ! empty( $legacy ) && is_array( $legacy ) ) {
+					update_site_option( 'heretekanalytics_network_profile', $legacy );
+					$profile = $legacy;
+				} else {
+					$profile = array();
+				}
+			}
 			$this->network = $profile;
 
 			return $profile;
@@ -86,28 +104,27 @@ final class MonsterInsights_Auth {
 			$data['connection_time'] = time();
 		}
 
+		update_option( 'heretekanalytics_site_profile', $data );
 		update_option( 'monsterinsights_site_profile', $data );
 		$this->profile = $data;
 
-		// If this is the first time, save the date when they connected.
-		$over_time    = get_option( 'monsterinsights_over_time', array() );
+		// Save connected date
+		$over_time    = get_option( 'heretekanalytics_over_time', get_option( 'monsterinsights_over_time', array() ) );
 		$needs_update = false;
-		if ( monsterinsights_is_pro_version() && empty( $over_time['connected_date_pro'] ) ) {
-			$over_time['connected_date_pro'] = time();
-			$needs_update                    = true;
-		}
-		if ( ! monsterinsights_is_pro_version() && empty( $over_time['connected_date_lite'] ) ) {
-			$over_time['connected_date_lite'] = time();
-			$needs_update                     = true;
+		if ( empty( $over_time['connected_date'] ) ) {
+			$over_time['connected_date'] = time();
+			$needs_update                = true;
 		}
 		if ( $needs_update ) {
+			update_option( 'heretekanalytics_over_time', $over_time, false );
 			update_option( 'monsterinsights_over_time', $over_time, false );
 		}
-		monsterinsights_update_option( 'site_notes_import_synced', 0 );
-		monsterinsights_update_option( 'site_notes_export_synced', 0 );
+		heretekanalytics_update_option( 'site_notes_import_synced', 0 );
+		heretekanalytics_update_option( 'site_notes_export_synced', 0 );
 	}
 
 	public function set_network_analytics_profile( $data = array() ) {
+		update_site_option( 'heretekanalytics_network_profile', $data );
 		update_site_option( 'monsterinsights_network_profile', $data );
 		$this->network = $data;
 	}
@@ -123,6 +140,7 @@ final class MonsterInsights_Auth {
 			$this->set_analytics_profile( $newdata );
 		} else {
 			$this->profile = array();
+			delete_option( 'heretekanalytics_site_profile' );
 			delete_option( 'monsterinsights_site_profile' );
 		}
 	}
@@ -138,6 +156,7 @@ final class MonsterInsights_Auth {
 			$this->set_network_analytics_profile( $newdata );
 		} else {
 			$this->network = array();
+			delete_site_option( 'heretekanalytics_network_profile' );
 			delete_site_option( 'monsterinsights_network_profile' );
 		}
 	}
@@ -394,3 +413,5 @@ final class MonsterInsights_Auth {
 		$this->set_analytics_profile( $data );
 	}
 }
+
+class_alias( 'Heretek_Analytics_Auth', 'MonsterInsights_Auth' );

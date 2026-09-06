@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function monsterinsights_is_settings_page() {
+function heretekanalytics_is_settings_page() {
 	$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 
 	global $admin_page_hooks;
@@ -25,23 +25,24 @@ function monsterinsights_is_settings_page() {
 	}
 
 	$settings_page = false;
-	if ( ! empty( $admin_page_hooks['monsterinsights_settings'] ) && $current_screen->id === $admin_page_hooks['monsterinsights_settings'] ) {
+	if ( ( ! empty( $admin_page_hooks['heretekanalytics_settings'] ) && $current_screen->id === $admin_page_hooks['heretekanalytics_settings'] )
+		|| ( ! empty( $admin_page_hooks['monsterinsights_settings'] ) && $current_screen->id === $admin_page_hooks['monsterinsights_settings'] ) ) {
 		$settings_page = true;
 	}
 
-	if ( $current_screen->id === 'toplevel_page_monsterinsights_settings' ) {
+	if ( $current_screen->id === 'toplevel_page_heretekanalytics_settings' || $current_screen->id === 'toplevel_page_monsterinsights_settings' ) {
 		$settings_page = true;
 	}
 
-	if ( $current_screen->id === 'insights_page_monsterinsights_settings' ) {
+	if ( $current_screen->id === 'insights_page_heretekanalytics_settings' || $current_screen->id === 'insights_page_monsterinsights_settings' ) {
 		$settings_page = true;
 	}
 
-	if ( strpos( $current_screen->id, 'monsterinsights_settings' ) !== false ) {
+	if ( strpos( $current_screen->id, 'heretekanalytics_settings' ) !== false || strpos( $current_screen->id, 'monsterinsights_settings' ) !== false ) {
 		$settings_page = true;
 	}
 
-	if ( ! empty( $current_screen->base ) && strpos( $current_screen->base, 'monsterinsights_network' ) !== false ) {
+	if ( ! empty( $current_screen->base ) && ( strpos( $current_screen->base, 'heretekanalytics_network' ) !== false || strpos( $current_screen->base, 'monsterinsights_network' ) !== false ) ) {
 		$settings_page = true;
 	}
 
@@ -49,11 +50,20 @@ function monsterinsights_is_settings_page() {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_is_settings_page.
+ *
+ * @return bool
+ */
+function monsterinsights_is_settings_page() {
+	return heretekanalytics_is_settings_page();
+}
+
+/**
  * Determine if the current page is the Reports page.
  *
  * @return bool
  */
-function monsterinsights_is_reports_page() {
+function heretekanalytics_is_reports_page() {
 	$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 	global $admin_page_hooks;
 
@@ -62,15 +72,16 @@ function monsterinsights_is_reports_page() {
 	}
 
 	$reports_page = false;
-	if ( ! empty( $admin_page_hooks['monsterinsights_reports'] ) && $current_screen->id === $admin_page_hooks['monsterinsights_reports'] ) {
+	if ( ( ! empty( $admin_page_hooks['heretekanalytics_reports'] ) && $current_screen->id === $admin_page_hooks['heretekanalytics_reports'] )
+		|| ( ! empty( $admin_page_hooks['monsterinsights_reports'] ) && $current_screen->id === $admin_page_hooks['monsterinsights_reports'] ) ) {
 		$reports_page = true;
 	}
 
-	if ( 'toplevel_page_monsterinsights_reports' === $current_screen->id ) {
+	if ( 'toplevel_page_heretekanalytics_reports' === $current_screen->id || 'toplevel_page_monsterinsights_reports' === $current_screen->id ) {
 		$reports_page = true;
 	}
 
-	if ( strpos( $current_screen->id, 'monsterinsights_reports' ) !== false ) {
+	if ( strpos( $current_screen->id, 'heretekanalytics_reports' ) !== false || strpos( $current_screen->id, 'monsterinsights_reports' ) !== false ) {
 		$reports_page = true;
 	}
 
@@ -78,21 +89,39 @@ function monsterinsights_is_reports_page() {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_is_reports_page.
+ *
+ * @return bool
+ */
+function monsterinsights_is_reports_page() {
+	return heretekanalytics_is_reports_page();
+}
+
+/**
  * Determine if the current page is any Heretek Analytics admin page.
  *
  * @return bool
  */
-function monsterinsights_is_own_admin_page() {
+function heretekanalytics_is_own_admin_page() {
 	$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 	if ( ! is_object( $current_screen ) || empty( $current_screen->id ) ) {
 		return false;
 	}
 
-	if ( strpos( $current_screen->id, 'monsterinsights' ) !== false || strpos( $current_screen->id, 'heretek' ) !== false ) {
+	if ( strpos( $current_screen->id, 'heretek' ) !== false || strpos( $current_screen->id, 'monsterinsights' ) !== false ) {
 		return true;
 	}
 
 	return false;
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_is_own_admin_page.
+ *
+ * @return bool
+ */
+function monsterinsights_is_own_admin_page() {
+	return heretekanalytics_is_own_admin_page();
 }
 
 /**
@@ -102,12 +131,12 @@ function monsterinsights_is_own_admin_page() {
  * @return void
  */
 function heretek_admin_enqueue_scripts( $hook ) {
-	if ( ! monsterinsights_is_own_admin_page() ) {
+	if ( ! heretekanalytics_is_own_admin_page() ) {
 		return;
 	}
 
-	$ver = MONSTERINSIGHTS_VERSION;
-	$url = MONSTERINSIGHTS_PLUGIN_URL;
+	$ver = HERETEK_ANALYTICS_VERSION;
+	$url = HERETEK_ANALYTICS_PLUGIN_URL;
 
 	// Enqueue ApexCharts CSS & JS
 	wp_enqueue_style( 'heretek-apexcharts', $url . 'assets/css/apexcharts.css', array(), $ver );
@@ -119,7 +148,7 @@ function heretek_admin_enqueue_scripts( $hook ) {
 	// Enqueue Heretek Dashboard controller JS
 	wp_enqueue_script( 'heretek-dashboard', $url . 'assets/js/heretek-dashboard.js', array( 'heretek-apexcharts' ), $ver, true );
 
-	$auth    = MonsterInsights()->auth;
+	$auth    = HeretekAnalytics()->auth;
 	$v4      = $auth->get_manual_v4_id();
 	$prop_id = $auth->get_property_id();
 	$has_sa  = (bool) $auth->get_service_account_json();
@@ -149,13 +178,13 @@ add_action( 'admin_enqueue_scripts', 'heretek_admin_enqueue_scripts', 20 );
  * @access public
  *
  */
-function monsterinsights_remove_conflicting_asset_files() {
+function heretekanalytics_remove_conflicting_asset_files() {
 
 	// Get current screen.
 	$screen = get_current_screen();
 
-	// Bail if we're not on a MonsterInsights screen.
-	if ( empty( $screen->id ) || strpos( $screen->id, 'monsterinsights' ) === false ) {
+	// Bail if we're not on a Heretek Analytics screen.
+	if ( empty( $screen->id ) || ( strpos( $screen->id, 'heretek' ) === false && strpos( $screen->id, 'monsterinsights' ) === false ) ) {
 		return;
 	}
 
@@ -329,8 +358,8 @@ function monsterinsights_remove_conflicting_asset_files() {
 			continue;
 		}
 
-		// If the handle contains monsterinsights in his name.
-		if ( isset( $wp_styles->registered[ $handle ] ) && strpos( $wp_styles->registered[ $handle ]->handle, 'monsterinsights' ) !== false ) {
+		// If the handle contains monsterinsights or heretek in its name.
+		if ( isset( $wp_styles->registered[ $handle ] ) && ( strpos( $wp_styles->registered[ $handle ]->handle, 'monsterinsights' ) !== false || strpos( $wp_styles->registered[ $handle ]->handle, 'heretek' ) !== false ) ) {
 			continue;
 		}
 
@@ -366,8 +395,8 @@ function monsterinsights_remove_conflicting_asset_files() {
 			continue;
 		}
 
-		// If the handle contains monsterinsights in his name.
-		if ( strpos( $wp_scripts->registered[ $handle ]->handle, 'monsterinsights' ) !== false ) {
+		// If the handle contains monsterinsights or heretek in its name.
+		if ( strpos( $wp_scripts->registered[ $handle ]->handle, 'monsterinsights' ) !== false || strpos( $wp_scripts->registered[ $handle ]->handle, 'heretek' ) !== false ) {
 			continue;
 		}
 
@@ -432,19 +461,26 @@ function monsterinsights_remove_conflicting_asset_files() {
 	remove_action( 'admin_footer', 'wpbooklist_delete_story_action_javascript' );
 }
 
-add_action( 'admin_enqueue_scripts', 'monsterinsights_remove_conflicting_asset_files', 9999 );
+add_action( 'admin_enqueue_scripts', 'heretekanalytics_remove_conflicting_asset_files', 9999 );
 
 /**
- * Remove non-MI notices from MI page.
+ * Backward compatibility alias for monsterinsights_remove_conflicting_asset_files.
+ */
+function monsterinsights_remove_conflicting_asset_files() {
+	heretekanalytics_remove_conflicting_asset_files();
+}
+
+/**
+ * Remove non-Heretek notices from Heretek/MI pages.
  *
  * @return null Return early if not on the proper screen.
  * @since 6.0.0
  * @access public
  *
  */
-function hide_non_monsterinsights_warnings() {
-	// Bail if we're not on a MonsterInsights screen.
-	if ( empty( $_REQUEST['page'] ) || strpos( sanitize_text_field( $_REQUEST['page'] ), 'monsterinsights' ) === false ) {
+function heretekanalytics_hide_non_heretek_warnings() {
+	// Bail if we're not on a Heretek Analytics screen.
+	if ( empty( $_REQUEST['page'] ) || ( strpos( sanitize_text_field( $_REQUEST['page'] ), 'heretek' ) === false && strpos( sanitize_text_field( $_REQUEST['page'] ), 'monsterinsights' ) === false ) ) {
 		return;
 	}
 
@@ -456,10 +492,10 @@ function hide_non_monsterinsights_warnings() {
 					unset( $wp_filter['user_admin_notices']->callbacks[ $priority ][ $name ] );
 					continue;
 				}
-				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false ) {
+				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && ( strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false || strpos( strtolower( get_class( $arr['function'][0] ) ), 'heretek' ) !== false ) ) {
 					continue;
 				}
-				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false ) {
+				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false && strpos( $name, 'heretek' ) === false ) {
 					unset( $wp_filter['user_admin_notices']->callbacks[ $priority ][ $name ] );
 				}
 			}
@@ -473,10 +509,10 @@ function hide_non_monsterinsights_warnings() {
 					unset( $wp_filter['admin_notices']->callbacks[ $priority ][ $name ] );
 					continue;
 				}
-				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false ) {
+				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && ( strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false || strpos( strtolower( get_class( $arr['function'][0] ) ), 'heretek' ) !== false ) ) {
 					continue;
 				}
-				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false ) {
+				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false && strpos( $name, 'heretek' ) === false ) {
 					unset( $wp_filter['admin_notices']->callbacks[ $priority ][ $name ] );
 				}
 			}
@@ -490,10 +526,10 @@ function hide_non_monsterinsights_warnings() {
 					unset( $wp_filter['all_admin_notices']->callbacks[ $priority ][ $name ] );
 					continue;
 				}
-				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false ) {
+				if ( ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) && ( strpos( strtolower( get_class( $arr['function'][0] ) ), 'monsterinsights' ) !== false || strpos( strtolower( get_class( $arr['function'][0] ) ), 'heretek' ) !== false ) ) {
 					continue;
 				}
-				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false ) {
+				if ( ! empty( $name ) && strpos( $name, 'monsterinsights' ) === false && strpos( $name, 'heretek' ) === false ) {
 					unset( $wp_filter['all_admin_notices']->callbacks[ $priority ][ $name ] );
 				}
 			}
@@ -501,8 +537,15 @@ function hide_non_monsterinsights_warnings() {
 	}
 }
 
-add_action( 'admin_print_scripts', 'hide_non_monsterinsights_warnings' );
-add_action( 'admin_head', 'hide_non_monsterinsights_warnings', PHP_INT_MAX );
+add_action( 'admin_print_scripts', 'heretekanalytics_hide_non_heretek_warnings' );
+add_action( 'admin_head', 'heretekanalytics_hide_non_heretek_warnings', PHP_INT_MAX );
+
+/**
+ * Backward compatibility alias for hide_non_monsterinsights_warnings.
+ */
+function hide_non_monsterinsights_warnings() {
+	heretekanalytics_hide_non_heretek_warnings();
+}
 
 /**
  * License key to attach to a paid-tier upgrade link, if one should be attached.
@@ -579,11 +622,11 @@ function monsterinsights_ublock_notice() {
 /**
  * Some themes/plugins don't add proper checks and load JS code in all admin pages causing conflicts.
  */
-function monsterinsights_remove_unnecessary_footer_hooks() {
+function heretekanalytics_remove_unnecessary_footer_hooks() {
 
 	$screen = get_current_screen();
-	// Bail if we're not on a MonsterInsights screen.
-	if ( empty( $screen->id ) || strpos( $screen->id, 'monsterinsights' ) === false ) {
+	// Bail if we're not on a Heretek Analytics screen.
+	if ( empty( $screen->id ) || ( strpos( $screen->id, 'heretek' ) === false && strpos( $screen->id, 'monsterinsights' ) === false ) ) {
 		return;
 	}
 
@@ -626,7 +669,14 @@ function monsterinsights_remove_unnecessary_footer_hooks() {
 	remove_action( 'admin_footer', 'wpbooklist_delete_story_action_javascript' );
 }
 
-add_action( 'admin_head', 'monsterinsights_remove_unnecessary_footer_hooks', 15 );
+add_action( 'admin_head', 'heretekanalytics_remove_unnecessary_footer_hooks', 15 );
+
+/**
+ * Backward compatibility alias for monsterinsights_remove_unnecessary_footer_hooks.
+ */
+function monsterinsights_remove_unnecessary_footer_hooks() {
+	heretekanalytics_remove_unnecessary_footer_hooks();
+}
 
 
 /**
@@ -638,22 +688,29 @@ add_action( 'admin_head', 'monsterinsights_remove_unnecessary_footer_hooks', 15 
  *
  * @return string
  */
-function monsterinsights_prevent_version_number_removal( $src ) {
+function heretekanalytics_prevent_version_number_removal( $src ) {
 	// Apply this only to admin-side scripts.
 	if ( ! is_admin() ) {
 		return $src;
 	}
 
 	// Make sure are only changing our scripts and only if the version number is missing.
-	if ( ( false !== strpos( $src, 'monsterinsights' ) || false !== strpos( $src, 'google-analytics-for-wordpress' ) || false !== strpos( $src, 'google-analytics-premium' ) ) && false === strpos( $src, '?ver' ) ) {
-		$src = add_query_arg( 'ver', monsterinsights_get_asset_version(), $src );
+	if ( ( false !== strpos( $src, 'heretek' ) || false !== strpos( $src, 'monsterinsights' ) || false !== strpos( $src, 'google-analytics-for-wordpress' ) || false !== strpos( $src, 'google-analytics-premium' ) ) && false === strpos( $src, '?ver' ) ) {
+		$src = add_query_arg( 'ver', function_exists( 'heretekanalytics_get_asset_version' ) ? heretekanalytics_get_asset_version() : monsterinsights_get_asset_version(), $src );
 	}
 
 	return $src;
 }
 
-add_filter( 'script_loader_src', 'monsterinsights_prevent_version_number_removal', 9999, 1 );
-add_filter( 'style_loader_src', 'monsterinsights_prevent_version_number_removal', 9999, 1 );
+add_filter( 'script_loader_src', 'heretekanalytics_prevent_version_number_removal', 9999, 1 );
+add_filter( 'style_loader_src', 'heretekanalytics_prevent_version_number_removal', 9999, 1 );
+
+/**
+ * Backward compatibility alias for monsterinsights_prevent_version_number_removal.
+ */
+function monsterinsights_prevent_version_number_removal( $src ) {
+	return heretekanalytics_prevent_version_number_removal( $src );
+}
 
 /**
  * Data used for the Vue scripts to display old PHP and WP versions warnings.

@@ -30,6 +30,8 @@
  * ========================================================================= */
 
 :root,
+body.heretekanalytics_page,
+.heretekanalytics_page,
 body.monsterinsights_page,
 .monsterinsights_page,
 #monsterinsights-overview-report-app,
@@ -57,6 +59,11 @@ body.monsterinsights_page,
  * 3. Base Canvas & Void Surfaces
  * ========================================================================= */
 
+body.heretekanalytics_page,
+body.heretekanalytics_page #wpcontent,
+body.heretekanalytics_page #wpbody,
+body.heretekanalytics_page #wpbody-content,
+.heretekanalytics_page,
 body.monsterinsights_page,
 body.monsterinsights_page #wpcontent,
 body.monsterinsights_page #wpbody,
@@ -71,6 +78,18 @@ body.monsterinsights_page #wpbody-content,
 }
 
 /* Headings in Cinzel */
+body.heretekanalytics_page h1,
+body.heretekanalytics_page h2,
+body.heretekanalytics_page h3,
+body.heretekanalytics_page h4,
+body.heretekanalytics_page h5,
+body.heretekanalytics_page h6,
+.heretekanalytics_page h1,
+.heretekanalytics_page h2,
+.heretekanalytics_page h3,
+.heretekanalytics_page h4,
+.heretekanalytics_page h5,
+.heretekanalytics_page h6,
 body.monsterinsights_page h1,
 body.monsterinsights_page h2,
 body.monsterinsights_page h3,
@@ -170,6 +189,7 @@ body.monsterinsights_page h6,
 }
 
 /* Tables & Lists */
+.heretekanalytics_page table,
 .monsterinsights_page table,
 .monsterinsights-report-table,
 .monsterinsights-table {

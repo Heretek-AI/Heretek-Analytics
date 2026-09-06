@@ -70,24 +70,33 @@
 /* =========================================================================
  * 3. Base Reset for Heretek Admin Screens
  * ========================================================================= */
+.heretekanalytics-reporting-page,
 .monsterinsights-reporting-page,
+.heretekanalytics-reporting-page #wpcontent,
 .monsterinsights-reporting-page #wpcontent,
+.heretekanalytics-reporting-page #wpbody,
 .monsterinsights-reporting-page #wpbody,
+.heretekanalytics-reporting-page #wpbody-content,
 .monsterinsights-reporting-page #wpbody-content {
 	background-color: var(--htk-void) !important;
 	color: var(--htk-text-high);
 	font-family: var(--htk-font-sans);
 }
 
+.heretekanalytics-reporting-page #wpcontent,
 .monsterinsights-reporting-page #wpcontent {
 	padding-left: 20px;
 	padding-right: 20px;
 }
 
 /* Hide WP screen meta / update nags on reporting cockpit */
+.heretekanalytics-reporting-page #screen-meta,
 .monsterinsights-reporting-page #screen-meta,
+.heretekanalytics-reporting-page #screen-meta-links,
 .monsterinsights-reporting-page #screen-meta-links,
+.heretekanalytics-reporting-page .update-nag,
 .monsterinsights-reporting-page .update-nag,
+.heretekanalytics-reporting-page .notice:not(.heretek-native-notice),
 .monsterinsights-reporting-page .notice:not(.heretek-native-notice) {
 	display: none !important;
 }

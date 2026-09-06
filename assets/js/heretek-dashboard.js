@@ -304,7 +304,7 @@
 
 	function fallbackToAjaxDashboard(forceRefresh) {
 		const formData = new FormData();
-		formData.append('action', 'monsterinsights_get_dashboard_telemetry');
+		formData.append('action', 'heretekanalytics_get_dashboard_telemetry');
 		formData.append('nonce', config.ajaxNonce);
 		formData.append('start', state.startDate);
 		formData.append('end', state.endDate);
@@ -1027,7 +1027,7 @@
 
 	function fallbackToAjaxRealtime(forceRefresh) {
 		const formData = new FormData();
-		formData.append('action', 'monsterinsights_get_realtime_telemetry');
+		formData.append('action', 'heretekanalytics_get_realtime_telemetry');
 		formData.append('nonce', config.ajaxNonce);
 		if (forceRefresh) formData.append('force_refresh', 'true');
 

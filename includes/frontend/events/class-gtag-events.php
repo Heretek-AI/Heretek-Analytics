@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class MonsterInsights_Gtag_Events {
+class Heretek_Analytics_Gtag_Events {
 
 	/**
 	 * Holds the name of the events type.
@@ -49,31 +49,29 @@ class MonsterInsights_Gtag_Events {
 	/**
 	 * Outputs the Javascript for JS tracking on the page.
 	 *
-	 * @return string
 	 * @since 6.0.0
 	 * @access public
 	 *
+	 * @return null
 	 */
 	public function output_javascript() {
-		// Affiliate Links
-		$inbound_paths = monsterinsights_get_option( 'affiliate_links', array() );
-		if ( ! is_array( $inbound_paths ) ) {
-			$inbound_paths = array();
-		} else {
-			foreach ( $inbound_paths as $index => $pair ) {
-				// if empty pair, unset and continue
-				if ( empty( $pair['path'] ) ) {
-					unset( $inbound_paths[ $index ] );
-					continue;
+		$inbound_paths = array();
+
+		$internal = monsterinsights_get_option( 'internal_elements', array() );
+		if ( ! empty( $internal ) && is_array( $internal ) ) {
+			foreach ( $internal as $internal_element ) {
+				if ( ! empty( $internal_element['url'] ) ) {
+					$inbound_paths[] = esc_js( $internal_element['url'] );
 				}
+			}
+		}
 
-				// if path does not start with a /, start it with that
-				$path                            = ! empty( $pair['path'] ) ? $pair['path'] : 'aff';
-				$inbound_paths[ $index ]['path'] = trim( $path );
-
-				// js escape the link label
-				$label                            = ! empty( $pair['label'] ) ? $pair['label'] : 'aff';
-				$inbound_paths[ $index ]['label'] = esc_js( trim( $label ) );
+		$internal_paths = monsterinsights_get_option( 'internal_paths', array() );
+		if ( ! empty( $internal_paths ) && is_array( $internal_paths ) ) {
+			foreach ( $internal_paths as $internal_path ) {
+				if ( ! empty( $internal_path['path'] ) ) {
+					$inbound_paths[] = esc_js( $internal_path['path'] );
+				}
 			}
 		}
 
@@ -96,11 +94,12 @@ class MonsterInsights_Gtag_Events {
 		$hash_tracking = monsterinsights_get_option( 'hash_tracking', false ) ? 'true' : 'false';
 
 		$suffix = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-		if ( ! file_exists( MONSTERINSIGHTS_PLUGIN_DIR . 'assets/js/frontend-gtag.min.js' ) ) {
+		if ( ! file_exists( HERETEK_ANALYTICS_PLUGIN_DIR . 'assets/js/frontend-gtag.min.js' ) ) {
 			$suffix = '';
 		}
 
-		wp_enqueue_script( 'monsterinsights-frontend-script', plugins_url( 'assets/js/frontend-gtag' . $suffix . '.js', MONSTERINSIGHTS_PLUGIN_FILE ), array(), monsterinsights_get_asset_version(), false );
+		$ver = function_exists( 'heretekanalytics_get_asset_version' ) ? heretekanalytics_get_asset_version() : monsterinsights_get_asset_version();
+		wp_enqueue_script( 'monsterinsights-frontend-script', plugins_url( 'assets/js/frontend-gtag' . $suffix . '.js', HERETEK_ANALYTICS_PLUGIN_FILE ), array(), $ver, false );
 
 		$use_async = apply_filters( 'monsterinsights_frontend_gtag_script_async', true );
 
@@ -108,17 +107,27 @@ class MonsterInsights_Gtag_Events {
 			wp_script_add_data( 'monsterinsights-frontend-script', 'strategy', 'async' );
 		}
 
+		$frontend_data = array(
+			'js_events_tracking'  => 'true',
+			'download_extensions' => $download_extensions, /* Let's get the extensions to track */
+			'inbound_paths'       => $inbound_paths, /* Let's get the internal paths to track */
+			'home_url'            => home_url(), /* Let's get the url to compare for external/internal use */
+			'hash_tracking'       => $hash_tracking, /* Should hash track */
+			'v4_id'               => monsterinsights_get_v4_id_to_output(), /* V4 ID used for tracking */
+		);
+
 		monsterinsights_localize_script(
 			'monsterinsights-frontend-script',
 			'monsterinsights_frontend',
-			array(
-				'js_events_tracking'  => 'true',
-				'download_extensions' => $download_extensions, /* Let's get the extensions to track */
-				'inbound_paths'       => $inbound_paths, /* Let's get the internal paths to track */
-				'home_url'            => home_url(), /* Let's get the url to compare for external/internal use */
-				'hash_tracking'       => $hash_tracking, /* Should hash track */
-				'v4_id'               => monsterinsights_get_v4_id_to_output(), /* V4 ID used for tracking */
-			)
+			$frontend_data
+		);
+
+		monsterinsights_localize_script(
+			'monsterinsights-frontend-script',
+			'heretekanalytics_frontend',
+			$frontend_data
 		);
 	}
 }
+
+class_alias( 'Heretek_Analytics_Gtag_Events', 'MonsterInsights_Gtag_Events' );

@@ -4,25 +4,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
+if ( ! class_exists( 'Heretek_Analytics_Compatibility_Check' ) && ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 	/**
 	 * Check PHP and WP compatibility
 	 *
 	 * @since 8.0.0
 	 */
-	class MonsterInsights_Compatibility_Check {
+	class Heretek_Analytics_Compatibility_Check {
 		/**
 		 * Holds singleton instance
 		 *
 		 * @since 8.0.0
-		 * @var MonsterInsights_Compatibility_Check
+		 * @var Heretek_Analytics_Compatibility_Check
 		 */
 		private static $instance;
 
 		/**
 		 * Return Singleton instance
 		 *
-		 * @return MonsterInsights_Compatibility_Check
+		 * @return Heretek_Analytics_Compatibility_Check
 		 * @since 8.0.0
 		 */
 		public static function get_instance() {
@@ -71,9 +71,17 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		private function __construct() {
+			add_filter( 'heretekanalytics_compatible_php_version', array(
+				$this,
+				'filter_compatible_php_version'
+			), 10, 1 );
 			add_filter( 'monsterinsights_compatible_php_version', array(
 				$this,
 				'filter_compatible_php_version'
+			), 10, 1 );
+			add_filter( 'heretekanalytics_compatible_wp_version', array(
+				$this,
+				'filter_compatible_wp_version'
 			), 10, 1 );
 			add_filter( 'monsterinsights_compatible_wp_version', array(
 				$this,
@@ -150,7 +158,7 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		public function get_compatible_php_version() {
-			return apply_filters( 'monsterinsights_compatible_php_version', $this->compatible_php_version );
+			return apply_filters( 'heretekanalytics_compatible_php_version', apply_filters( 'monsterinsights_compatible_php_version', $this->compatible_php_version ) );
 		}
 
 		/**
@@ -178,7 +186,7 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		public function get_compatible_wp_version() {
-			return apply_filters( 'monsterinsights_compatible_wp_version', $this->compatible_wp_version );
+			return apply_filters( 'heretekanalytics_compatible_wp_version', apply_filters( 'monsterinsights_compatible_wp_version', $this->compatible_wp_version ) );
 		}
 
 		/**
@@ -201,7 +209,7 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		private function is_notice_already_active() {
-			return defined( 'MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE' ) && MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE;
+			return ( defined( 'HERETEK_ANALYTICS_VERSION_NOTICE_ACTIVE' ) && HERETEK_ANALYTICS_VERSION_NOTICE_ACTIVE ) || ( defined( 'MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE' ) && MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE );
 		}
 
 		/**
@@ -212,6 +220,9 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		private function set_notice_active() {
+			if ( ! defined( 'HERETEK_ANALYTICS_VERSION_NOTICE_ACTIVE' ) ) {
+				define( 'HERETEK_ANALYTICS_VERSION_NOTICE_ACTIVE', true );
+			}
 			if ( ! defined( 'MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE' ) ) {
 				define( 'MONSTERINSIGHTS_VERSION_NOTICE_ACTIVE', true );
 			}
@@ -226,7 +237,7 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		public function maybe_display_notice() {
-			if ( defined( 'MONSTERINSIGHTS_FORCE_ACTIVATION' ) && MONSTERINSIGHTS_FORCE_ACTIVATION ) {
+			if ( ( defined( 'HERETEK_ANALYTICS_FORCE_ACTIVATION' ) && HERETEK_ANALYTICS_FORCE_ACTIVATION ) || ( defined( 'MONSTERINSIGHTS_FORCE_ACTIVATION' ) && MONSTERINSIGHTS_FORCE_ACTIVATION ) ) {
 				return;
 			}
 
@@ -252,7 +263,7 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		public function maybe_deactivate_plugin( $plugin ) {
-			if ( defined( 'MONSTERINSIGHTS_FORCE_ACTIVATION' ) && MONSTERINSIGHTS_FORCE_ACTIVATION ) {
+			if ( ( defined( 'HERETEK_ANALYTICS_FORCE_ACTIVATION' ) && HERETEK_ANALYTICS_FORCE_ACTIVATION ) || ( defined( 'MONSTERINSIGHTS_FORCE_ACTIVATION' ) && MONSTERINSIGHTS_FORCE_ACTIVATION ) ) {
 				return;
 			}
 
@@ -334,7 +345,9 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 		 * @since 8.0.0
 		 */
 		public function display_wp_notice() {
-			$url = monsterinsights_get_url( 'notice', 'wrong-wp-version', 'https://www.wpbeginner.com/beginners-guide/ultimate-guide-to-upgrade-wordpress-for-beginners-infograph/' );
+			$url = function_exists( 'heretekanalytics_get_url' )
+				? heretekanalytics_get_url( 'notice', 'wrong-wp-version', 'https://www.wpbeginner.com/beginners-guide/ultimate-guide-to-upgrade-wordpress-for-beginners-infograph/' )
+				: monsterinsights_get_url( 'notice', 'wrong-wp-version', 'https://www.wpbeginner.com/beginners-guide/ultimate-guide-to-upgrade-wordpress-for-beginners-infograph/' );
 
 			$compatible_wp_version = $this->get_compatible_wp_version();
 			if ( empty( $compatible_wp_version['required'] ) ) {
@@ -360,5 +373,9 @@ if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
 			</div>
 			<?php
 		}
+	}
+
+	if ( ! class_exists( 'MonsterInsights_Compatibility_Check' ) ) {
+		class_alias( 'Heretek_Analytics_Compatibility_Check', 'MonsterInsights_Compatibility_Check' );
 	}
 }

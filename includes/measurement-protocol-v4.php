@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class MonsterInsights_Measurement_Protocol_V4 {
+class Heretek_Analytics_Measurement_Protocol_V4 {
 	private static $instance;
 
 	public static function get_instance() {
@@ -22,8 +22,8 @@ class MonsterInsights_Measurement_Protocol_V4 {
 	private $schema;
 
 	private function __construct() {
-		$this->is_debug       = monsterinsights_is_debug_mode();
-		$this->measurement_id = monsterinsights_get_v4_id_to_output();
+		$this->is_debug       = function_exists( 'heretekanalytics_is_debug_mode' ) ? heretekanalytics_is_debug_mode() : monsterinsights_is_debug_mode();
+		$this->measurement_id = function_exists( 'heretekanalytics_get_v4_id_to_output' ) ? heretekanalytics_get_v4_id_to_output() : monsterinsights_get_v4_id_to_output();
 
 		$this->schema = array(
 			'currency'       => 'string',
@@ -59,13 +59,14 @@ class MonsterInsights_Measurement_Protocol_V4 {
 	}
 
 	private function get_url() {
+		$auth = function_exists( 'HeretekAnalytics' ) ? HeretekAnalytics()->auth : MonsterInsights()->auth;
 		$api_secret = is_multisite() && is_network_admin()
-			? MonsterInsights()->auth->get_network_measurement_protocol_secret()
-			: MonsterInsights()->auth->get_measurement_protocol_secret();
+			? $auth->get_network_measurement_protocol_secret()
+			: $auth->get_measurement_protocol_secret();
 
 		return add_query_arg(
 			array(
-				'api_secret'     => apply_filters('monsterinsights_get_mp_call_secret', $api_secret),
+				'api_secret'     => apply_filters( 'heretekanalytics_get_mp_call_secret', apply_filters( 'monsterinsights_get_mp_call_secret', $api_secret ) ),
 				'measurement_id' => $this->measurement_id,
 			),
 			$this->get_base_url()
@@ -82,7 +83,7 @@ class MonsterInsights_Measurement_Protocol_V4 {
 			$payment_id = $args['payment_id'];
 		}
 
-		return monsterinsights_get_client_id( $payment_id );
+		return function_exists( 'heretekanalytics_get_client_id' ) ? heretekanalytics_get_client_id( $payment_id ) : monsterinsights_get_client_id( $payment_id );
 	}
 
 	private function sanitize_event( $params, $schema ) {
@@ -146,7 +147,8 @@ class MonsterInsights_Measurement_Protocol_V4 {
 			}
 		}
 
-		if ( ! empty( $args['user_id'] ) && monsterinsights_get_option( 'userid', false ) ) {
+		$userid_opt = function_exists( 'heretekanalytics_get_option' ) ? heretekanalytics_get_option( 'userid', false ) : monsterinsights_get_option( 'userid', false );
+		if ( ! empty( $args['user_id'] ) && $userid_opt ) {
 			$out['user_id'] = (string) $args['user_id'];
 		}
 
@@ -169,7 +171,9 @@ class MonsterInsights_Measurement_Protocol_V4 {
 			return;
 		}
 
-		$session_id = monsterinsights_get_browser_session_id( $this->measurement_id );
+		$session_id = function_exists( 'heretekanalytics_get_browser_session_id' )
+			? heretekanalytics_get_browser_session_id( $this->measurement_id )
+			: monsterinsights_get_browser_session_id( $this->measurement_id );
 
 		$defaults = array(
 			'client_id' => $this->get_client_id( $args ),
@@ -193,7 +197,7 @@ class MonsterInsights_Measurement_Protocol_V4 {
 			}
 		}
 
-		$body = apply_filters( 'monsterinsights_mp_v4_api_call', $body );
+		$body = apply_filters( 'heretekanalytics_mp_v4_api_call', apply_filters( 'monsterinsights_mp_v4_api_call', $body ) );
 
 		return wp_remote_post(
 			$this->get_url(),
@@ -217,6 +221,14 @@ class MonsterInsights_Measurement_Protocol_V4 {
 	}
 }
 
+if ( ! class_exists( 'MonsterInsights_Measurement_Protocol_V4' ) ) {
+	class_alias( 'Heretek_Analytics_Measurement_Protocol_V4', 'MonsterInsights_Measurement_Protocol_V4' );
+}
+
+function heretekanalytics_mp_collect_v4( $args ) {
+	return Heretek_Analytics_Measurement_Protocol_V4::get_instance()->collect( $args );
+}
+
 function monsterinsights_mp_collect_v4( $args ) {
-	return MonsterInsights_Measurement_Protocol_V4::get_instance()->collect( $args );
+	return heretekanalytics_mp_collect_v4( $args );
 }

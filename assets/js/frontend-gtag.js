@@ -10,6 +10,9 @@
  *
  * @since 7.15.0
  */
+window.monsterinsights_frontend = window.monsterinsights_frontend || window.heretekanalytics_frontend || {};
+window.heretekanalytics_frontend = window.monsterinsights_frontend;
+
 var MonsterInsights = function () {
   /* MonsterInsights JS  events tracking works on all major browsers, including IE starting at IE 7, via polyfills for any major JS function used that
      is not supported by at least  95% of the global and/or US browser marketshare. Currently, IE 7 & 8 which as of 2/14/17 have under 0.25% global marketshare, require
@@ -820,3 +823,7 @@ var MonsterInsights = function () {
   }
 };
 var MonsterInsightsObject = new MonsterInsights();
+var HeretekAnalyticsObject = MonsterInsightsObject;
+window.HeretekAnalyticsObject = HeretekAnalyticsObject;
+window.MonsterInsightsObject = MonsterInsightsObject;
+

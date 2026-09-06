@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function monsterinsights_addons_page() {
+function heretekanalytics_addons_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'Permission denied.', 'google-analytics-for-wordpress' ) );
 	}
@@ -43,9 +43,9 @@ function monsterinsights_addons_page() {
 			</p>
 			<p>
 				<?php esc_html_e( 'Configure the plugin from the', 'google-analytics-for-wordpress' ); ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_settings' ) ); ?>"><?php esc_html_e( 'Settings page', 'google-analytics-for-wordpress' ); ?></a>,
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_settings' ) ); ?>"><?php esc_html_e( 'Settings page', 'google-analytics-for-wordpress' ); ?></a>,
 				<?php esc_html_e( 'or export your configuration from the', 'google-analytics-for-wordpress' ); ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_tools' ) ); ?>"><?php esc_html_e( 'Tools page', 'google-analytics-for-wordpress' ); ?></a>.
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=heretekanalytics_tools' ) ); ?>"><?php esc_html_e( 'Tools page', 'google-analytics-for-wordpress' ); ?></a>.
 			</p>
 		</div>
 	</div>
@@ -53,10 +53,28 @@ function monsterinsights_addons_page() {
 }
 
 /**
+ * Backward compatibility alias for monsterinsights_addons_page.
+ *
+ * @return void
+ */
+function monsterinsights_addons_page() {
+	heretekanalytics_addons_page();
+}
+
+/**
  * Compatibility shim.
  *
  * @return bool Always false; Heretek Analytics has no add-ons.
  */
-function monsterinsights_get_addons() {
+function heretekanalytics_get_addons() {
 	return false;
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_get_addons.
+ *
+ * @return bool Always false.
+ */
+function monsterinsights_get_addons() {
+	return heretekanalytics_get_addons();
 }

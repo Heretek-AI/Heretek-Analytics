@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 6.0.0
  * @access public
  */
-class MonsterInsights_Install {
+class Heretek_Analytics_Install {
 
 	/**
 	 * MI Settings.
@@ -888,4 +888,8 @@ class MonsterInsights_Install {
 		delete_transient( 'monsterinsights_google_ads_access_token_data' );
 		delete_site_transient( 'monsterinsights_google_ads_access_token_data' );
 	}
+}
+
+if ( ! class_exists( 'MonsterInsights_Install' ) ) {
+	class_alias( 'Heretek_Analytics_Install', 'MonsterInsights_Install' );
 }

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-final class MonsterInsights_Notice_Admin {
+final class Heretek_Analytics_Notice_Admin {
 
 	/**
 	 * Holds all dismissed notices
@@ -36,8 +36,11 @@ final class MonsterInsights_Notice_Admin {
 	 */
 	public function __construct() {
 
-		// Populate $notices
-		$this->notices = get_option( 'monsterinsights_notices' );
+		// Populate $notices - prefer heretekanalytics_notices with fallback
+		$this->notices = get_option( 'heretekanalytics_notices', null );
+		if ( null === $this->notices ) {
+			$this->notices = get_option( 'monsterinsights_notices', array() );
+		}
 		if ( ! is_array( $this->notices ) ) {
 			$this->notices = array();
 		}
@@ -86,6 +89,7 @@ final class MonsterInsights_Notice_Admin {
 		}
 
 		$this->notices[ $notice ] = true;
+		update_option( 'heretekanalytics_notices', $this->notices );
 		update_option( 'monsterinsights_notices', $this->notices );
 
 	}
@@ -105,6 +109,7 @@ final class MonsterInsights_Notice_Admin {
 	public function undismiss( $notice ) {
 		$notice = sanitize_key( $notice );
 		unset( $this->notices[ $notice ] );
+		update_option( 'heretekanalytics_notices', $this->notices );
 		update_option( 'monsterinsights_notices', $this->notices );
 
 	}
@@ -157,18 +162,18 @@ final class MonsterInsights_Notice_Admin {
 		ob_start();
 		?>
 		<div
-			class="monsterinsights-notice <?php echo 'monsterinsights-' . esc_attr( $type ) . '-notice' . esc_attr($dismissible); ?>"
+			class="heretekanalytics-notice monsterinsights-notice <?php echo 'heretekanalytics-' . esc_attr( $type ) . '-notice monsterinsights-' . esc_attr( $type ) . '-notice' . esc_attr($dismissible); ?>"
 			data-notice="<?php echo esc_attr( $name ); ?>">
 			<div
-				class="monsterinsights-notice-icon <?php echo 'monsterinsights-' . esc_attr( $type ) . '-notice-icon' ?>">
+				class="heretekanalytics-notice-icon monsterinsights-notice-icon <?php echo 'heretekanalytics-' . esc_attr( $type ) . '-notice-icon monsterinsights-' . esc_attr( $type ) . '-notice-icon' ?>">
 			</div>
 			<div
-				class="monsterinsights-notice-text <?php echo 'monsterinsights-' . esc_attr( $type ) . '-notice-text' ?>">
+				class="heretekanalytics-notice-text monsterinsights-notice-text <?php echo 'heretekanalytics-' . esc_attr( $type ) . '-notice-text monsterinsights-' . esc_attr( $type ) . '-notice-text' ?>">
 				<?php
 				// Title
 				if ( ! empty ( $title ) ) {
 					?>
-					<p class="monsterinsights-notice-title"><?php echo esc_html( $title ); ?></p>
+					<p class="heretekanalytics-notice-title monsterinsights-notice-title"><?php echo esc_html( $title ); ?></p>
 					<?php
 				}
 
@@ -176,11 +181,11 @@ final class MonsterInsights_Notice_Admin {
 				if ( ! empty( $message ) ) {
 					if ( empty( $args['skip_message_escape'] ) ) {
 						?>
-						<p class="monsterinsights-notice-message"><?php echo esc_html( $message ); ?></p>
+						<p class="heretekanalytics-notice-message monsterinsights-notice-message"><?php echo esc_html( $message ); ?></p>
 						<?php
 					} else {
 						?>
-						<p class="monsterinsights-notice-message"><?php echo $message; // phpcs:ignore ?></p>
+						<p class="heretekanalytics-notice-message monsterinsights-notice-message"><?php echo $message; // phpcs:ignore ?></p>
 						<?php
 					}
 				}
@@ -256,3 +261,6 @@ final class MonsterInsights_Notice_Admin {
 		return ob_get_clean();
 	}
 }
+
+class_alias( 'Heretek_Analytics_Notice_Admin', 'MonsterInsights_Notice_Admin' );
+

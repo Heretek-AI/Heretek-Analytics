@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register the Heretek Analytics dashboard widget.
  */
 function heretek_register_dashboard_widget() {
-	if ( ! current_user_can( 'monsterinsights_view_dashboard' ) ) {
+	if ( ! current_user_can( 'heretekanalytics_view_dashboard' ) ) {
 		return;
 	}
 
@@ -32,13 +32,13 @@ add_action( 'wp_dashboard_setup', 'heretek_register_dashboard_widget' );
  * Render the dashboard widget markup.
  */
 function heretek_render_dashboard_widget() {
-	$auth    = MonsterInsights()->auth;
+	$auth    = HeretekAnalytics()->auth;
 	$v4      = $auth->get_manual_v4_id();
 	$prop_id = $auth->get_property_id();
 	$has_sa  = (bool) $auth->get_service_account_json();
 
-	$reports_url  = admin_url( 'admin.php?page=monsterinsights_reports' );
-	$settings_url = admin_url( 'admin.php?page=monsterinsights_settings' );
+	$reports_url  = admin_url( 'admin.php?page=heretekanalytics_reports' );
+	$settings_url = admin_url( 'admin.php?page=heretekanalytics_settings' );
 
 	if ( empty( $v4 ) || empty( $prop_id ) || ! $has_sa ) {
 		?>
@@ -58,7 +58,7 @@ function heretek_render_dashboard_widget() {
 	}
 
 	if ( ! class_exists( 'Heretek_Rest_Reporting_Gateway' ) ) {
-		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
+		require_once HERETEK_ANALYTICS_PLUGIN_DIR . 'includes/api/class-heretek-rest-reporting-gateway.php';
 	}
 	$gateway = new Heretek_Rest_Reporting_Gateway();
 

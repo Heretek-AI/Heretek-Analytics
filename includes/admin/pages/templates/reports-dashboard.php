@@ -51,7 +51,7 @@ $fmt_delta = static function ( $d ) {
 	return ( $d > 0 ? '+' : '' ) . number_format( $d, 1 ) . '%';
 };
 
-$icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
+$icon_url = HERETEK_ANALYTICS_PLUGIN_URL . 'assets/images/icon-sm.png';
 ?>
 
 <div class="htk-cockpit">
@@ -63,7 +63,7 @@ $icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 			<div class="htk-header-title">
 				<h1>
 					<?php esc_html_e( 'Augur Telemetry Cockpit', 'google-analytics-for-wordpress' ); ?>
-					<span class="htk-badge-ver"><?php echo esc_html( MONSTERINSIGHTS_VERSION ); ?></span>
+					<span class="htk-badge-ver"><?php echo esc_html( HERETEK_ANALYTICS_VERSION ); ?></span>
 				</h1>
 				<div class="htk-header-telemetry-meta">
 					<?php if ( ! empty( $v4 ) && ! empty( $prop_id ) && $has_sa ) : ?>

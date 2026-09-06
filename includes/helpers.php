@@ -67,7 +67,7 @@ function monsterinsights_is_page_reload() {
 }
 
 
-function monsterinsights_track_user( $user_id = - 1 ) {
+function heretekanalytics_track_user( $user_id = - 1 ) {
 	if ( $user_id === - 1 ) {
 		$user = wp_get_current_user();
 	} else {
@@ -75,7 +75,7 @@ function monsterinsights_track_user( $user_id = - 1 ) {
 	}
 
 	$track_user = true;
-	$roles      = monsterinsights_get_option( 'ignore_users', array() );
+	$roles      = function_exists( 'heretekanalytics_get_option' ) ? heretekanalytics_get_option( 'ignore_users', array() ) : monsterinsights_get_option( 'ignore_users', array() );
 
 	if ( ! empty( $roles ) && is_array( $roles ) ) {
 		foreach ( $roles as $role ) {
@@ -88,18 +88,25 @@ function monsterinsights_track_user( $user_id = - 1 ) {
 		}
 	}
 
-	$track_super_admin = apply_filters( 'monsterinsights_track_super_admins', false );
+	$track_super_admin = apply_filters( 'heretekanalytics_track_super_admins', apply_filters( 'monsterinsights_track_super_admins', false ) );
 	if ( $user_id === - 1 && $track_super_admin === false && is_multisite() && is_super_admin() ) {
 		$track_user = false;
 	}
 
 	// or if tracking code is not entered
-	$tracking_id = monsterinsights_get_v4_id();
+	$tracking_id = function_exists( 'heretekanalytics_get_v4_id' ) ? heretekanalytics_get_v4_id() : monsterinsights_get_v4_id();
 	if ( empty( $tracking_id ) ) {
 		$track_user = false;
 	}
 
-	return apply_filters( 'monsterinsights_track_user', $track_user, $user );
+	return apply_filters( 'heretekanalytics_track_user', apply_filters( 'monsterinsights_track_user', $track_user, $user ), $user );
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_track_user.
+ */
+function monsterinsights_track_user( $user_id = - 1 ) {
+	return heretekanalytics_track_user( $user_id );
 }
 
 /**
@@ -107,15 +114,36 @@ function monsterinsights_track_user( $user_id = - 1 ) {
  *
  * @return bool
  */
-function monsterinsights_skip_tracking() {
-	return (bool) apply_filters( 'monsterinsights_skip_tracking', false );
+function heretekanalytics_skip_tracking() {
+	if ( is_singular() ) {
+		$post_id = get_the_ID();
+		if ( $post_id ) {
+			$skipped = get_post_meta( $post_id, '_heretekanalytics_skip_tracking', true );
+			if ( '' === $skipped ) {
+				$skipped = get_post_meta( $post_id, '_monsterinsights_skip_tracking', true );
+			}
+			if ( $skipped ) {
+				return true;
+			}
+		}
+	}
+	return (bool) apply_filters( 'heretekanalytics_skip_tracking', apply_filters( 'monsterinsights_skip_tracking', false ) );
 }
 
-function monsterinsights_get_client_id( $payment_id = false ) {
+/**
+ * Backward compatibility alias for monsterinsights_skip_tracking.
+ *
+ * @return bool
+ */
+function monsterinsights_skip_tracking() {
+	return heretekanalytics_skip_tracking();
+}
+
+function heretekanalytics_get_client_id( $payment_id = false ) {
 	if ( is_object( $payment_id ) ) {
 		$payment_id = $payment_id->ID;
 	}
-	$user_cid  = monsterinsights_get_uuid();
+	$user_cid  = heretekanalytics_get_uuid();
 	$saved_cid = ! empty( $payment_id ) ? get_post_meta( $payment_id, '_yoast_gau_uuid', true ) : false;
 
 	if ( ! empty( $payment_id ) && ! empty( $saved_cid ) ) {
@@ -123,8 +151,12 @@ function monsterinsights_get_client_id( $payment_id = false ) {
 	} elseif ( ! empty( $user_cid ) ) {
 		return $user_cid;
 	} else {
-		return monsterinsights_generate_uuid();
+		return heretekanalytics_generate_uuid();
 	}
+}
+
+function monsterinsights_get_client_id( $payment_id = false ) {
+	return heretekanalytics_get_client_id( $payment_id );
 }
 
 /**
@@ -135,7 +167,7 @@ function monsterinsights_get_client_id( $payment_id = false ) {
  *
  * @since 6.0.0
  */
-function monsterinsights_get_uuid() {
+function heretekanalytics_get_uuid() {
 	if ( empty( $_COOKIE['_ga'] ) ) {
 		return false;
 	}
@@ -167,6 +199,10 @@ function monsterinsights_get_uuid() {
 	}
 }
 
+function monsterinsights_get_uuid() {
+	return heretekanalytics_get_uuid();
+}
+
 /**
  * Gets GA Session Id (GA4 only) from cookies.
  *
@@ -176,7 +212,7 @@ function monsterinsights_get_uuid() {
  * @return string|null
  *   Returns GA4 Session Id or NULL if cookie wasn't found.
  */
-function monsterinsights_get_browser_session_id( $measurement_id ) {
+function heretekanalytics_get_browser_session_id( $measurement_id ) {
 	if ( ! is_string( $measurement_id ) ) {
 		return null;
 	}
@@ -209,6 +245,10 @@ function monsterinsights_get_browser_session_id( $measurement_id ) {
 	return $parts[2];
 }
 
+function monsterinsights_get_browser_session_id( $measurement_id ) {
+	return heretekanalytics_get_browser_session_id( $measurement_id );
+}
+
 /**
  * Generate UUID v4 function - needed to generate a CID when one isn't available
  *
@@ -217,7 +257,7 @@ function monsterinsights_get_browser_session_id( $measurement_id ) {
  * @since 6.1.8
  * @return string
  */
-function monsterinsights_generate_uuid() {
+function heretekanalytics_generate_uuid() {
 
 	return sprintf(
 		'%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -238,6 +278,10 @@ function monsterinsights_generate_uuid() {
 		wp_rand( 0, 0xffff ),
 		wp_rand( 0, 0xffff )
 	);
+}
+
+function monsterinsights_generate_uuid() {
+	return heretekanalytics_generate_uuid();
 }
 
 /**
@@ -1248,21 +1292,35 @@ function monsterinsights_is_wp_seo_active() {
 	return $wp_seo_active;
 }
 
-function monsterinsights_get_asset_version() {
-	if ( monsterinsights_is_debug_mode() || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+function heretekanalytics_get_asset_version() {
+	if ( heretekanalytics_is_debug_mode() || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
 		return time();
 	} else {
-		return MONSTERINSIGHTS_VERSION;
+		return defined( 'HERETEK_ANALYTICS_VERSION' ) ? HERETEK_ANALYTICS_VERSION : ( defined( 'MONSTERINSIGHTS_VERSION' ) ? MONSTERINSIGHTS_VERSION : '1.0.0' );
 	}
 }
 
-function monsterinsights_is_debug_mode() {
+/**
+ * Backward compatibility alias for monsterinsights_get_asset_version.
+ */
+function monsterinsights_get_asset_version() {
+	return heretekanalytics_get_asset_version();
+}
+
+function heretekanalytics_is_debug_mode() {
 	$debug_mode = false;
-	if ( defined( 'MONSTERINSIGHTS_DEBUG_MODE' ) && MONSTERINSIGHTS_DEBUG_MODE ) {
+	if ( ( defined( 'HERETEK_ANALYTICS_DEBUG_MODE' ) && HERETEK_ANALYTICS_DEBUG_MODE ) || ( defined( 'MONSTERINSIGHTS_DEBUG_MODE' ) && MONSTERINSIGHTS_DEBUG_MODE ) ) {
 		$debug_mode = true;
 	}
 
-	return apply_filters( 'monsterinsights_is_debug_mode', $debug_mode );
+	return apply_filters( 'heretekanalytics_is_debug_mode', apply_filters( 'monsterinsights_is_debug_mode', $debug_mode ) );
+}
+
+/**
+ * Backward compatibility alias for monsterinsights_is_debug_mode.
+ */
+function monsterinsights_is_debug_mode() {
+	return heretekanalytics_is_debug_mode();
 }
 
 function monsterinsights_is_network_active() {
