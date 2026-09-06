@@ -138,35 +138,35 @@ function heretek_admin_enqueue_scripts( $hook ) {
 	$ver = HERETEK_ANALYTICS_VERSION;
 	$url = HERETEK_ANALYTICS_PLUGIN_URL;
 
-	// Enqueue ApexCharts CSS & JS
+	// Enqueue ApexCharts CSS and Heretek Admin theme CSS on all Heretek screens
 	wp_enqueue_style( 'heretek-apexcharts', $url . 'assets/css/apexcharts.css', array(), $ver );
-	wp_enqueue_script( 'heretek-apexcharts', $url . 'assets/js/apexcharts.min.js', array(), $ver, true );
-
-	// Enqueue Heretek Admin theme CSS
 	wp_enqueue_style( 'heretek-admin-theme', $url . 'assets/css/heretek-admin.css', array( 'heretek-apexcharts' ), $ver );
 
-	// Enqueue Heretek Dashboard controller JS
-	wp_enqueue_script( 'heretek-dashboard', $url . 'assets/js/heretek-dashboard.js', array( 'heretek-apexcharts' ), $ver, true );
+	// Enqueue Interactive Telemetry Cockpit scripts ONLY on Reports screens
+	if ( heretekanalytics_is_reports_page() ) {
+		wp_enqueue_script( 'heretek-apexcharts', $url . 'assets/js/apexcharts.min.js', array(), $ver, true );
+		wp_enqueue_script( 'heretek-dashboard', $url . 'assets/js/heretek-dashboard.js', array( 'heretek-apexcharts' ), $ver, true );
 
-	$auth    = HeretekAnalytics()->auth;
-	$v4      = $auth->get_manual_v4_id();
-	$prop_id = $auth->get_property_id();
-	$has_sa  = (bool) $auth->get_service_account_json();
+		$auth    = HeretekAnalytics()->auth;
+		$v4      = $auth->get_manual_v4_id();
+		$prop_id = $auth->get_property_id();
+		$has_sa  = (bool) $auth->get_service_account_json();
 
-	wp_localize_script(
-		'heretek-dashboard',
-		'HeretekConfig',
-		array(
-			'restUrl'       => esc_url_raw( rest_url( 'heretek-analytics/v1/reporting/' ) ),
-			'restNonce'     => wp_create_nonce( 'wp_rest' ),
-			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce'     => wp_create_nonce( 'heretek_dashboard_nonce' ),
-			'isConfigured'  => ! empty( $v4 ) && ! empty( $prop_id ) && $has_sa,
-			'propertyId'    => $prop_id,
-			'measurementId' => $v4,
-			'initialData'   => null,
-		)
-	);
+		wp_localize_script(
+			'heretek-dashboard',
+			'HeretekConfig',
+			array(
+				'restUrl'       => esc_url_raw( rest_url( 'heretek-analytics/v1/reporting/' ) ),
+				'restNonce'     => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+				'ajaxNonce'     => wp_create_nonce( 'heretek_dashboard_nonce' ),
+				'isConfigured'  => ! empty( $v4 ) && ! empty( $prop_id ) && $has_sa,
+				'propertyId'    => $prop_id,
+				'measurementId' => $v4,
+				'initialData'   => null,
+			)
+		);
+	}
 }
 add_action( 'admin_enqueue_scripts', 'heretek_admin_enqueue_scripts', 20 );
 

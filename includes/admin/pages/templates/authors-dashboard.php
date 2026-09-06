@@ -251,8 +251,13 @@ $active_title = isset( $tax_labels[ $current_taxonomy ] ) ? $tax_labels[ $curren
 										$avatar  = '';
 									}
 								} else {
-									$display = $raw_d;
-									$sub     = sprintf( __( '%s term', 'google-analytics-for-wordpress' ), $active_title );
+									if ( '' === $raw_d || '(not set)' === $raw_d ) {
+										$display = __( '(not set)', 'google-analytics-for-wordpress' );
+										$sub     = sprintf( __( '%s was uncaptured on these sessions.', 'google-analytics-for-wordpress' ), $active_title );
+									} else {
+										$display = $raw_d;
+										$sub     = sprintf( __( '%s term', 'google-analytics-for-wordpress' ), $active_title );
+									}
 									$edit    = '';
 									$avatar  = '';
 								}

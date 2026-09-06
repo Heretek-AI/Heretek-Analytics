@@ -103,6 +103,11 @@
 	});
 
 	function initDashboard() {
+		// Only initialize on pages that include the interactive reports dashboard container
+		if (!document.getElementById('htk-main-chart')) {
+			return;
+		}
+
 		bindEvents();
 
 		// Determine initial dates
@@ -192,13 +197,15 @@
 			});
 		}
 
-		// Nav Tabs
-		const tabLinks = document.querySelectorAll('.htk-nav-tab');
+		// Nav Tabs (Reports cockpit tab panes with data-tab only)
+		const tabLinks = document.querySelectorAll('.htk-nav-tab[data-tab]');
 		tabLinks.forEach(function (tab) {
 			tab.addEventListener('click', function (e) {
-				e.preventDefault();
 				const target = this.getAttribute('data-tab');
-				switchTab(target);
+				if (target) {
+					e.preventDefault();
+					switchTab(target);
+				}
 			});
 		});
 
@@ -241,7 +248,7 @@
 	function switchTab(tabId) {
 		state.activeTab = tabId;
 
-		document.querySelectorAll('.htk-nav-tab').forEach(function (t) {
+		document.querySelectorAll('.htk-nav-tab[data-tab]').forEach(function (t) {
 			t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
 		});
 
