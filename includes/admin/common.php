@@ -78,21 +78,68 @@ function monsterinsights_is_reports_page() {
 }
 
 /**
- * Determine if the current page is any of the MI admin page.
+ * Determine if the current page is any Heretek Analytics admin page.
  *
  * @return bool
  */
 function monsterinsights_is_own_admin_page() {
-	if ( monsterinsights_is_reports_page() ) {
-		return true;
+	$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
+	if ( ! is_object( $current_screen ) || empty( $current_screen->id ) ) {
+		return false;
 	}
 
-	if ( monsterinsights_is_settings_page() ) {
+	if ( strpos( $current_screen->id, 'monsterinsights' ) !== false || strpos( $current_screen->id, 'heretek' ) !== false ) {
 		return true;
 	}
 
 	return false;
 }
+
+/**
+ * Enqueue Heretek Analytics Cockpit scripts and styles.
+ *
+ * @param string $hook
+ * @return void
+ */
+function heretek_admin_enqueue_scripts( $hook ) {
+	if ( ! monsterinsights_is_own_admin_page() ) {
+		return;
+	}
+
+	$ver = MONSTERINSIGHTS_VERSION;
+	$url = MONSTERINSIGHTS_PLUGIN_URL;
+
+	// Enqueue ApexCharts CSS & JS
+	wp_enqueue_style( 'heretek-apexcharts', $url . 'assets/css/apexcharts.css', array(), $ver );
+	wp_enqueue_script( 'heretek-apexcharts', $url . 'assets/js/apexcharts.min.js', array(), $ver, true );
+
+	// Enqueue Heretek Admin theme CSS
+	wp_enqueue_style( 'heretek-admin-theme', $url . 'assets/css/heretek-admin.css', array( 'heretek-apexcharts' ), $ver );
+
+	// Enqueue Heretek Dashboard controller JS
+	wp_enqueue_script( 'heretek-dashboard', $url . 'assets/js/heretek-dashboard.js', array( 'heretek-apexcharts' ), $ver, true );
+
+	$auth    = MonsterInsights()->auth;
+	$v4      = $auth->get_manual_v4_id();
+	$prop_id = $auth->get_property_id();
+	$has_sa  = (bool) $auth->get_service_account_json();
+
+	wp_localize_script(
+		'heretek-dashboard',
+		'HeretekConfig',
+		array(
+			'restUrl'       => esc_url_raw( rest_url( 'heretek-analytics/v1/reporting/' ) ),
+			'restNonce'     => wp_create_nonce( 'wp_rest' ),
+			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'     => wp_create_nonce( 'heretek_dashboard_nonce' ),
+			'isConfigured'  => ! empty( $v4 ) && ! empty( $prop_id ) && $has_sa,
+			'propertyId'    => $prop_id,
+			'measurementId' => $v4,
+			'initialData'   => null,
+		)
+	);
+}
+add_action( 'admin_enqueue_scripts', 'heretek_admin_enqueue_scripts', 20 );
 
 /**
  * Remove Assets that conflict with ours from our screens.

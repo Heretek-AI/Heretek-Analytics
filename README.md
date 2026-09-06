@@ -49,15 +49,19 @@ Upstream commercial analytics distributions artificially cordon vital enterprise
 |:---|:---:|
 | **Core GA4 tracking (gtag.js)** | ✅ Auto page-view, scroll, download, affiliate-link, form, AMP |
 | **Author & author_id tracking** | ✅ Emitted as gtag config keys on singular views |
-| **In-admin Reports dashboard** | ✅ Pure-PHP, server-rendered KPI tiles + charts + tables |
-| **Date-range filter** | ✅ Two `<input type="date">` fields, GET round-trip, no JS |
-| **Authors sub-page** | ✅ Per-author ranking with CSV export |
-| **Direct GA4 Data API reporting** | ✅ Real data via service-account JWT — no random-number stub |
+| **Augur Telemetry Cockpit** | ✅ Interactive ApexCharts, multi-metric switcher, 5 specialized views |
+| **GA4 Realtime Live Stream** | ✅ Active readers in last 30 min, minute-by-minute histogram, live radar |
+| **Growth Period Comparisons** | ✅ +/- % delta badges computed against preceding time window |
+| **Date-range presets & SPA filter** | ✅ Today, Yesterday, 7D, 30D, 90D, Custom — zero full-page reloads |
+| **Authors Leaderboard** | ✅ Ranking by sessions, views & engagement with CSV/JSON export |
+| **Direct GA4 Data API reporting** | ✅ Real data via service-account JWT — no SaaS proxies |
+| **Transient Quota Protection** | ✅ Smart 15-minute caching layer with instant "⚡ Sync Telemetry" |
+| **WordPress Dashboard Widget** | ✅ Executive telemetry summary on wp-admin/index.php |
 | **Google Consent Mode v2** | ✅ EEA compliance helpers in `includes/admin/eea-compliance.php` |
 | **Server-side GA4 Measurement Protocol** | ✅ `MonsterInsights_Measurement_Protocol_V4` |
 | **Per-page tracking exclusion** | ✅ Editor sidebar metabox |
 | **Native GitHub release updater** | ✅ Automatic, no license keys |
-| **Settings export** | ✅ JSON download from the Tools page |
+| **Settings snapshot export** | ✅ JSON backup from the Tools page |
 | **Telemetry / phone-home / SaaS relay** | ❌ None |
 | **License key / subscription / paywall** | ❌ None |
 | **Cost** | **$0 forever (GPLv3)** |

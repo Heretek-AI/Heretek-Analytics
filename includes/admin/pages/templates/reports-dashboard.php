@@ -1,20 +1,32 @@
 <?php
 /**
- * Reports dashboard template.
+ * Heretek Analytics — Augur Telemetry Cockpit Template.
  *
- * Rendered server-side by monsterinsights_reports_page().
+ * Rendered by monsterinsights_reports_page().
  *
  * @var string $v4
  * @var string $prop_id
  * @var bool   $has_sa
- * @var array  $reports
+ * @var array  $telemetry
  * @var string $missing
  * @var string $error
+ * @var string $start_date
+ * @var string $end_date
+ * @var string $start_input
+ * @var string $end_input
  * @var string $settings_url
+ *
+ * @package Heretek_Analytics
+ * @subpackage Admin
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$kpis       = isset( $telemetry['kpis'] ) ? $telemetry['kpis'] : array();
+$reports    = isset( $telemetry['reports'] ) ? $telemetry['reports'] : array();
+$author_map = isset( $telemetry['author_lookup'] ) ? $telemetry['author_lookup'] : array();
 
 $fmt_int = static function ( $value ) {
 	$value = is_numeric( $value ) ? (int) $value : 0;
@@ -27,419 +39,536 @@ $fmt_int = static function ( $value ) {
 	return number_format( $value );
 };
 
-$overview    = isset( $reports['overview'] ) && is_array( $reports['overview'] ) ? $reports['overview'] : array();
-$top_pages   = isset( $reports['top_pages'] ) && is_array( $reports['top_pages'] ) ? $reports['top_pages'] : array();
-$countries   = isset( $reports['top_countries'] ) && is_array( $reports['top_countries'] ) ? $reports['top_countries'] : array();
-$top_authors = isset( $reports['top_authors'] ) && is_array( $reports['top_authors'] ) ? $reports['top_authors'] : array();
-
-// Resolve author_id -> WordPress user for the Top Authors panel.
-$author_ids = array();
-if ( ! empty( $top_authors['rows'] ) && is_array( $top_authors['rows'] ) ) {
-	foreach ( $top_authors['rows'] as $row ) {
-		if ( ! empty( $row['d'][0] ) && ctype_digit( (string) $row['d'][0] ) ) {
-			$author_ids[] = (int) $row['d'][0];
-		}
-	}
-}
-$author_lookup = array();
-if ( ! empty( $author_ids ) ) {
-	$users = get_users( array(
-		'include' => array_values( array_unique( $author_ids ) ),
-		'fields'  => array( 'ID', 'display_name', 'user_email' ),
-	) );
-	foreach ( $users as $u ) {
-		$author_lookup[ (int) $u->ID ] = $u;
-	}
-}
-
-$sum_metric = static function ( array $rows, int $idx ) {
-	$total = 0;
-	foreach ( $rows as $row ) {
-		if ( ! empty( $row['m'][ $idx ]['value'] ) && is_numeric( $row['m'][ $idx ]['value'] ) ) {
-			$total += (int) $row['m'][ $idx ]['value'];
-		}
-	}
-	return $total;
+$fmt_dur = static function ( $sec ) {
+	$sec = (int) round( $sec );
+	$m   = floor( $sec / 60 );
+	$s   = $sec % 60;
+	return $m . 'm ' . ( $s < 10 ? '0' : '' ) . $s . 's';
 };
+
+$fmt_delta = static function ( $d ) {
+	$d = (float) $d;
+	return ( $d > 0 ? '+' : '' ) . number_format( $d, 1 ) . '%';
+};
+
+$icon_url = MONSTERINSIGHTS_PLUGIN_URL . 'assets/images/icon-sm.png';
 ?>
-<style>
-.heretek-dashboard {
-	max-width: 1180px;
-	margin: 24px auto 80px;
-	padding: 0 20px;
-	font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	color: #e4e4e7;
-}
-.heretek-dashboard h1 {
-	font-family: 'Cinzel', serif;
-	font-size: 26px;
-	font-weight: 700;
-	letter-spacing: 0.04em;
-	color: #f4f4f5;
-	margin: 0 0 6px;
-}
-.heretek-dashboard .heretek-lede {
-	color: #a1a1aa;
-	font-size: 14px;
-	max-width: 760px;
-	margin: 0 0 24px;
-	line-height: 1.55;
-}
-.heretek-kpi-row {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-	gap: 16px;
-	margin-bottom: 24px;
-}
-.heretek-kpi {
-	background: #111116;
-	border: 1px solid #27272a;
-	border-left: 3px solid #dc2626;
-	border-radius: 6px;
-	padding: 18px 22px;
-}
-.heretek-kpi__label {
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	font-size: 11px;
-	font-weight: 700;
-	color: #a1a1aa;
-	margin: 0 0 6px;
-}
-.heretek-kpi__value {
-	font-family: 'Geist', monospace;
-	font-size: 28px;
-	font-weight: 600;
-	color: #f4f4f5;
-	letter-spacing: 0.02em;
-	line-height: 1.05;
-}
-.heretek-kpi__sub {
-	font-size: 12px;
-	color: #71717a;
-	margin-top: 6px;
-}
-.heretek-panels {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-	gap: 16px;
-}
-.heretek-panel {
-	background: #111116;
-	border: 1px solid #27272a;
-	border-radius: 6px;
-	padding: 18px 22px;
-}
-.heretek-panel h2 {
-	font-family: 'Cinzel', serif;
-	font-size: 16px;
-	letter-spacing: 0.04em;
-	font-weight: 700;
-	color: #f4f4f5;
-	margin: 0 0 12px;
-}
-.heretek-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 13px;
-}
-.heretek-table th,
-.heretek-table td {
-	text-align: left;
-	padding: 8px 6px;
-	border-bottom: 1px solid #1f1f23;
-	color: #d4d4d8;
-}
-.heretek-table th {
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	font-size: 11px;
-	color: #a1a1aa;
-	font-weight: 700;
-}
-.heretek-table td.num {
-	font-family: 'Geist', monospace;
-	text-align: right;
-	color: #f4f4f5;
-	white-space: nowrap;
-}
-.heretek-table td.muted {
-	color: #71717a;
-	font-style: italic;
-}
-.heretek-chart {
-	display: flex;
-	align-items: flex-end;
-	gap: 4px;
-	height: 160px;
-	padding: 12px 0 6px;
-	border-bottom: 1px solid #1f1f23;
-}
-.heretek-chart__bar {
-	flex: 1;
-	background: linear-gradient(180deg, #dc2626 0%, #7f1d1d 100%);
-	border-radius: 2px 2px 0 0;
-	min-height: 2px;
-}
-.heretek-empty,
-.heretek-error,
-.heretek-info {
-	padding: 14px 18px;
-	border-radius: 6px;
-	border-left: 3px solid;
-	font-size: 13px;
-	line-height: 1.5;
-	margin-bottom: 18px;
-}
-.heretek-info  { background:#18181b; border-color:#52525b; color:#d4d4d8; }
-.heretek-error { background:#1c1917; border-color:#dc2626; color:#fecaca; }
-.heretek-empty { background:#18181b; border-color:#52525b; color:#a1a1aa; }
-.heretek-empty a,
-.heretek-error a,
-.heretek-info a { color:#fca5a5; }
-.heretek-date-filter { margin-bottom: 22px; padding: 18px 22px; }
-.heretek-date-filter__row {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-end;
-	gap: 14px;
-}
-.heretek-date-filter__row .heretek-field { margin-bottom: 0; min-width: 170px; }
-.heretek-date-filter__row .heretek-actions { margin-top: 0; }
-</style>
 
-<div class="heretek-dashboard">
-	<h1><?php
-		printf(
-			/* translators: 1: start date, 2: end date */
-			esc_html__( 'Augur Reports — %1$s to %2$s', 'google-analytics-for-wordpress' ),
-			esc_html( $start_date ),
-			esc_html( $end_date )
-		);
-	?></h1>
-	<p class="heretek-lede">
-		<?php
-		printf(
-			/* translators: %s is the GA4 Measurement ID. */
-			esc_html__( 'Direct GA4 Data API reporting for measurement ID %s. Powered by your Google Cloud service account — no third-party relay.', 'google-analytics-for-wordpress' ),
-			'<code>' . esc_html( $v4 ) . '</code>'
-		);
-		?>
-	</p>
+<div class="htk-cockpit">
 
-	<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="heretek-card heretek-date-filter">
-		<input type="hidden" name="page" value="monsterinsights_reports" />
-		<div class="heretek-date-filter__row">
-			<div class="heretek-field">
-				<label for="heretek-start"><?php esc_html_e( 'Start date', 'google-analytics-for-wordpress' ); ?></label>
-				<input type="date" id="heretek-start" name="start" value="<?php echo esc_attr( $start_input ); ?>" required />
-			</div>
-			<div class="heretek-field">
-				<label for="heretek-end"><?php esc_html_e( 'End date', 'google-analytics-for-wordpress' ); ?></label>
-				<input type="date" id="heretek-end" name="end" value="<?php echo esc_attr( $end_input ); ?>" required />
-			</div>
-			<div class="heretek-actions">
-				<button type="submit" class="heretek-button"><?php esc_html_e( 'Apply', 'google-analytics-for-wordpress' ); ?></button>
-				<a class="heretek-button heretek-button--secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=monsterinsights_reports' ) ); ?>"><?php esc_html_e( 'Reset', 'google-analytics-for-wordpress' ); ?></a>
+	<!-- Master Header & Telemetry Bar -->
+	<header class="htk-header">
+		<div class="htk-header-brand">
+			<img src="<?php echo esc_url( $icon_url ); ?>" alt="Heretek Analytics Emblem">
+			<div class="htk-header-title">
+				<h1>
+					<?php esc_html_e( 'Augur Telemetry Cockpit', 'google-analytics-for-wordpress' ); ?>
+					<span class="htk-badge-ver"><?php echo esc_html( MONSTERINSIGHTS_VERSION ); ?></span>
+				</h1>
+				<div class="htk-header-telemetry-meta">
+					<?php if ( ! empty( $v4 ) && ! empty( $prop_id ) && $has_sa ) : ?>
+						<span class="htk-status-indicator active">
+							<span class="htk-status-dot"></span>
+							<?php esc_html_e( 'Stream Active', 'google-analytics-for-wordpress' ); ?>
+						</span>
+						<span>&bull;</span>
+						<span style="font-family:var(--htk-font-mono);">
+							<?php echo esc_html( $v4 ); ?>
+						</span>
+						<span>&bull;</span>
+						<span style="font-family:var(--htk-font-mono);">
+							PID: <?php echo esc_html( $prop_id ); ?>
+						</span>
+						<span>&bull;</span>
+						<span style="color:var(--htk-text-muted);font-size:11px;">
+							<?php esc_html_e( 'Synced:', 'google-analytics-for-wordpress' ); ?> <span id="htk-last-synced"><?php echo esc_html( ! empty( $telemetry['updated_at'] ) ? $telemetry['updated_at'] : current_time( 'H:i:s' ) ); ?></span>
+						</span>
+					<?php else : ?>
+						<span class="htk-status-indicator unconfigured">
+							<span class="htk-status-dot"></span>
+							<?php esc_html_e( 'Credentials Required', 'google-analytics-for-wordpress' ); ?>
+						</span>
+					<?php endif; ?>
+				</div>
 			</div>
 		</div>
-	</form>
+
+		<!-- Toolbar: Presets & Controls -->
+		<div class="htk-toolbar">
+			<div class="htk-presets-group" role="group" aria-label="<?php esc_attr_e( 'Date Presets', 'google-analytics-for-wordpress' ); ?>">
+				<button type="button" class="htk-preset-btn" data-preset="today"><?php esc_html_e( 'Today', 'google-analytics-for-wordpress' ); ?></button>
+				<button type="button" class="htk-preset-btn" data-preset="yesterday"><?php esc_html_e( 'Yesterday', 'google-analytics-for-wordpress' ); ?></button>
+				<button type="button" class="htk-preset-btn" data-preset="7d"><?php esc_html_e( '7D', 'google-analytics-for-wordpress' ); ?></button>
+				<button type="button" class="htk-preset-btn active" data-preset="30d"><?php esc_html_e( '30D', 'google-analytics-for-wordpress' ); ?></button>
+				<button type="button" class="htk-preset-btn" data-preset="90d"><?php esc_html_e( '90D', 'google-analytics-for-wordpress' ); ?></button>
+				<button type="button" class="htk-preset-btn" data-preset="custom"><?php esc_html_e( 'Custom', 'google-analytics-for-wordpress' ); ?></button>
+			</div>
+
+			<div class="htk-custom-dates" id="htk-custom-dates-wrap" style="display:none;">
+				<input type="date" id="htk-input-start" class="htk-date-input" value="<?php echo esc_attr( $start_input ); ?>">
+				<span style="color:var(--htk-text-muted);">&rarr;</span>
+				<input type="date" id="htk-input-end" class="htk-date-input" value="<?php echo esc_attr( $end_input ); ?>">
+				<button type="button" id="htk-btn-apply" class="htk-btn htk-btn-primary"><?php esc_html_e( 'Apply', 'google-analytics-for-wordpress' ); ?></button>
+			</div>
+
+			<button type="button" id="htk-btn-sync" class="htk-btn htk-btn-secondary" title="<?php esc_attr_e( 'Bust cache and pull fresh telemetry from GA4', 'google-analytics-for-wordpress' ); ?>">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+				</svg>
+				<?php esc_html_e( 'Sync Telemetry', 'google-analytics-for-wordpress' ); ?>
+			</button>
+
+			<a href="<?php echo esc_url( $settings_url ); ?>" class="htk-btn htk-btn-secondary" title="<?php esc_attr_e( 'Settings', 'google-analytics-for-wordpress' ); ?>">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="12" cy="12" r="3"></circle>
+					<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+				</svg>
+			</a>
+		</div>
+	</header>
+
+	<!-- Global Diagnostics & Errors -->
+	<div id="htk-global-alert" class="htk-alert htk-alert-error" style="<?php echo empty( $error ) ? 'display:none;' : ''; ?>">
+		<?php if ( ! empty( $error ) ) : ?>
+			<strong><?php esc_html_e( 'GA4 Data API Notice:', 'google-analytics-for-wordpress' ); ?></strong>
+			<?php echo esc_html( $error ); ?>
+		<?php endif; ?>
+	</div>
 
 	<?php if ( ! empty( $missing ) ) : ?>
-		<div class="heretek-empty">
-			<?php echo esc_html( $missing ); ?>
-			<a href="<?php echo esc_url( $settings_url ); ?>"><?php esc_html_e( 'Open Settings', 'google-analytics-for-wordpress' ); ?></a>
-		</div>
-	<?php elseif ( ! empty( $error ) ) : ?>
-		<div class="heretek-error">
-			<strong><?php esc_html_e( 'GA4 Data API error:', 'google-analytics-for-wordpress' ); ?></strong>
-			<?php echo esc_html( $error ); ?>
+		<!-- Setup Guide Callout -->
+		<div class="htk-card htk-card-bracket" style="padding:28px 32px;margin-bottom:24px;">
+			<h2 style="font-size:20px;color:#f87171;margin-bottom:10px;">
+				<?php esc_html_e( 'Activate The Machine Spirit', 'google-analytics-for-wordpress' ); ?>
+			</h2>
+			<p style="color:var(--htk-text-dim);font-size:14px;max-width:760px;line-height:1.6;margin-bottom:20px;">
+				<?php echo esc_html( $missing ); ?>
+			</p>
+			<div style="display:flex;gap:12px;">
+				<a href="<?php echo esc_url( $settings_url ); ?>" class="htk-btn htk-btn-primary" style="padding:10px 22px;font-size:14px;">
+					<?php esc_html_e( 'Open Heretek Settings &rarr;', 'google-analytics-for-wordpress' ); ?>
+				</a>
+			</div>
 		</div>
 	<?php else : ?>
-		<?php
-		$overview_rows  = isset( $overview['rows'] )  && is_array( $overview['rows'] )  ? $overview['rows']  : array();
-		$pages_rows     = isset( $top_pages['rows'] ) && is_array( $top_pages['rows'] ) ? $top_pages['rows'] : array();
-		$countries_rows = isset( $countries['rows'] ) && is_array( $countries['rows'] ) ? $countries['rows'] : array();
 
-		$total_sessions  = $sum_metric( $overview_rows, 0 );
-		$total_users     = $sum_metric( $overview_rows, 1 );
-		$total_pageviews = $sum_metric( $overview_rows, 2 );
+		<!-- Cockpit Navigation Tabs -->
+		<nav class="htk-nav-tabs" aria-label="<?php esc_attr_e( 'Telemetry Views', 'google-analytics-for-wordpress' ); ?>">
+			<button type="button" class="htk-nav-tab active" data-tab="overview">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+				<?php esc_html_e( 'Master Augur (Overview)', 'google-analytics-for-wordpress' ); ?>
+			</button>
+			<button type="button" class="htk-nav-tab" data-tab="realtime">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+				<?php esc_html_e( 'Realtime Live Stream', 'google-analytics-for-wordpress' ); ?>
+				<span class="htk-live-badge"><?php esc_html_e( 'Live', 'google-analytics-for-wordpress' ); ?></span>
+			</button>
+			<button type="button" class="htk-nav-tab" data-tab="authors">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+				<?php esc_html_e( 'Authors & Content', 'google-analytics-for-wordpress' ); ?>
+			</button>
+			<button type="button" class="htk-nav-tab" data-tab="acquisition">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+				<?php esc_html_e( 'Traffic & Acquisition', 'google-analytics-for-wordpress' ); ?>
+			</button>
+			<button type="button" class="htk-nav-tab" data-tab="tech">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+				<?php esc_html_e( 'Tech & Audience', 'google-analytics-for-wordpress' ); ?>
+			</button>
+		</nav>
 
-		// Daily series for the chart (sessions, index 0).
-		$daily_sessions = array();
-		foreach ( $overview_rows as $row ) {
-			$label = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
-			$value = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
-			$daily_sessions[] = array( 'label' => $label, 'value' => $value );
-		}
-		$max_daily = 0;
-		foreach ( $daily_sessions as $d ) {
-			if ( $d['value'] > $max_daily ) {
-				$max_daily = $d['value'];
-			}
-		}
-		?>
+		<!-- =============================================================== -->
+		<!-- TAB 1: MASTER AUGUR (OVERVIEW)                                  -->
+		<!-- =============================================================== -->
+		<section id="htk-pane-overview" class="htk-tab-pane">
 
-		<div class="heretek-kpi-row">
-			<div class="heretek-kpi">
-				<p class="heretek-kpi__label"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></p>
-				<p class="heretek-kpi__value"><?php echo esc_html( $fmt_int( $total_sessions ) ); ?></p>
-				<p class="heretek-kpi__sub"><?php esc_html_e( 'Last 30 days', 'google-analytics-for-wordpress' ); ?></p>
-			</div>
-			<div class="heretek-kpi">
-				<p class="heretek-kpi__label"><?php esc_html_e( 'Total Users', 'google-analytics-for-wordpress' ); ?></p>
-				<p class="heretek-kpi__value"><?php echo esc_html( $fmt_int( $total_users ) ); ?></p>
-				<p class="heretek-kpi__sub"><?php esc_html_e( 'Unique visitors', 'google-analytics-for-wordpress' ); ?></p>
-			</div>
-			<div class="heretek-kpi">
-				<p class="heretek-kpi__label"><?php esc_html_e( 'Page Views', 'google-analytics-for-wordpress' ); ?></p>
-				<p class="heretek-kpi__value"><?php echo esc_html( $fmt_int( $total_pageviews ) ); ?></p>
-				<p class="heretek-kpi__sub"><?php esc_html_e( 'All page events', 'google-analytics-for-wordpress' ); ?></p>
-			</div>
-			<div class="heretek-kpi">
-				<p class="heretek-kpi__label"><?php esc_html_e( 'Property ID', 'google-analytics-for-wordpress' ); ?></p>
-				<p class="heretek-kpi__value"><?php echo esc_html( $prop_id ); ?></p>
-				<p class="heretek-kpi__sub"><?php esc_html_e( 'GA4 numeric property', 'google-analytics-for-wordpress' ); ?></p>
-			</div>
-		</div>
-
-		<div class="heretek-panels">
-
-			<div class="heretek-panel" style="grid-column: 1 / -1;">
-				<h2><?php esc_html_e( 'Sessions per Day', 'google-analytics-for-wordpress' ); ?></h2>
-				<?php if ( empty( $daily_sessions ) ) : ?>
-					<p class="heretek-empty"><?php esc_html_e( 'No sessions recorded in the selected window.', 'google-analytics-for-wordpress' ); ?></p>
-				<?php else : ?>
-					<div class="heretek-chart" aria-label="<?php esc_attr_e( 'Daily sessions chart', 'google-analytics-for-wordpress' ); ?>">
-						<?php foreach ( $daily_sessions as $d ) :
-							$height = $max_daily > 0 ? max( 2, (int) round( ( $d['value'] / $max_daily ) * 150 ) ) : 2;
-							$date_label = $d['label'];
-							if ( strlen( $date_label ) === 8 ) {
-								$date_label = substr( $date_label, 0, 4 ) . '-' . substr( $date_label, 4, 2 ) . '-' . substr( $date_label, 6, 2 );
-							}
-							?>
-							<div class="heretek-chart__bar" style="height: <?php echo (int) $height; ?>px;"
-								 title="<?php echo esc_attr( $date_label . ' — ' . (int) $d['value'] . ' sessions' ); ?>"></div>
-						<?php endforeach; ?>
+			<!-- 6 Hero KPI Cards with Deltas & Sparklines -->
+			<div class="htk-kpi-grid">
+				<!-- Sessions -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-sessions" class="htk-delta-badge <?php echo ( isset( $kpis['sessions']['delta'] ) && $kpis['sessions']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['sessions']['delta'] ) ? $fmt_delta( $kpis['sessions']['delta'] ) : '+0.0%' ); ?>
+						</span>
 					</div>
-				<?php endif; ?>
+					<div class="htk-kpi-value" id="htk-kpi-sessions">
+						<?php echo esc_html( isset( $kpis['sessions']['value'] ) ? $fmt_int( $kpis['sessions']['value'] ) : '0' ); ?>
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'vs. previous window', 'google-analytics-for-wordpress' ); ?></div>
+					<div class="htk-kpi-sparkline" id="spark-sessions"></div>
+				</div>
+
+				<!-- Active Users -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Total Users', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-users" class="htk-delta-badge <?php echo ( isset( $kpis['users']['delta'] ) && $kpis['users']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['users']['delta'] ) ? $fmt_delta( $kpis['users']['delta'] ) : '+0.0%' ); ?>
+						</span>
+					</div>
+					<div class="htk-kpi-value" id="htk-kpi-users">
+						<?php echo esc_html( isset( $kpis['users']['value'] ) ? $fmt_int( $kpis['users']['value'] ) : '0' ); ?>
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'Unique visitors', 'google-analytics-for-wordpress' ); ?></div>
+					<div class="htk-kpi-sparkline" id="spark-users"></div>
+				</div>
+
+				<!-- Page Views -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Screen Views', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-pageviews" class="htk-delta-badge <?php echo ( isset( $kpis['pageviews']['delta'] ) && $kpis['pageviews']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['pageviews']['delta'] ) ? $fmt_delta( $kpis['pageviews']['delta'] ) : '+0.0%' ); ?>
+						</span>
+					</div>
+					<div class="htk-kpi-value" id="htk-kpi-pageviews">
+						<?php echo esc_html( isset( $kpis['pageviews']['value'] ) ? $fmt_int( $kpis['pageviews']['value'] ) : '0' ); ?>
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'Total page impressions', 'google-analytics-for-wordpress' ); ?></div>
+					<div class="htk-kpi-sparkline" id="spark-pageviews"></div>
+				</div>
+
+				<!-- Avg Engagement Time -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Avg Duration', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-avg_duration" class="htk-delta-badge <?php echo ( isset( $kpis['avg_duration']['delta'] ) && $kpis['avg_duration']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['avg_duration']['delta'] ) ? $fmt_delta( $kpis['avg_duration']['delta'] ) : '+0.0%' ); ?>
+						</span>
+					</div>
+					<div class="htk-kpi-value" id="htk-kpi-avg_duration">
+						<?php echo esc_html( isset( $kpis['avg_duration']['value'] ) ? $fmt_dur( $kpis['avg_duration']['value'] ) : '0m 00s' ); ?>
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'Active session time', 'google-analytics-for-wordpress' ); ?></div>
+				</div>
+
+				<!-- Engagement Rate -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Engagement', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-engagement_rate" class="htk-delta-badge <?php echo ( isset( $kpis['engagement_rate']['delta'] ) && $kpis['engagement_rate']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['engagement_rate']['delta'] ) ? $fmt_delta( $kpis['engagement_rate']['delta'] ) : '+0.0%' ); ?>
+						</span>
+					</div>
+					<div class="htk-kpi-value" id="htk-kpi-engagement_rate">
+						<?php echo esc_html( isset( $kpis['engagement_rate']['value'] ) ? number_format( $kpis['engagement_rate']['value'], 1 ) : '0.0' ); ?>%
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'Sessions > 10s or 2+ views', 'google-analytics-for-wordpress' ); ?></div>
+				</div>
+
+				<!-- Views per User -->
+				<div class="htk-kpi-card htk-card-bracket">
+					<div class="htk-kpi-header">
+						<span class="htk-kpi-label"><?php esc_html_e( 'Views / User', 'google-analytics-for-wordpress' ); ?></span>
+						<span id="htk-delta-views_per_user" class="htk-delta-badge <?php echo ( isset( $kpis['views_per_user']['delta'] ) && $kpis['views_per_user']['delta'] >= 0 ) ? 'pos' : 'neg'; ?>">
+							<?php echo esc_html( isset( $kpis['views_per_user']['delta'] ) ? $fmt_delta( $kpis['views_per_user']['delta'] ) : '+0.0%' ); ?>
+						</span>
+					</div>
+					<div class="htk-kpi-value" id="htk-kpi-views_per_user">
+						<?php echo esc_html( isset( $kpis['views_per_user']['value'] ) ? number_format( $kpis['views_per_user']['value'], 1 ) : '0.0' ); ?>
+					</div>
+					<div class="htk-kpi-sub"><?php esc_html_e( 'Depth per reader', 'google-analytics-for-wordpress' ); ?></div>
+				</div>
 			</div>
 
-			<div class="heretek-panel">
-				<h2><?php esc_html_e( 'Top Pages', 'google-analytics-for-wordpress' ); ?></h2>
-				<?php if ( empty( $pages_rows ) ) : ?>
-					<p class="heretek-empty"><?php esc_html_e( 'No page data available.', 'google-analytics-for-wordpress' ); ?></p>
-				<?php else : ?>
-					<table class="heretek-table">
-						<thead><tr><th><?php esc_html_e( 'Page', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Views', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
-						<tbody>
-							<?php foreach ( $pages_rows as $row ) :
-								$title = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
-								$path  = isset( $row['d'][1] ) ? (string) $row['d'][1] : '';
-								$views = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
-								$label = '' !== $title ? $title : $path;
-								if ( '' === $label ) {
-									$label = __( '(not set)', 'google-analytics-for-wordpress' );
-								}
-								?>
+			<!-- Main Interactive Timeline Chart (ApexCharts) -->
+			<div class="htk-card htk-card-bracket htk-timeline-card">
+				<div class="htk-timeline-header">
+					<h2><?php esc_html_e( 'Telemetry Stream Over Time', 'google-analytics-for-wordpress' ); ?></h2>
+					<div class="htk-metric-switch" role="group" aria-label="<?php esc_attr_e( 'Chart Metric Switcher', 'google-analytics-for-wordpress' ); ?>">
+						<button type="button" class="htk-metric-pill active" data-metric="sessions"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></button>
+						<button type="button" class="htk-metric-pill" data-metric="users"><?php esc_html_e( 'Users', 'google-analytics-for-wordpress' ); ?></button>
+						<button type="button" class="htk-metric-pill" data-metric="pageviews"><?php esc_html_e( 'Views', 'google-analytics-for-wordpress' ); ?></button>
+						<button type="button" class="htk-metric-pill" data-metric="engagement"><?php esc_html_e( 'Engagement', 'google-analytics-for-wordpress' ); ?></button>
+					</div>
+				</div>
+				<div id="htk-main-chart" class="htk-chart-canvas"></div>
+			</div>
+
+			<!-- Secondary Visualizations Grid: Channels & Devices Donut -->
+			<div class="htk-grid-2">
+				<!-- Traffic Acquisition Channels -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Acquisition Channels', 'google-analytics-for-wordpress' ); ?></h3>
+						<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-sources" data-format="csv" style="padding:4px 8px;font-size:11px;">
+							<?php esc_html_e( 'Export CSV', 'google-analytics-for-wordpress' ); ?>
+						</button>
+					</div>
+					<div id="htk-channels-chart" style="min-height:240px;"></div>
+				</div>
+
+				<!-- Device Categories Breakdown -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Device Platforms', 'google-analytics-for-wordpress' ); ?></h3>
+					</div>
+					<div id="htk-devices-chart" style="min-height:240px;"></div>
+				</div>
+			</div>
+
+			<!-- Breakdown Tables: Top Pages & Top Sources -->
+			<div class="htk-grid-2">
+				<!-- Top Pages Table -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Top Pages & Content', 'google-analytics-for-wordpress' ); ?></h3>
+						<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-pages" data-format="csv" style="padding:4px 8px;font-size:11px;">
+							<?php esc_html_e( 'Export CSV', 'google-analytics-for-wordpress' ); ?>
+						</button>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table" id="htk-table-pages">
+							<thead>
 								<tr>
-									<td>
-										<?php echo esc_html( $label ); ?>
-										<?php if ( '' !== $title && '' !== $path ) : ?>
-											<div class="heretek-table td muted"><?php echo esc_html( $path ); ?></div>
-										<?php endif; ?>
-									</td>
-									<td class="num"><?php echo esc_html( $fmt_int( $views ) ); ?></td>
+									<th><?php esc_html_e( 'Page', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Views', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Users', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Avg Time', 'google-analytics-for-wordpress' ); ?></th>
 								</tr>
-							<?php endforeach; ?>
+							</thead>
+							<tbody id="htk-tbody-pages">
+								<!-- Populated dynamically via JS or SSR -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Top Sources Table -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Top Traffic Referrers', 'google-analytics-for-wordpress' ); ?></h3>
+						<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-sources" data-format="csv" style="padding:4px 8px;font-size:11px;">
+							<?php esc_html_e( 'Export CSV', 'google-analytics-for-wordpress' ); ?>
+						</button>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table" id="htk-table-sources">
+							<thead>
+								<tr>
+									<th><?php esc_html_e( 'Source / Medium', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Users', 'google-analytics-for-wordpress' ); ?></th>
+								</tr>
+							</thead>
+							<tbody id="htk-tbody-sources">
+								<!-- Populated dynamically via JS or SSR -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- Top Countries -->
+			<div class="htk-card htk-card-bracket">
+				<div class="htk-panel-header">
+					<h3><?php esc_html_e( 'Top Countries', 'google-analytics-for-wordpress' ); ?></h3>
+					<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-countries" data-format="csv" style="padding:4px 8px;font-size:11px;">
+						<?php esc_html_e( 'Export CSV', 'google-analytics-for-wordpress' ); ?>
+					</button>
+				</div>
+				<div class="htk-table-wrap">
+					<table class="htk-table" id="htk-table-countries">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Country', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Users', 'google-analytics-for-wordpress' ); ?></th>
+							</tr>
+						</thead>
+						<tbody id="htk-tbody-countries">
+							<!-- Populated dynamically via JS -->
 						</tbody>
 					</table>
-				<?php endif; ?>
+				</div>
 			</div>
 
-			<div class="heretek-panel">
-				<h2><?php esc_html_e( 'Top Authors', 'google-analytics-for-wordpress' ); ?></h2>
-				<?php if ( empty( $top_authors['rows'] ) ) : ?>
-					<p class="heretek-empty"><?php esc_html_e( 'No author data in this window. Make sure your GA4 property has a User-scoped custom dimension named <code>author_id</code> registered, and that singular views are emitting it.', 'google-analytics-for-wordpress' ); ?></p>
-				<?php else : ?>
-					<table class="heretek-table">
-						<thead><tr><th><?php esc_html_e( 'Author', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Page Views', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
-						<tbody>
-							<?php foreach ( $top_authors['rows'] as $row ) :
-								$raw_d   = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
-								$aid     = ( '' !== $raw_d && '(not set)' !== $raw_d && ctype_digit( $raw_d ) ) ? (int) $raw_d : 0;
-								$user    = ( $aid > 0 && isset( $author_lookup[ $aid ] ) ) ? $author_lookup[ $aid ] : null;
-								$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
-								$views    = isset( $row['m'][1]['value'] ) ? (int) $row['m'][1]['value'] : 0;
-								if ( $user ) {
-									$display = $user->display_name;
-									$sub     = $user->user_email;
-									$edit    = esc_url( get_edit_user_link( $user->ID ) );
-								} elseif ( $aid > 0 ) {
-									$display = sprintf( __( 'Author #%d (deleted)', 'google-analytics-for-wordpress' ), $aid );
-									$sub     = '';
-									$edit    = '';
-								} elseif ( '' === $raw_d || '(not set)' === $raw_d ) {
-									$display = __( '(not set)', 'google-analytics-for-wordpress' );
-									$sub     = '';
-									$edit    = '';
-								} else {
-									$display = sprintf( __( 'Unknown author (%s)', 'google-analytics-for-wordpress' ), $raw_d );
-									$sub     = '';
-									$edit    = '';
-								}
-								?>
+		</section>
+
+		<!-- =============================================================== -->
+		<!-- TAB 2: REALTIME LIVE STREAM (MACHINE SPIRIT LIVE)                -->
+		<!-- =============================================================== -->
+		<section id="htk-pane-realtime" class="htk-tab-pane" style="display:none;">
+
+			<div class="htk-realtime-hero htk-card-bracket">
+				<div class="htk-realtime-count-box">
+					<div class="htk-realtime-radar"></div>
+					<div>
+						<div class="htk-realtime-count-num" id="htk-realtime-active-users">0</div>
+						<div class="htk-realtime-count-label"><?php esc_html_e( 'Active Readers on Site (Last 30 Min)', 'google-analytics-for-wordpress' ); ?></div>
+					</div>
+				</div>
+				<div class="htk-realtime-controls">
+					<span style="font-size:12px;color:var(--htk-text-dim);">
+						<?php esc_html_e( 'Next Sync in:', 'google-analytics-for-wordpress' ); ?> <strong id="htk-realtime-countdown" style="color:var(--htk-crimson);font-family:monospace;">30s</strong>
+					</span>
+					<button type="button" id="htk-btn-realtime-pause" class="htk-btn htk-btn-secondary">
+						<?php esc_html_e( '⏸ Pause Stream', 'google-analytics-for-wordpress' ); ?>
+					</button>
+				</div>
+			</div>
+
+			<!-- Realtime 30-Minute Histogram -->
+			<div class="htk-card htk-card-bracket" style="margin-bottom:22px;">
+				<div class="htk-panel-header">
+					<h3><?php esc_html_e( 'Activity By Minute (Last 30 Minutes)', 'google-analytics-for-wordpress' ); ?></h3>
+				</div>
+				<div id="htk-realtime-chart" style="min-height:180px;"></div>
+			</div>
+
+			<!-- Realtime Pages & Countries -->
+			<div class="htk-grid-2">
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Active Pages Right Now', 'google-analytics-for-wordpress' ); ?></h3>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table">
+							<thead>
 								<tr>
-									<td>
-										<?php if ( $edit ) : ?>
-											<a href="<?php echo $edit; ?>"><?php echo esc_html( $display ); ?></a>
-										<?php else : ?>
-											<?php echo esc_html( $display ); ?>
-										<?php endif; ?>
-										<?php if ( $sub ) : ?>
-											<div class="heretek-table td muted"><?php echo esc_html( $sub ); ?></div>
-										<?php endif; ?>
-									</td>
-									<td class="num"><?php echo esc_html( $fmt_int( $sessions ) ); ?></td>
-									<td class="num"><?php echo esc_html( $fmt_int( $views ) ); ?></td>
+									<th><?php esc_html_e( 'Page / Screen', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Active Views', 'google-analytics-for-wordpress' ); ?></th>
 								</tr>
-							<?php endforeach; ?>
+							</thead>
+							<tbody id="htk-tbody-realtime-pages">
+								<tr><td colspan="2" class="htk-alert htk-alert-empty"><?php esc_html_e( 'Waiting for live telemetry stream...', 'google-analytics-for-wordpress' ); ?></td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Active Geographic Origins', 'google-analytics-for-wordpress' ); ?></h3>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table">
+							<thead>
+								<tr>
+									<th><?php esc_html_e( 'Country', 'google-analytics-for-wordpress' ); ?></th>
+									<th class="num"><?php esc_html_e( 'Active Users', 'google-analytics-for-wordpress' ); ?></th>
+								</tr>
+							</thead>
+							<tbody id="htk-tbody-realtime-countries">
+								<tr><td colspan="2" class="htk-alert htk-alert-empty"><?php esc_html_e( 'Waiting for live telemetry stream...', 'google-analytics-for-wordpress' ); ?></td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		</section>
+
+		<!-- =============================================================== -->
+		<!-- TAB 3: AUTHORS & CONTENT TELEMETRY                              -->
+		<!-- =============================================================== -->
+		<section id="htk-pane-authors" class="htk-tab-pane" style="display:none;">
+
+			<div class="htk-card htk-card-bracket" style="margin-bottom:22px;">
+				<div class="htk-panel-header">
+					<div>
+						<h2><?php esc_html_e( 'Top Author Telemetry Leaderboard', 'google-analytics-for-wordpress' ); ?></h2>
+						<p style="font-size:12px;color:var(--htk-text-dim);margin:4px 0 0;">
+							<?php esc_html_e( 'Resolved from custom user dimension author_id and joined with WordPress user accounts.', 'google-analytics-for-wordpress' ); ?>
+						</p>
+					</div>
+					<button type="button" class="htk-btn htk-btn-secondary htk-export-btn" data-table="htk-table-authors" data-format="csv">
+						<?php esc_html_e( 'Export Authors CSV', 'google-analytics-for-wordpress' ); ?>
+					</button>
+				</div>
+				<div class="htk-table-wrap">
+					<table class="htk-table" id="htk-table-authors">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Author', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Views', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Users', 'google-analytics-for-wordpress' ); ?></th>
+								<th class="num"><?php esc_html_e( 'Engagement %', 'google-analytics-for-wordpress' ); ?></th>
+							</tr>
+						</thead>
+						<tbody id="htk-tbody-authors">
+							<!-- Dynamic -->
 						</tbody>
 					</table>
-					<p class="heretek-info" style="margin-top: 14px;">
-						<?php
-						printf(
-							/* translators: %s is a URL to the Authors admin sub-page. */
-							esc_html__( 'Need a full per-author breakdown across more metrics? Open %s.', 'google-analytics-for-wordpress' ),
-							'<a href="' . esc_url( admin_url( 'admin.php?page=monsterinsights_authors' ) ) . '">' . esc_html__( 'Heretek Analytics → Authors', 'google-analytics-for-wordpress' ) . '</a>'
-						);
-						?>
-					</p>
-				<?php endif; ?>
+				</div>
 			</div>
 
-			<div class="heretek-panel">
-				<h2><?php esc_html_e( 'Top Countries', 'google-analytics-for-wordpress' ); ?></h2>
-				<?php if ( empty( $countries_rows ) ) : ?>
-					<p class="heretek-empty"><?php esc_html_e( 'No country data available.', 'google-analytics-for-wordpress' ); ?></p>
-				<?php else : ?>
-					<table class="heretek-table">
-						<thead><tr><th><?php esc_html_e( 'Country', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
-						<tbody>
-							<?php foreach ( $countries_rows as $row ) :
-								$country  = isset( $row['d'][0] ) ? (string) $row['d'][0] : '';
-								$sessions = isset( $row['m'][0]['value'] ) ? (int) $row['m'][0]['value'] : 0;
-								?>
-								<tr>
-									<td><?php echo '' !== $country ? esc_html( $country ) : '<em>' . esc_html__( '(not set)', 'google-analytics-for-wordpress' ) . '</em>'; ?></td>
-									<td class="num"><?php echo esc_html( $fmt_int( $sessions ) ); ?></td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
+			<!-- Author Distribution Visualizer -->
+			<div class="htk-card htk-card-bracket">
+				<div class="htk-panel-header">
+					<h3><?php esc_html_e( 'Author Traffic Distribution', 'google-analytics-for-wordpress' ); ?></h3>
+				</div>
+				<div id="htk-authors-chart" style="min-height:280px;"></div>
+			</div>
+
+		</section>
+
+		<!-- =============================================================== -->
+		<!-- TAB 4: TRAFFIC & ACQUISITION                                    -->
+		<!-- =============================================================== -->
+		<section id="htk-pane-acquisition" class="htk-tab-pane" style="display:none;">
+
+			<div class="htk-card htk-card-bracket" style="margin-bottom:22px;">
+				<div class="htk-panel-header">
+					<h2><?php esc_html_e( 'Traffic Acquisition Channels & Referrers', 'google-analytics-for-wordpress' ); ?></h2>
+				</div>
+				<p style="font-size:13px;color:var(--htk-text-dim);margin:0 0 16px;">
+					<?php esc_html_e( 'Understand how readers and cosmic wanderers navigate to your domain across organic search, direct links, and social platforms.', 'google-analytics-for-wordpress' ); ?>
+				</p>
+			</div>
+
+		</section>
+
+		<!-- =============================================================== -->
+		<!-- TAB 5: TECH & AUDIENCE                                          -->
+		<!-- =============================================================== -->
+		<section id="htk-pane-tech" class="htk-tab-pane" style="display:none;">
+
+			<div class="htk-grid-2">
+				<!-- Browsers -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Top Browsers', 'google-analytics-for-wordpress' ); ?></h3>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table">
+							<thead><tr><th><?php esc_html_e( 'Browser', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
+							<tbody id="htk-tbody-browsers"></tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Operating Systems -->
+				<div class="htk-card htk-card-bracket">
+					<div class="htk-panel-header">
+						<h3><?php esc_html_e( 'Operating Systems', 'google-analytics-for-wordpress' ); ?></h3>
+					</div>
+					<div class="htk-table-wrap">
+						<table class="htk-table">
+							<thead><tr><th><?php esc_html_e( 'OS', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
+							<tbody id="htk-tbody-os"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- Top Cities -->
+			<div class="htk-card htk-card-bracket">
+				<div class="htk-panel-header">
+					<h3><?php esc_html_e( 'Top Cities', 'google-analytics-for-wordpress' ); ?></h3>
+				</div>
+				<div class="htk-table-wrap">
+					<table class="htk-table">
+						<thead><tr><th><?php esc_html_e( 'City', 'google-analytics-for-wordpress' ); ?></th><th class="num"><?php esc_html_e( 'Sessions', 'google-analytics-for-wordpress' ); ?></th></tr></thead>
+						<tbody id="htk-tbody-cities"></tbody>
 					</table>
-				<?php endif; ?>
+				</div>
 			</div>
 
-		</div>
+		</section>
+
 	<?php endif; ?>
+
 </div>

@@ -7,7 +7,7 @@
  * Author:              Heretek AI
  * Author URI:          https://github.com/Heretek-AI
  *
- * Version:             11.2.0
+ * Version:             12.2.0
  * Requires at least:   5.6.0
  * Requires PHP:        7.4
  *
@@ -80,7 +80,7 @@ final class MonsterInsights {
 	 * @access public
 	 * @var string $version Plugin version.
 	 */
-	public $version = '11.2.0';
+	public $version = '12.2.0';
 	/**
 	 * Plugin file.
 	 *
@@ -410,6 +410,9 @@ final class MonsterInsights {
 
 			// Admin-ajax + REST routes used by the new PHP admin pages.
 			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/routes.php';
+
+			// Native WordPress Dashboard Widget
+			require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/dashboard-widget.php';
 		}
 
 		require_once MONSTERINSIGHTS_PLUGIN_DIR . 'includes/admin/exclude-page-metabox.php';

@@ -1,14 +1,14 @@
 === Heretek Analytics ===
 Contributors: Heretek-AI
-Tags: analytics, google analytics, ga4, privacy
+Tags: analytics, google analytics, ga4, privacy, apexcharts
 Requires at least: 5.6.0
 Tested up to: 6.9
-Stable tag: 11.2.0
+Stable tag: 12.2.0
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-A 100% self-hosted Google Analytics 4 plugin for WordPress. Configure with a Measurement ID plus a Google Cloud service account JSON; reports come straight from the GA4 Data API. No subscriptions, no phone-homes, no paywalls.
+A 100% self-hosted Google Analytics 4 plugin for WordPress. Interactive dark cyber-theurgy dashboard powered by ApexCharts, real-time telemetry, author performance leaderboards, and direct GA4 Data API integration. Zero subscriptions, zero phone-homes, zero paywalls.
 
 == Description ==
 
@@ -20,12 +20,17 @@ Unlike commercial distributions, Heretek Analytics does not phone home to a thir
 
 = What you get =
 
-* **Core GA4 tracking (gtag.js)** — automatic page-view, scroll, download, affiliate-link, form-submission, and AMP tracking.
-* **In-admin Reports dashboard** — pure-PHP, server-rendered KPI tiles, a daily-sessions chart, top-pages table, and top-countries table.
-* **Direct GA4 Data API gateway** — the REST endpoint `/wp-json/heretek-analytics/v1/reporting/query` mints a JWT with your service account, exchanges it for an OAuth2 token, and calls `analyticsdata.googleapis.com` directly.
+* **Augur Telemetry Cockpit** — Interactive ApexCharts area splines, multi-metric switcher (Sessions, Users, Views, Engagement), channels and devices donut charts.
+* **GA4 Realtime Live Stream** — Active users in the last 30 minutes, 30-minute minute-by-minute histogram, live radar telemetry, auto-refreshing polling loop.
+* **Period-over-Period Growth Deltas** — Real-time comparative percentage calculations against previous date windows.
+* **Zero-Reload SPA Date Filtering** — Today, Yesterday, Last 7 Days, Last 30 Days, Last 90 Days, and custom calendar ranges with zero page reloads.
+* **Authors Leaderboard** — Per-author traffic breakdown, visual bar chart, and CSV/JSON export.
+* **Executive WP Admin Dashboard Widget** — Embedded 30-day telemetry summary directly on `wp-admin/index.php`.
+* **Direct GA4 Data API Gateway** — REST endpoint mints JWTs with service account keys and exchanges for OAuth2 tokens directly with Google Analytics Data API.
+* **Smart Transient Quota Protection** — 15-minute historical, 3-minute today, and 30-second realtime caching with manual cache-busting sync.
+* **Core GA4 tracking (gtag.js)** — automatic page-view, scroll, download, affiliate-link, form-submission, author dimensions, and AMP tracking.
 * **Google Consent Mode v2** — EEA compliance helpers in `includes/admin/eea-compliance.php`.
 * **Server-side GA4 Measurement Protocol** — `MonsterInsights_Measurement_Protocol_V4`.
-* **Per-page tracking exclusion** — editor sidebar metabox.
 * **Native GitHub Releases updater** — automatic, no license keys.
 * **Settings export** — JSON download from the Tools page.
 
@@ -60,12 +65,17 @@ Heretek Analytics includes an integrated GitHub Releases updater. When a new ver
 
 == Changelog ==
 
-= 11.2.0 =
-* Complete retheme to Heretek "Blood & Steel" aesthetic.
-* Integrated native GitHub Releases updater (Heretek-AI/Heretek-Analytics).
-* Purged all upstream telemetry, promotional rotators, and phone-home beacons.
-* Autonomous Local REST Reporting Gateway for direct GA4 Data API queries.
-* Full Pro/Agency tier reporting modules unlocked.
+= 12.2.0 =
+* Complete visual & architectural overhaul: Blood & Steel dark cyber-theurgy aesthetic with obsidian void surfaces (#07070a), tech-bracket corners, and pulsing telemetry beacons.
+* Vendored high-performance ApexCharts area splines, donut charts, and author ranking bars.
+* Added live GA4 Realtime Stream with 30-minute minute-by-minute histogram, real-time user counter, and automated 30s background polling loop.
+* Implemented period-over-period comparative delta calculation (+/- %) across all core telemetry KPIs against the preceding window.
+* Added Zero-Reload SPA date-range filtering (Today, Yesterday, 7D, 30D, 90D, Custom) with instant reactive chart and KPI updates.
+* Upgraded Reports Cockpit to a 5-tab unified command center: Master Augur, Realtime Live, Authors & Content, Traffic & Acquisition, and Tech & Audience.
+* Added native executive Telemetry Summary dashboard widget on wp-admin/index.php.
+* Implemented smart transient quota protection (15m historical, 3m today, 30s realtime) with manual cache-busting sync action.
+* Pruned ~2,200 lines of dead MonsterInsights SaaS routes and redundant AJAX handlers in favor of direct local REST gateway.
+* Added CSV and JSON export capabilities for reporting data and author leaderboards.
 
 = 12.1.0 =
 * New: author tracking on singular views — gtag config keys `author` (display name) and `author_id` (numeric WP user ID) emitted alongside the existing page-view config. Pair with User-scoped GA4 Custom Dimensions of the same API names to surface per-author reporting.
@@ -81,3 +91,10 @@ Heretek Analytics includes an integrated GitHub Releases updater. When a new ver
 * Settings page now has a three-field form (Measurement ID + GA4 Property ID + Google Cloud service account JSON) with a "Verify Credentials" button that confirms service-account access.
 * Reports page is server-rendered with real GA4 data — daily sessions chart, top-pages table, top-countries table.
 * New Tools page (settings export + environment read-out) and About page.
+
+= 11.2.0 =
+* Complete retheme to Heretek "Blood & Steel" aesthetic.
+* Integrated native GitHub Releases updater (Heretek-AI/Heretek-Analytics).
+* Purged all upstream telemetry, promotional rotators, and phone-home beacons.
+* Autonomous Local REST Reporting Gateway for direct GA4 Data API queries.
+* Full Pro/Agency tier reporting modules unlocked.
